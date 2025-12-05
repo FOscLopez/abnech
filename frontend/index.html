@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <title>ABNECH Basket</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- Firebase (Auth) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+</head>
+
+<body>
+
+  <!-- ======================= LANDING PAGE ======================= -->
+  <section class="landing">
+    <div class="landing-overlay"></div>
+    <h1 class="landing-title">ABNECH BASKET</h1>
+    <p class="landing-sub">Asociación de Básquet del Nordeste Chaqueño</p>
+    <button class="landing-enter" id="enter-site">ENTRAR</button>
+  </section>
+
+  <!-- ======================= HEADER ======================= -->
+  <header class="site-header hidden">
+    <div class="logo-area">
+      <span class="logo-main">ABNECH BASKET</span>
+      <span class="logo-sub">Asociación de Básquet del Nordeste Chaqueño</span>
+    </div>
+
+    <nav class="main-nav">
+      <a href="#inicio">Inicio</a>
+      <a href="#noticias">Noticias</a>
+      <a href="#fixture">Fixture</a>
+      <a href="#resultados">Resultados</a>
+      <a href="#tablas">Tablas</a>
+      <a href="#clubes">Clubes</a>
+      <a href="#jugadores">Jugadores</a>
+      <a href="#galeria">Galería</a>
+      <a href="#historia">Historia</a>
+      <a href="#sponsors">Sponsors</a>
+
+      <a href="#admin" id="admin-link" class="admin-link hidden">Admin</a>
+      <button id="login-button" class="btn-login">Ingresar</button>
+      <button id="logout-button" class="btn-login hidden">Salir</button>
+
+      <button id="theme-toggle" class="theme-toggle">🌙</button>
+    </nav>
+  </header>
+
+  <!-- ======================= SELECTOR GLOBAL ======================= -->
+  <section class="global-category-bar hidden">
+    <div class="global-category-list" id="global-cat-list">
+      <button class="global-cat-chip active" data-category="Primera">Primera</button>
+      <button class="global-cat-chip" data-category="Maxi42">Maxi42</button>
+      <button class="global-cat-chip" data-category="Maxi35">Maxi35</button>
+      <button class="global-cat-chip" data-category="U19">U19</button>
+      <button class="global-cat-chip" data-category="U17">U17</button>
+      <button class="global-cat-chip" data-category="U15">U15</button>
+      <button class="global-cat-chip" data-category="U13">U13</button>
+      <button class="global-cat-chip" data-category="Formativas">Formativas</button>
+      <button class="global-cat-chip" data-category="Femenino">Femenino</button>
+    </div>
+  </section>
+
+  <!-- ======================= MODAL LOGIN ======================= -->
+  <section id="login-modal" class="login-modal hidden">
+    <div class="login-box">
+      <h2>Acceso administradores</h2>
+
+      <label for="login-email">Email</label>
+      <input id="login-email" type="email" placeholder="admin@abnech.com" />
+
+      <label for="login-password">Contraseña</label>
+      <input id="login-password" type="password" placeholder="********" />
+
+      <div class="login-actions">
+        <button id="login-submit" class="btn-admin">Ingresar</button>
+        <button id="login-cancel" class="btn-admin btn-secondary">Cancelar</button>
+      </div>
+
+      <p id="login-error" class="login-error"></p>
+    </div>
+  </section>
+
+  <main id="inicio" class="hidden">
+
+    <!-- ======================= NOTICIAS ======================= -->
+    <section id="noticias" class="news-section section-block">
+      <h2>NOTICIAS</h2>
+      <div class="news-grid" id="news-grid"></div>
+    </section>
+
+    <!-- ======================= FIXTURE ======================= -->
+    <section id="fixture" class="fixture-section section-block">
+      <h2>FIXTURE</h2>
+      <div id="fixture-grid" class="match-grid"></div>
+    </section>
+
+    <!-- ======================= RESULTADOS ======================= -->
+    <section id="resultados" class="results-section section-block">
+      <h2>RESULTADOS</h2>
+      <div id="results-grid" class="results-grid"></div>
+    </section>
+
+    <!-- ======================= TABLAS ======================= -->
+    <section id="tablas" class="standings-section section-block">
+      <h2>TABLAS DE POSICIONES</h2>
+      <div class="standings-table-wrapper">
+        <table id="standings-table" class="standings-table"></table>
+      </div>
+    </section>
+
+    <!-- ======================= CLUBES ======================= -->
+    <section id="clubes" class="club-section section-block">
+      <h2>CLUBES</h2>
+      <div class="club-grid" id="club-grid"></div>
+    </section>
+
+    <!-- ======================= JUGADORES ======================= -->
+    <section id="jugadores" class="players-section section-block">
+      <h2>ESTADÍSTICAS DE JUGADORES</h2>
+      <div class="player-grid" id="player-grid"></div>
+    </section>
+
+    <!-- ======================= GALERÍA ======================= -->
+    <section id="galeria" class="gallery-section section-block">
+      <h2>GALERÍA</h2>
+      <div class="gallery-grid" id="gallery-grid"></div>
+    </section>
+
+    <!-- ======================= HISTORIA ======================= -->
+    <section id="historia" class="history-section section-block">
+      <h2>HISTORIA</h2>
+      <p>
+        La Asociación de Básquet del Nordeste Chaqueño surgió con el propósito de promover el deporte
+        en las localidades de nuestra región. Con el paso de los años, se consolidó como uno de los
+        polos deportivos más importantes del Chaco.
+      </p>
+    </section>
+
+    <!-- ======================= SPONSORS ======================= -->
+    <section id="sponsors" class="sponsor-section section-block">
+      <h2>NUESTROS SPONSORS</h2>
+      <div class="sponsor-grid" id="sponsor-grid"></div>
+    </section>
+
+    <!-- ======================= ADMIN ======================= -->
+    <section id="admin" class="admin-section section-block hidden">
+      <h2>Panel Administrativo</h2>
+
+      <!-- CREAR PARTIDO -->
+      <div class="admin-box">
+        <h3>Crear partido</h3>
+
+        <label for="new-cat">Categoría</label>
+        <input id="new-cat" type="text" placeholder="Ej: Primera">
+
+        <label for="new-jornada">Jornada</label>
+        <input id="new-jornada" type="text" placeholder="Ej: Fecha 2">
+
+        <label for="new-fecha">Fecha y hora</label>
+        <input id="new-fecha" type="text" placeholder="Ej: Vie 12/12 • 21:30">
+
+        <label for="new-local">Local</label>
+        <input id="new-local" type="text">
+
+        <label for="new-visitante">Visitante</label>
+        <input id="new-visitante" type="text">
+
+        <label for="new-ciudad-local">Ciudad Local</label>
+        <input id="new-ciudad-local" type="text">
+
+        <label for="new-ciudad-visitante">Ciudad Visitante</label>
+        <input id="new-ciudad-visitante" type="text">
+
+        <label for="new-estado">Estado</label>
+        <select id="new-estado">
+          <option>Programado</option>
+          <option>En juego</option>
+          <option>Finalizado</option>
+        </select>
+
+        <label for="new-cancha">Cancha (opcional)</label>
+        <input id="new-cancha" type="text" placeholder="Ej: Estadio Bermejo">
+
+        <button id="create-match" class="btn-admin">Crear partido</button>
+      </div>
+
+      <!-- ACTUALIZAR RESULTADO -->
+      <div class="admin-box">
+        <h3>Actualizar resultado</h3>
+
+        <label for="upd-id">ID del partido</label>
+        <input id="upd-id" type="number" placeholder="Ej: 1">
+
+        <label for="upd-score-local">Puntos Local</label>
+        <input id="upd-score-local" type="number">
+
+        <label for="upd-score-visitante">Puntos Visitante</label>
+        <input id="upd-score-visitante" type="number">
+
+        <label for="upd-estado">Estado</label>
+        <select id="upd-estado">
+          <option>Finalizado</option>
+          <option>Programado</option>
+          <option>En juego</option>
+        </select>
+
+        <button id="update-match" class="btn-admin">Actualizar partido</button>
+      </div>
+
+      <!-- ELIMINAR PARTIDO -->
+      <div class="admin-box">
+        <h3>Eliminar partido</h3>
+
+        <label for="del-id">ID del partido</label>
+        <input id="del-id" type="number" placeholder="Ej: 1">
+
+        <button id="delete-match" class="btn-admin btn-danger">Eliminar</button>
+      </div>
+
+      <!-- SUBIR PLANILLA -->
+      <div class="admin-box">
+        <h3>Subir planilla</h3>
+
+        <label for="planilla-id">ID del partido</label>
+        <input id="planilla-id" type="number" placeholder="ID del partido">
+
+        <input type="file" id="planilla-file" accept=".jpg,.jpeg,.png,.pdf">
+
+        <button id="upload-planilla" class="btn-admin">Subir planilla</button>
+      </div>
+
+      <!-- NOTICIAS -->
+      <div class="admin-box">
+        <h3>Agregar noticia</h3>
+
+        <label for="news-title">Título</label>
+        <input type="text" id="news-title" placeholder="Título" />
+
+        <label for="news-body">Contenido</label>
+        <textarea id="news-body" placeholder="Contenido"></textarea>
+
+        <button class="btn-admin" id="add-news">Publicar</button>
+      </div>
+
+      <!-- JUGADORES -->
+      <div class="admin-box">
+        <h3>Gestionar jugadores</h3>
+
+        <label for="player-name">Nombre</label>
+        <input id="player-name" type="text" placeholder="Nombre completo" />
+
+        <label for="player-team">Equipo</label>
+        <input id="player-team" type="text" placeholder="Ej: Funebrero" />
+
+        <label for="player-photo">URL de foto (opcional)</label>
+        <input id="player-photo" type="text" placeholder="img/jugador.jpg o https://…" />
+
+        <label for="player-ppg">PPG (Puntos por juego)</label>
+        <input id="player-ppg" type="number" step="0.1" />
+
+        <label for="player-apg">APG (Asistencias)</label>
+        <input id="player-apg" type="number" step="0.1" />
+
+        <label for="player-rpg">RPG (Rebotes)</label>
+        <input id="player-rpg" type="number" step="0.1" />
+
+        <label for="player-spg">SPG (Robos)</label>
+        <input id="player-spg" type="number" step="0.1" />
+
+        <label for="player-fg">FG% (porcentaje de campo)</label>
+        <input id="player-fg" type="number" step="0.1" />
+
+        <label for="player-eff">EFF (Eficiencia)</label>
+        <input id="player-eff" type="number" step="0.1" />
+
+        <button id="create-player" class="btn-admin">Crear jugador</button>
+
+        <hr />
+
+        <label for="player-del-id">Eliminar jugador (ID)</label>
+        <input id="player-del-id" type="number" placeholder="ID del jugador" />
+        <button id="delete-player" class="btn-admin btn-danger">Eliminar jugador</button>
+      </div>
+
+      <!-- CLUBES -->
+      <div class="admin-box">
+        <h3>Gestionar clubes</h3>
+
+        <label for="club-name">Nombre del club</label>
+        <input id="club-name" type="text" placeholder="Ej: Funebrero" />
+
+        <label for="club-city">Ciudad</label>
+        <input id="club-city" type="text" placeholder="Ej: Las Palmas" />
+
+        <label for="club-logo-url">Logo (URL opcional)</label>
+        <input id="club-logo-url" type="text" placeholder="img/logo-funebrero.png o https://…" />
+
+        <button id="create-club" class="btn-admin">Crear club</button>
+
+        <hr />
+
+        <label for="club-del-id">Eliminar club (ID)</label>
+        <input id="club-del-id" type="number" placeholder="ID del club" />
+        <button id="delete-club" class="btn-admin btn-danger">Eliminar club</button>
+
+        <hr />
+
+        <h4>Subir logo de club (archivo)</h4>
+
+        <label for="club-logo-id">ID del club</label>
+        <input id="club-logo-id" type="number" placeholder="ID del club" />
+
+        <input type="file" id="club-logo-file" accept=".jpg,.jpeg,.png" />
+
+        <button id="upload-club-logo" class="btn-admin">Subir logo</button>
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer class="site-footer hidden">
+    <p>&copy; <span id="year"></span> ABNECH Basket</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>
