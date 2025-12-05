@@ -5,7 +5,9 @@ const path = require("path");
 const multer = require("multer");
 
 const app = express();
-const PORT = 3000;
+
+// Render (u otro hosting) pone el puerto en process.env.PORT
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
@@ -119,13 +121,11 @@ app.post("/api/upload", upload.single("planilla"), (req, res) => {
 
 /* ================== PLAYERS ================== */
 
-// GET /api/players
 app.get("/api/players", (req, res) => {
   const data = readJson(PLAYERS_FILE);
   res.json(data);
 });
 
-// POST /api/players
 app.post("/api/players", (req, res) => {
   const data = readJson(PLAYERS_FILE);
   const nuevo = req.body;
@@ -136,7 +136,6 @@ app.post("/api/players", (req, res) => {
   res.status(201).json(nuevo);
 });
 
-// PUT /api/players/:id
 app.put("/api/players/:id", (req, res) => {
   const id = parseInt(req.params.id, 10);
   const data = readJson(PLAYERS_FILE);
@@ -148,7 +147,6 @@ app.put("/api/players/:id", (req, res) => {
   res.json(data[index]);
 });
 
-// DELETE /api/players/:id
 app.delete("/api/players/:id", (req, res) => {
   const id = parseInt(req.params.id, 10);
   const data = readJson(PLAYERS_FILE);
@@ -160,15 +158,13 @@ app.delete("/api/players/:id", (req, res) => {
   res.json({ ok: true });
 });
 
-/* ================== CLUBES (punto 4) ================== */
+/* ================== CLUBES ================== */
 
-// GET /api/clubs
 app.get("/api/clubs", (req, res) => {
   const data = readJson(CLUBS_FILE);
   res.json(data);
 });
 
-// POST /api/clubs
 app.post("/api/clubs", (req, res) => {
   const data = readJson(CLUBS_FILE);
   const nuevo = req.body;
@@ -179,7 +175,6 @@ app.post("/api/clubs", (req, res) => {
   res.status(201).json(nuevo);
 });
 
-// PUT /api/clubs/:id
 app.put("/api/clubs/:id", (req, res) => {
   const id = parseInt(req.params.id, 10);
   const data = readJson(CLUBS_FILE);
@@ -191,7 +186,6 @@ app.put("/api/clubs/:id", (req, res) => {
   res.json(data[index]);
 });
 
-// DELETE /api/clubs/:id
 app.delete("/api/clubs/:id", (req, res) => {
   const id = parseInt(req.params.id, 10);
   const data = readJson(CLUBS_FILE);
@@ -217,7 +211,12 @@ app.post("/api/upload-club-logo", upload.single("logo"), (req, res) => {
   res.json({ ok: true, logo: club.logo });
 });
 
-// ================== INICIO SERVIDOR ==================
+/* ================== INICIO SERVIDOR ================== */
+
+app.get("/", (req, res) => {
+  res.send("API ABNECH Basket funcionando");
+});
+
 app.listen(PORT, () => {
-  console.log(`✅ Backend ABNECH escuchando en http://localhost:${PORT}`);
+  console.log(`✅ Backend ABNECH escuchando en puerto ${PORT}`);
 });
