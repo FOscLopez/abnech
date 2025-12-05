@@ -3,95 +3,125 @@
 ========================================================= */
 
 // Año en footer
-document.getElementById("year").textContent = new Date().getFullYear();
+const yearEl = document.getElementById("year");
+if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-// FRONT → BACKEND
-const USE_LOCAL_API = true;
-const API_BASE_URL = "http://localhost:3000";
+// URL del backend (Render)
+const API_BASE_URL = "https://abnech.onrender.com";
 
+/**
+ * Helper para consumir la API del backend
+ */
 async function fetchFromAPI(endpoint) {
   const url = `${API_BASE_URL}${endpoint}`;
   const res = await fetch(url);
-  if (!res.ok) throw new Error("Error API " + res.status);
+  if (!res.ok) throw new Error(`Error API ${res.status}: ${url}`);
   return res.json();
 }
 
+/**
+ * Helper para armar URLs de imágenes / planillas
+ * - Si ya es absoluta (http/https) → la deja
+ * - Si empieza con /uploads → la pega a API_BASE_URL
+ * - Si es relativa (img/...) → se sirve desde Firebase (frontend)
+ */
+function resolveMediaUrl(path) {
+  if (!path) return null;
+
+  if (path.startsWith("http://") || path.startsWith("https://")) {
+    return path;
+  }
+
+  if (path.startsWith("/uploads/")) {
+    return `${API_BASE_URL}${path}`;
+  }
+
+  return path; // ej: img/logo-fune.png
+}
+
 /* =========================================================
-   LANDING PAGE → MOSTRAR SITIO
+   LANDING / INICIO
 ========================================================= */
+
+const landingSection = document.querySelector(".landing");
 const enterBtn = document.getElementById("enter-site");
-const landing = document.querySelector(".landing");
-const header = document.querySelector(".site-header");
-const main = document.querySelector("main");
-const footer = document.querySelector("footer");
-const globalBar = document.querySelector(".global-category-bar");
+const siteHeader = document.querySelector(".site-header");
+const globalCatBar = document.querySelector(".global-category-bar");
+const mainEl = document.querySelector("main");
+const footerEl = document.querySelector(".site-footer");
 
 if (enterBtn) {
   enterBtn.addEventListener("click", () => {
-    landing.classList.add("hidden");
-    header.classList.remove("hidden");
-    main.classList.remove("hidden");
-    footer.classList.remove("hidden");
-    globalBar.classList.remove("hidden");
+    if (landingSection) landingSection.classList.add("hidden");
+    if (siteHeader) siteHeader.classList.remove("hidden");
+    if (globalCatBar) globalCatBar.classList.remove("hidden");
+    if (mainEl) mainEl.classList.remove("hidden");
+    if (footerEl) footerEl.classList.remove("hidden");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   });
 }
 
 /* =========================================================
-   MODO CLARO / OSCURO
+   THEME TOGGLE (oscuro / claro)
 ========================================================= */
-const themeToggle = document.getElementById("theme-toggle");
 
-if (themeToggle) {
-  themeToggle.addEventListener("click", () => {
+const themeToggleBtn = document.getElementById("theme-toggle");
+if (themeToggleBtn) {
+  themeToggleBtn.addEventListener("click", () => {
     const html = document.documentElement;
-    const newTheme = html.getAttribute("data-theme") === "dark" ? "light" : "dark";
-    html.setAttribute("data-theme", newTheme);
-    themeToggle.textContent = newTheme === "dark" ? "🌙" : "☀️";
+    const current = html.getAttribute("data-theme") || "dark";
+    const next = current === "dark" ? "light" : "dark";
+    html.setAttribute("data-theme", next);
+    themeToggleBtn.textContent = next === "dark" ? "🌙" : "☀️";
   });
 }
 
 /* =========================================================
    SELECTOR GLOBAL DE CATEGORÍAS
 ========================================================= */
-const globalCatButtons = [...document.querySelectorAll(".global-cat-chip")];
+
 let currentCategory = "Primera";
-
-globalCatButtons.forEach(btn =>
-  btn.addEventListener("click", () => setCategory(btn.dataset.category))
+const categoryButtons = Array.from(
+  document.querySelectorAll(".global-cat-chip")
 );
+const fixtureGrid = document.getElementById("fixture-grid");
+const resultsGrid = document.getElementById("results-grid");
+const standingsTable = document.getElementById("standings-table");
 
-function setCategory(cat) {
-  currentCategory = cat;
-  globalCatButtons.forEach(b => b.classList.remove("active"));
-  const btn = document.querySelector(`.global-cat-chip[data-category="${cat}"]`);
-  if (btn) btn.classList.add("active");
+// Cache simple para no llamar siempre a la API
+const fixtureCache = {};
 
-  updateCategoryData(cat);
+async function updateCategoryData(category) {
+  currentCategory = category;
+
+  // Marcar chip activo
+  categoryButtons.forEach((btn) =>
+    btn.classList.toggle(
+      "active",
+      btn.dataset.category === currentCategory
+    )
+  );
+
+  await Promise.all([
+    renderFixture(currentCategory),
+    renderResults(currentCategory),
+    renderStandings(currentCategory)
+  ]);
 }
 
-/* =========================================================
-   LOGOS DE CLUBES (fallback local)
-========================================================= */
-const staticTeamLogos = {
-  "Funebrero": "img/logo-funebrero.png",
-  "Bermejo": "img/logo-bermejo.png",
-  "Unión": "img/logo-union.png",
-  "Palermo": "img/logo-palermo.png"
-};
-
-let clubsCache = null;
-
-function getTeamLogo(team) {
-  if (clubsCache) {
-    const c = clubsCache.find(c => c.nombre === team);
-    if (c && c.logo) return c.logo;
-  }
-  return staticTeamLogos[team] || null;
-}
+categoryButtons.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const cat = btn.dataset.category;
+    updateCategoryData(cat);
+  });
+});
 
 /* =========================================================
-   NOTICIAS (LOCAL)
+   NOTICIAS (mock local)
 ========================================================= */
+
+const newsGrid = document.getElementById("news-grid");
+
 let newsData = [
   {
     title: "Bienvenidos a la nueva era del básquet NEA",
@@ -99,381 +129,388 @@ let newsData = [
   }
 ];
 
-const newsGrid = document.getElementById("news-grid");
-
 function renderNews() {
   if (!newsGrid) return;
   newsGrid.innerHTML = "";
 
-  newsData.forEach(n => {
-    const card = document.createElement("div");
+  newsData.forEach((item) => {
+    const card = document.createElement("article");
     card.className = "news-card";
     card.innerHTML = `
-      <h3>${n.title}</h3>
-      <p>${n.body}</p>
+      <h3>${item.title}</h3>
+      <p>${item.body}</p>
     `;
     newsGrid.appendChild(card);
   });
 }
 
 /* =========================================================
-   CLUBES (desde API)
+   FIXTURE
 ========================================================= */
 
-async function loadClubs() {
-  if (!USE_LOCAL_API) return [];
-  try {
-    const clubs = await fetchFromAPI("/api/clubs");
-    clubsCache = clubs;
-    return clubs;
-  } catch (e) {
-    console.error("Error cargando clubs, usando estáticos:", e);
-    // fallback básico
-    clubsCache = [
-      { id: 1, nombre: "Funebrero", ciudad: "Las Palmas", logo: "img/logo-funebrero.png" },
-      { id: 2, nombre: "Bermejo", ciudad: "Pto Bermejo", logo: "img/logo-bermejo.png" },
-      { id: 3, nombre: "Unión", ciudad: "La Leonesa", logo: "img/logo-union.png" },
-      { id: 4, nombre: "Palermo", ciudad: "Las Palmas", logo: "img/logo-palermo.png" }
-    ];
-    return clubsCache;
-  }
+async function getFixtureByCategory(category) {
+  if (fixtureCache[category]) return fixtureCache[category];
+  const data = await fetchFromAPI(`/api/fixture?categoria=${encodeURIComponent(category)}`);
+  fixtureCache[category] = data;
+  return data;
 }
 
-async function renderClubes() {
-  const grid = document.getElementById("club-grid");
-  if (!grid) return;
-
-  grid.innerHTML = "<p>Cargando clubes...</p>";
-
-  const clubs = await loadClubs();
-
-  grid.innerHTML = "";
-  clubs.forEach(c => {
-    const card = document.createElement("div");
-    card.className = "club-card";
-
-    card.innerHTML = `
-      <img src="${c.logo || ''}" class="club-logo" alt="${c.nombre}">
-      <h3>${c.nombre}</h3>
-      <p>${c.ciudad || ''}</p>
-    `;
-
-    grid.appendChild(card);
-  });
-}
-
-/* =========================================================
-   JUGADORES — desde API
-========================================================= */
-
-let playersCache = null;
-
-async function loadPlayers() {
-  if (!USE_LOCAL_API) {
-    return [];
-  }
-  try {
-    const players = await fetchFromAPI("/api/players");
-    playersCache = players;
-    return players;
-  } catch (e) {
-    console.error("Error cargando players, usando demo:", e);
-    playersCache = [
-      {
-        id: 1,
-        nombre: "Jugador Demo",
-        equipo: "Funebrero",
-        foto: "img/player-demo.jpg",
-        ppg: 22.3,
-        apg: 4.1,
-        rpg: 6.7,
-        spg: 1.9,
-        fg: 48.5,
-        eff: 27.4
-      }
-    ];
-    return playersCache;
-  }
-}
-
-async function renderPlayers() {
-  const grid = document.getElementById("player-grid");
-  if (!grid) return;
-
-  grid.innerHTML = "<p>Cargando jugadores...</p>";
-
-  const players = await loadPlayers();
-
-  grid.innerHTML = "";
-  players.forEach(p => {
-    const card = document.createElement("div");
-    card.className = "player-card";
-
-    card.innerHTML = `
-      <img src="${p.foto || 'img/player-demo.jpg'}" class="player-photo" alt="${p.nombre}">
-      <h3 class="player-name">${p.nombre}</h3>
-      <p>${p.equipo || ''}</p>
-      <div class="player-stats">
-        PPG: ${p.ppg ?? '-'} &nbsp;|&nbsp; APG: ${p.apg ?? '-'} &nbsp;|&nbsp; RPG: ${p.rpg ?? '-'}<br>
-        SPG: ${p.spg ?? '-'} &nbsp;|&nbsp; FG%: ${p.fg ?? '-'} &nbsp;|&nbsp; EFF: ${p.eff ?? '-'}
+function buildTeamRow(name, city) {
+  return `
+    <div class="team-row">
+      <div class="team-info">
+        <span class="team-name">${name}</span>
+        <span class="team-city">${city || ""}</span>
       </div>
-    `;
-
-    grid.appendChild(card);
-  });
+    </div>
+  `;
 }
 
-/* =========================================================
-   GALERÍA Y SPONSORS (DEMOS)
-========================================================= */
-const galleryData = [
-  { img: "img/gallery1.jpg" },
-  { img: "img/gallery2.jpg" }
-];
-
-function renderGallery() {
-  const grid = document.getElementById("gallery-grid");
-  if (!grid) return;
-
-  grid.innerHTML = "";
-  galleryData.forEach(g => {
-    const item = document.createElement("img");
-    item.src = g.img;
-    item.className = "gallery-item";
-    grid.appendChild(item);
-  });
-}
-
-const sponsorData = [
-  { img: "img/sponsor1.png" },
-  { img: "img/sponsor2.png" }
-];
-
-function renderSponsors() {
-  const grid = document.getElementById("sponsor-grid");
-  if (!grid) return;
-
-  grid.innerHTML = "";
-  sponsorData.forEach(s => {
-    const card = document.createElement("div");
-    card.className = "sponsor-card";
-    card.innerHTML = `<img src="${s.img}" class="sponsor-logo">`;
-    grid.appendChild(card);
-  });
-}
-
-/* =========================================================
-   FIXTURE / RESULTADOS / TABLAS
-========================================================= */
-const fixtureCache = {};
-const standingsData = [
-  { categoria: "Primera", equipo: "Bermejo", pj: 10, pg: 8, pp: 2, pts: 18, dif: 80, racha: "G2" },
-  { categoria: "Primera", equipo: "Unión", pj: 10, pg: 7, pp: 3, pts: 17, dif: 45, racha: "L1" }
-];
-
-const fixtureGrid = document.getElementById("fixture-grid");
-const resultsGrid = document.getElementById("results-grid");
-const standingsTable = document.getElementById("standings-table");
-
-function formatScore(s) {
-  return s == null ? "--" : s;
-}
-
-function formatPct(pg, pj) {
-  if (!pj) return ".000";
-  const v = (pg / pj).toFixed(3);
-  return v.startsWith("0") ? v.slice(1) : v;
-}
-
-async function loadFixture(cat) {
-  if (fixtureCache[cat]) return fixtureCache[cat];
-
-  let partidos = [];
-  if (USE_LOCAL_API) {
-    try {
-      partidos = await fetchFromAPI(`/api/fixture?categoria=${encodeURIComponent(cat)}`);
-    } catch (e) {
-      console.error("Error API fixture:", e);
-      partidos = [];
-    }
-  }
-  fixtureCache[cat] = partidos;
-  return partidos;
-}
-
-/* ---------- Render FIXTURE ---------- */
-async function renderFixture(cat) {
+async function renderFixture(category) {
   if (!fixtureGrid) return;
-  fixtureGrid.innerHTML = "<p>Cargando fixture...</p>";
 
-  const partidos = await loadFixture(cat);
+  try {
+    const partidos = await getFixtureByCategory(category);
+    fixtureGrid.innerHTML = "";
 
-  if (!partidos.length) {
-    fixtureGrid.innerHTML = "<p>No hay partidos en esta categoría.</p>";
-    return;
+    if (!partidos.length) {
+      fixtureGrid.innerHTML = "<p>No hay partidos programados para esta categoría.</p>";
+      return;
+    }
+
+    partidos
+      .filter((p) => p.estado !== "Finalizado")
+      .forEach((p) => {
+        const planillaUrl = resolveMediaUrl(p.planillaUrl) || "#";
+
+        const card = document.createElement("article");
+        card.className = "match-card";
+        card.innerHTML = `
+          <div class="match-header">
+            <span class="match-jornada">${p.jornada || ""}</span>
+            <span class="match-fecha">${p.fechaTexto || ""}</span>
+          </div>
+
+          <div class="match-body">
+            ${buildTeamRow(p.local, p.ciudadLocal)}
+            <div class="scoreboard pending">
+              <span class="score-label">${p.estado || "Programado"}</span>
+            </div>
+            ${buildTeamRow(p.visitante, p.ciudadVisitante)}
+          </div>
+
+          <div class="match-footer">
+            <span class="match-cancha">${p.cancha || ""}</span>
+            ${
+              p.planillaUrl
+                ? `<a href="${planillaUrl}" target="_blank" class="sheet-link">Ver planilla</a>`
+                : ""
+            }
+          </div>
+        `;
+        fixtureGrid.appendChild(card);
+
+        // animación
+        requestAnimationFrame(() => card.classList.add("visible"));
+      });
+  } catch (err) {
+    console.error("Error renderFixture:", err);
+    fixtureGrid.innerHTML = "<p>Error cargando fixture.</p>";
   }
-
-  fixtureGrid.innerHTML = "";
-
-  partidos.forEach((p, i) => {
-    const L = getTeamLogo(p.local);
-    const V = getTeamLogo(p.visitante);
-
-    const card = document.createElement("article");
-    card.className = "match-card";
-
-    card.innerHTML = `
-      <div class="match-header">
-        <span>${p.jornada} - ${p.fechaTexto}</span>
-      </div>
-
-      <div class="match-body">
-        <div class="team team-home">
-          <div class="team-row">
-            ${L ? `<img src="${L}" class="team-logo">` : ""}
-            <span class="team-name">${p.local}</span>
-          </div>
-        </div>
-
-        <div class="scoreboard">
-          <span class="score">${formatScore(p.scoreLocal)}</span>
-          <span class="score-separator">-</span>
-          <span class="score">${formatScore(p.scoreVisitante)}</span>
-        </div>
-
-        <div class="team team-away">
-          <div class="team-row">
-            <span class="team-name">${p.visitante}</span>
-            ${V ? `<img src="${V}" class="team-logo">` : ""}
-          </div>
-        </div>
-      </div>
-
-      <div class="match-footer">
-        <span>${p.cancha || ""}</span>
-        <a href="${p.planillaUrl || "#"}" class="planilla-btn">Ver planilla</a>
-      </div>
-    `;
-
-    fixtureGrid.appendChild(card);
-    setTimeout(() => card.classList.add("visible"), 40 * i);
-  });
 }
 
-/* ---------- Render RESULTADOS ---------- */
-async function renderResults(cat) {
+/* =========================================================
+   RESULTADOS
+========================================================= */
+
+async function renderResults(category) {
   if (!resultsGrid) return;
-  resultsGrid.innerHTML = "<p>Cargando resultados...</p>";
 
-  const partidos = await loadFixture(cat);
-  const finalizados = partidos.filter(p => p.estado === "Finalizado");
+  try {
+    const partidos = await getFixtureByCategory(category);
+    resultsGrid.innerHTML = "";
 
-  if (!finalizados.length) {
-    resultsGrid.innerHTML = "<p>No hay resultados finalizados.</p>";
-    return;
+    const finalizados = partidos.filter((p) => p.estado === "Finalizado");
+
+    if (!finalizados.length) {
+      resultsGrid.innerHTML = "<p>No hay resultados finalizados para esta categoría.</p>";
+      return;
+    }
+
+    finalizados.forEach((p) => {
+      const planillaUrl = resolveMediaUrl(p.planillaUrl) || "#";
+      const card = document.createElement("article");
+      card.className = "result-card";
+      card.innerHTML = `
+        <div class="result-header">
+          <span class="result-jornada">${p.jornada || ""}</span>
+          <span class="result-fecha">${p.fechaTexto || ""}</span>
+        </div>
+
+        <div class="result-main">
+          <div class="result-team">
+            <span class="team-name">${p.local}</span>
+            <span class="team-city">${p.ciudadLocal || ""}</span>
+          </div>
+
+          <div class="result-score">
+            <span class="score">${p.scoreLocal ?? "-"}</span>
+            <span class="result-vs">-</span>
+            <span class="score">${p.scoreVisitante ?? "-"}</span>
+          </div>
+
+          <div class="result-team">
+            <span class="team-name">${p.visitante}</span>
+            <span class="team-city">${p.ciudadVisitante || ""}</span>
+          </div>
+        </div>
+
+        <div class="result-footer">
+          <span class="result-status">${p.estado || "Finalizado"}</span>
+          ${
+            p.planillaUrl
+              ? `<a href="${planillaUrl}" target="_blank" class="sheet-link">Planilla</a>`
+              : ""
+          }
+        </div>
+      `;
+      resultsGrid.appendChild(card);
+    });
+  } catch (err) {
+    console.error("Error renderResults:", err);
+    resultsGrid.innerHTML = "<p>Error cargando resultados.</p>";
   }
-
-  resultsGrid.innerHTML = "";
-
-  finalizados.forEach(p => {
-    const L = getTeamLogo(p.local);
-    const V = getTeamLogo(p.visitante);
-
-    const card = document.createElement("article");
-    card.className = "result-card";
-
-    card.innerHTML = `
-      <div class="result-header">
-        <span>${p.jornada} • ${p.categoria}</span>
-        <span>${p.fechaTexto}</span>
-      </div>
-
-      <div class="result-main">
-        <div class="result-team result-team-home">
-          ${L ? `<img src="${L}" class="result-logo">` : ""}
-          <span class="result-team-name">${p.local}</span>
-          <span class="result-score">${formatScore(p.scoreLocal)}</span>
-        </div>
-
-        <span class="result-tag-final">${p.estado ? p.estado.toUpperCase() : "FINAL"}</span>
-
-        <div class="result-team result-team-away">
-          <span class="result-score">${formatScore(p.scoreVisitante)}</span>
-          <span class="result-team-name">${p.visitante}</span>
-          ${V ? `<img src="${V}" class="result-logo">` : ""}
-        </div>
-      </div>
-
-      <div class="result-footer">
-        <span>${p.cancha || ""}</span>
-        <a href="${p.planillaUrl || "#"}" class="result-link">Planilla</a>
-      </div>
-    `;
-
-    resultsGrid.appendChild(card);
-  });
 }
 
-/* ---------- Render TABLAS ---------- */
-function renderStandings(cat) {
+/* =========================================================
+   TABLAS DE POSICIONES (calculadas simple desde fixture)
+========================================================= */
+
+function computeStandings(partidos) {
+  const tabla = {};
+
+  partidos.forEach((p) => {
+    if (p.estado !== "Finalizado") return;
+    if (typeof p.scoreLocal !== "number" || typeof p.scoreVisitante !== "number") return;
+
+    if (!tabla[p.local]) {
+      tabla[p.local] = { equipo: p.local, pj: 0, pg: 0, pp: 0, pts: 0, dif: 0 };
+    }
+    if (!tabla[p.visitante]) {
+      tabla[p.visitante] = { equipo: p.visitante, pj: 0, pg: 0, pp: 0, pts: 0, dif: 0 };
+    }
+
+    const local = tabla[p.local];
+    const vis = tabla[p.visitante];
+
+    local.pj++;
+    vis.pj++;
+
+    const difLocal = p.scoreLocal - p.scoreVisitante;
+    const difVis = -difLocal;
+
+    local.dif += difLocal;
+    vis.dif += difVis;
+
+    if (p.scoreLocal > p.scoreVisitante) {
+      local.pg++; vis.pp++;
+    } else if (p.scoreLocal < p.scoreVisitante) {
+      vis.pg++; local.pp++;
+    }
+
+    local.pts = local.pg * 2 + local.pp;
+    vis.pts = vis.pg * 2 + vis.pp;
+  });
+
+  return Object.values(tabla).sort((a, b) => b.pts - a.pts || b.dif - a.dif);
+}
+
+async function renderStandings(category) {
   if (!standingsTable) return;
 
-  const rows = standingsData
-    .filter(r => r.categoria === cat)
-    .sort((a, b) => b.pts - a.pts || b.dif - a.dif);
+  try {
+    const partidos = await getFixtureByCategory(category);
+    const tabla = computeStandings(partidos);
 
-  let html = `
-    <thead>
-      <tr>
-        <th>#</th>
-        <th class="stand-team">Equipo</th>
-        <th>PJ</th>
-        <th>PG</th>
-        <th>PP</th>
-        <th>DIF</th>
-        <th>PTS</th>
-        <th>%</th>
-        <th>Racha</th>
-      </tr>
-    </thead>
-    <tbody>
-  `;
+    if (!tabla.length) {
+      standingsTable.innerHTML = "<tr><td>No hay datos para la tabla.</td></tr>";
+      return;
+    }
 
-  rows.forEach((r, i) => {
-    html += `
-      <tr>
-        <td>${i + 1}</td>
-        <td class="stand-team">${r.equipo}</td>
-        <td>${r.pj}</td>
-        <td>${r.pg}</td>
-        <td>${r.pp}</td>
-        <td>${r.dif > 0 ? "+" + r.dif : r.dif}</td>
-        <td>${r.pts}</td>
-        <td>${formatPct(r.pg, r.pj)}</td>
-        <td>${r.racha}</td>
-      </tr>
+    let html = `
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Equipo</th>
+          <th>PJ</th>
+          <th>PG</th>
+          <th>PP</th>
+          <th>DIF</th>
+          <th>PTS</th>
+        </tr>
+      </thead>
+      <tbody>
     `;
-  });
 
-  html += "</tbody>";
-  standingsTable.innerHTML = html;
+    tabla.forEach((t, index) => {
+      html += `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${t.equipo}</td>
+          <td>${t.pj}</td>
+          <td>${t.pg}</td>
+          <td>${t.pp}</td>
+          <td>${t.dif > 0 ? "+" + t.dif : t.dif}</td>
+          <td>${t.pts}</td>
+        </tr>
+      `;
+    });
+
+    html += "</tbody>";
+    standingsTable.innerHTML = html;
+  } catch (err) {
+    console.error("Error renderStandings:", err);
+    standingsTable.innerHTML = "<tr><td>Error cargando tabla.</td></tr>";
+  }
 }
 
 /* =========================================================
-   CAMBIO DE CATEGORÍA
+   CLUBES
 ========================================================= */
-async function updateCategoryData(cat) {
-  await renderFixture(cat);
-  await renderResults(cat);
-  renderStandings(cat);
+
+const clubGrid = document.getElementById("club-grid");
+
+async function renderClubes() {
+  if (!clubGrid) return;
+
+  try {
+    const clubes = await fetchFromAPI("/api/clubs");
+    clubGrid.innerHTML = "";
+
+    if (!clubes.length) {
+      clubGrid.innerHTML = "<p>No hay clubes cargados todavía.</p>";
+      return;
+    }
+
+    clubes.forEach((club) => {
+      const logoUrl =
+        resolveMediaUrl(club.logo) || "img/club-placeholder.png";
+
+      const card = document.createElement("article");
+      card.className = "club-card";
+      card.innerHTML = `
+        <div class="club-logo-wrapper">
+          <img
+            src="${logoUrl}"
+            alt="${club.nombre || "Club"}"
+            class="club-logo"
+            onerror="this.src='img/club-placeholder.png'"
+          />
+        </div>
+        <h3>${club.nombre || "Club sin nombre"}</h3>
+        <p>${club.ciudad || ""}</p>
+      `;
+      clubGrid.appendChild(card);
+    });
+  } catch (err) {
+    console.error("Error renderClubes:", err);
+    clubGrid.innerHTML = "<p>Error cargando clubes.</p>";
+  }
+}
+
+/* =========================================================
+   JUGADORES
+========================================================= */
+
+const playerGrid = document.getElementById("player-grid");
+
+async function renderPlayers() {
+  if (!playerGrid) return;
+
+  try {
+    const jugadores = await fetchFromAPI("/api/players");
+    playerGrid.innerHTML = "";
+
+    if (!jugadores.length) {
+      playerGrid.innerHTML = "<p>No hay jugadores cargados todavía.</p>";
+      return;
+    }
+
+    jugadores.forEach((j) => {
+      const fotoUrl =
+        resolveMediaUrl(j.foto) || "img/player-placeholder.png";
+
+      const card = document.createElement("article");
+      card.className = "player-card";
+      card.innerHTML = `
+        <img
+          src="${fotoUrl}"
+          alt="${j.nombre || "Jugador"}"
+          class="player-photo"
+          onerror="this.src='img/player-placeholder.png'"
+        />
+        <h3 class="player-name">${j.nombre || "Jugador"}</h3>
+        <p class="player-team">${j.equipo || ""}</p>
+        <div class="player-stats">
+          <p><strong>PPG:</strong> ${j.ppg ?? "-"}</p>
+          <p><strong>RPG:</strong> ${j.rpg ?? "-"}</p>
+          <p><strong>APG:</strong> ${j.apg ?? "-"}</p>
+          <p><strong>SPG:</strong> ${j.spg ?? "-"}</p>
+          <p><strong>FG%:</strong> ${j.fg ?? "-"}</p>
+          <p><strong>EFF:</strong> ${j.eff ?? "-"}</p>
+        </div>
+      `;
+      playerGrid.appendChild(card);
+    });
+  } catch (err) {
+    console.error("Error renderPlayers:", err);
+    playerGrid.innerHTML = "<p>Error cargando jugadores.</p>";
+  }
+}
+
+/* =========================================================
+   GALERÍA / SPONSORS (mock simple)
+========================================================= */
+
+const galleryGrid = document.getElementById("gallery-grid");
+const sponsorGrid = document.getElementById("sponsor-grid");
+
+function renderGallery() {
+  if (!galleryGrid) return;
+  galleryGrid.innerHTML = `
+    <div class="gallery-item">Próximamente: galería de fotos oficiales.</div>
+  `;
+}
+
+function renderSponsors() {
+  if (!sponsorGrid) return;
+  sponsorGrid.innerHTML = `
+    <div class="sponsor-card">Sponsor 1</div>
+    <div class="sponsor-card">Sponsor 2</div>
+    <div class="sponsor-card">Sponsor 3</div>
+  `;
 }
 
 /* =========================================================
    INICIALIZACIÓN
 ========================================================= */
-renderNews();
-renderGallery();
-renderSponsors();
-renderClubes();
-renderPlayers();
-setCategory("Primera");
+
+async function initSite() {
+  try {
+    renderNews();
+    renderGallery();
+    renderSponsors();
+    await updateCategoryData(currentCategory);
+    await renderClubes();
+    await renderPlayers();
+  } catch (err) {
+    console.error("Error inicializando sitio:", err);
+  }
+}
+
+// Solo inicializamos cuando ya estamos en la vista principal
+// (por si el usuario todavía está en la landing)
+document.addEventListener("DOMContentLoaded", () => {
+  // Si la landing ya está oculta (por alguna razón), cargamos todo igual
+  initSite();
+});
