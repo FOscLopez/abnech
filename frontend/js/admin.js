@@ -1,342 +1,163 @@
-// admin.js – Panel administrativo
+// frontend/js/admin.js
+// Panel de administración ABNECH – Clubes + subida de logos
 
-const API_URL = (typeof API_BASE_URL !== "undefined")
-  ? API_BASE_URL
-  : "http://localhost:3000";
+// ⚠️ PONÉ ACÁ LA URL DE TU API EN RENDER
+// Ejemplo: "https://abnech.onrender.com"
+const API_BASE = "https://abnech.onrender.com";
 
-function toast(msg) {
+// Helper para mostrar errores en consola y alert
+function showError(msg, err) {
+  console.error(msg, err || "");
   alert(msg);
 }
 
-async function safeFetch(url, options = {}) {
-  const res = await fetch(url, options);
-  if (!res.ok) {
-    const txt = await res.text();
-    throw new Error(`Error ${res.status}: ${txt}`);
-  }
-  return res.json();
-}
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("[ADMIN] Panel cargado");
 
-async function refreshCurrentCategory() {
-  try {
-    if (typeof fixtureCache !== "undefined" &&
-        typeof currentCategory !== "undefined" &&
-        typeof updateCategoryData === "function") {
+  // ----------- CREAR CLUB ----------- //
+  const clubNameInput = document.getElementById("club-name");
+  const clubCityInput = document.getElementById("club-city");
+  const clubLogoUrlInput = document.getElementById("club-logo-url");
+  const createClubBtn = document.getElementById("create-club-btn");
 
-      delete fixtureCache[currentCategory];
-      await updateCategoryData(currentCategory);
-    }
-  } catch (e) {
-    console.error("Error refrescando categoría:", e);
-  }
-}
+  if (clubNameInput && clubCityInput && createClubBtn) {
+    createClubBtn.addEventListener("click", async () => {
+      const name = (clubNameInput.value || "").trim();
+      const city = (clubCityInput.value || "").trim();
+      const logoUrl = (clubLogoUrlInput?.value || "").trim();
 
-async function refreshPlayers() {
-  try {
-    if (typeof renderPlayers === "function") {
-      await renderPlayers();
-    }
-  } catch (e) {
-    console.error("Error refrescando jugadores:", e);
-  }
-}
+      if (!name) {
+        alert("Ingresá el nombre del club");
+        return;
+      }
+      if (!city) {
+        alert("Ingresá la ciudad del club");
+        return;
+      }
 
-async function refreshClubs() {
-  try {
-    if (typeof renderClubes === "function") {
-      await renderClubes();
-    }
-  } catch (e) {
-    console.error("Error refrescando clubes:", e);
-  }
-}
+      try {
+        const res = await fetch(`${API_BASE}/api/clubs`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, city, logoUrl })
+        });
 
-// ======================================================
-// PARTIDOS
-// ======================================================
+        const data = await res.json().catch(() => ({}));
 
-document.getElementById("create-match")?.addEventListener("click", async () => {
-  try {
-    const data = {
-      categoria: document.getElementById("new-cat").value.trim(),
-      jornada: document.getElementById("new-jornada").value.trim(),
-      fechaTexto: document.getElementById("new-fecha").value.trim(),
-      local: document.getElementById("new-local").value.trim(),
-      visitante: document.getElementById("new-visitante").value.trim(),
-      ciudadLocal: document.getElementById("new-ciudad-local").value.trim(),
-      ciudadVisitante: document.getElementById("new-ciudad-visitante").value.trim(),
-      estado: document.getElementById("new-estado").value,
-      scoreLocal: null,
-      scoreVisitante: null,
-      cancha: document.getElementById("new-cancha").value.trim(),
-      planillaUrl: "#"
-    };
+        if (!res.ok || !data.ok) {
+          showError(data.error || "Error creando club");
+          return;
+        }
 
-    if (!data.categoria || !data.jornada || !data.local || !data.visitante) {
-      return toast("Completá categoría, jornada, local y visitante");
-    }
+        alert(`Club creado con ID: ${data.club.id}`);
+        console.log("[ADMIN] Club creado:", data.club);
 
-    const partido = await safeFetch(`${API_URL}/api/fixture`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
+        // limpiamos campos
+        clubNameInput.value = "";
+        clubCityInput.value = "";
+        if (clubLogoUrlInput) clubLogoUrlInput.value = "";
+      } catch (err) {
+        showError("Error de conexión al crear club", err);
+      }
     });
-
-    toast("Partido creado. ID: " + partido.id);
-    await refreshCurrentCategory();
-  } catch (e) {
-    console.error(e);
-    toast("Error al crear partido");
+  } else {
+    console.warn(
+      "[ADMIN] No se encontraron elementos para CREAR CLUB. Revisar IDs en el HTML."
+    );
   }
-});
 
-document.getElementById("update-match")?.addEventListener("click", async () => {
-  try {
-    const id = parseInt(document.getElementById("upd-id").value, 10);
-    const scoreLocal = parseInt(document.getElementById("upd-score-local").value, 10);
-    const scoreVisitante = parseInt(document.getElementById("upd-score-visitante").value, 10);
-    const estado = document.getElementById("upd-estado").value;
+  // ----------- ELIMINAR CLUB ----------- //
+  const deleteClubIdInput = document.getElementById("delete-club-id");
+  const deleteClubBtn = document.getElementById("delete-club-btn");
 
-    if (!id || Number.isNaN(id)) return toast("ID inválido");
-    if (Number.isNaN(scoreLocal) || Number.isNaN(scoreVisitante)) {
-      return toast("Ingresá los puntos de ambos equipos");
-    }
+  if (deleteClubIdInput && deleteClubBtn) {
+    deleteClubBtn.addEventListener("click", async () => {
+      const id = (deleteClubIdInput.value || "").trim();
+      if (!id) {
+        alert("Ingresá el ID del club a eliminar");
+        return;
+      }
 
-    await safeFetch(`${API_URL}/api/fixture/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ scoreLocal, scoreVisitante, estado })
+      if (!confirm(`¿Seguro que querés eliminar el club ID ${id}?`)) return;
+
+      try {
+        const res = await fetch(`${API_BASE}/api/clubs/${encodeURIComponent(id)}`, {
+          method: "DELETE"
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok || !data.ok) {
+          showError(data.error || "Error eliminando club");
+          return;
+        }
+
+        alert("Club eliminado correctamente");
+        console.log("[ADMIN] Club eliminado:", id);
+        deleteClubIdInput.value = "";
+      } catch (err) {
+        showError("Error de conexión al eliminar club", err);
+      }
     });
-
-    toast("Partido actualizado");
-    await refreshCurrentCategory();
-  } catch (e) {
-    console.error(e);
-    toast("Error al actualizar partido");
+  } else {
+    console.warn(
+      "[ADMIN] No se encontraron elementos para ELIMINAR CLUB. Revisar IDs en el HTML."
+    );
   }
-});
 
-document.getElementById("delete-match")?.addEventListener("click", async () => {
-  try {
-    const id = parseInt(document.getElementById("del-id").value, 10);
-    if (!id || Number.isNaN(id)) return toast("ID inválido");
+  // ----------- SUBIR LOGO (ARCHIVO) ----------- //
+  const logoClubIdInput = document.getElementById("logo-club-id");
+  const logoFileInput = document.getElementById("logo-file");
+  const uploadLogoBtn = document.getElementById("upload-logo-btn");
 
-    if (!confirm(`¿Eliminar partido ID ${id}?`)) return;
+  if (logoClubIdInput && logoFileInput && uploadLogoBtn) {
+    uploadLogoBtn.addEventListener("click", async () => {
+      const clubId = (logoClubIdInput.value || "").trim();
+      const file = logoFileInput.files && logoFileInput.files[0];
 
-    await safeFetch(`${API_URL}/api/fixture/${id}`, {
-      method: "DELETE"
+      if (!clubId) {
+        alert("Ingresá el ID del club para el logo");
+        return;
+      }
+      if (!file) {
+        alert("Seleccioná un archivo de imagen para el logo");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("clubId", clubId);
+      formData.append("logo", file);
+
+      try {
+        const res = await fetch(`${API_BASE}/api/upload-club-logo`, {
+          method: "POST",
+          body: formData
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok || !data.ok || !data.url) {
+          showError(data.error || "Error al subir logo de club");
+          return;
+        }
+
+        console.log("[ADMIN] Logo subido. URL pública:", data.url);
+        alert("Logo subido correctamente");
+
+        // Si existe el campo de URL de logo, lo completamos automáticamente
+        if (clubLogoUrlInput) {
+          clubLogoUrlInput.value = data.url;
+        }
+
+        // limpiamos input de archivo
+        logoFileInput.value = "";
+      } catch (err) {
+        showError("Error de conexión al subir logo", err);
+      }
     });
-
-    toast("Partido eliminado");
-    await refreshCurrentCategory();
-  } catch (e) {
-    console.error(e);
-    toast("Error al eliminar partido");
-  }
-});
-
-document.getElementById("upload-planilla")?.addEventListener("click", async () => {
-  try {
-    const id = parseInt(document.getElementById("planilla-id").value, 10);
-    const fileInput = document.getElementById("planilla-file");
-    const file = fileInput.files[0];
-
-    if (!id || Number.isNaN(id)) return toast("ID inválido");
-    if (!file) return toast("Seleccioná un archivo de planilla");
-
-    const formData = new FormData();
-    formData.append("planilla", file);
-
-    await safeFetch(`${API_URL}/api/upload?id=${id}`, {
-      method: "POST",
-      body: formData
-    });
-
-    toast("Planilla subida y vinculada");
-    fileInput.value = "";
-    await refreshCurrentCategory();
-  } catch (e) {
-    console.error(e);
-    toast("Error al subir planilla");
-  }
-});
-
-// ======================================================
-// NOTICIAS (FRONT LOCAL)
-// ======================================================
-
-document.getElementById("add-news")?.addEventListener("click", () => {
-  try {
-    const titleInput = document.getElementById("news-title");
-    const bodyInput = document.getElementById("news-body");
-
-    const title = titleInput.value.trim();
-    const body = bodyInput.value.trim();
-
-    if (!title || !body) {
-      return toast("Completá título y contenido");
-    }
-
-    if (typeof newsData === "undefined" || typeof renderNews !== "function") {
-      return toast("Noticias no disponibles");
-    }
-
-    newsData.unshift({ title, body });
-    renderNews();
-
-    titleInput.value = "";
-    bodyInput.value = "";
-
-    toast("Noticia publicada");
-  } catch (e) {
-    console.error(e);
-    toast("Error al agregar noticia");
-  }
-});
-
-// ======================================================
-// JUGADORES
-// ======================================================
-
-document.getElementById("create-player")?.addEventListener("click", async () => {
-  try {
-    const nombre = document.getElementById("player-name").value.trim();
-    const equipo = document.getElementById("player-team").value.trim();
-    const foto = document.getElementById("player-photo").value.trim();
-
-    const ppg = parseFloat(document.getElementById("player-ppg").value);
-    const apg = parseFloat(document.getElementById("player-apg").value);
-    const rpg = parseFloat(document.getElementById("player-rpg").value);
-    const spg = parseFloat(document.getElementById("player-spg").value);
-    const fg = parseFloat(document.getElementById("player-fg").value);
-    const eff = parseFloat(document.getElementById("player-eff").value);
-
-    if (!nombre || !equipo) {
-      return toast("Completá al menos nombre y equipo");
-    }
-
-    const body = {
-      nombre,
-      equipo,
-      foto: foto || null,
-      ppg: isNaN(ppg) ? null : ppg,
-      apg: isNaN(apg) ? null : apg,
-      rpg: isNaN(rpg) ? null : rpg,
-      spg: isNaN(spg) ? null : spg,
-      fg: isNaN(fg) ? null : fg,
-      eff: isNaN(eff) ? null : eff
-    };
-
-    const jugador = await safeFetch(`${API_URL}/api/players`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
-    });
-
-    toast("Jugador creado. ID: " + jugador.id);
-    await refreshPlayers();
-  } catch (e) {
-    console.error(e);
-    toast("Error al crear jugador");
-  }
-});
-
-document.getElementById("delete-player")?.addEventListener("click", async () => {
-  try {
-    const id = parseInt(document.getElementById("player-del-id").value, 10);
-    if (!id || Number.isNaN(id)) {
-      return toast("ID inválido para jugador");
-    }
-
-    if (!confirm(`¿Eliminar jugador ID ${id}?`)) return;
-
-    await safeFetch(`${API_URL}/api/players/${id}`, {
-      method: "DELETE"
-    });
-
-    toast("Jugador eliminado");
-    await refreshPlayers();
-  } catch (e) {
-    console.error(e);
-    toast("Error al eliminar jugador");
-  }
-});
-
-// ======================================================
-// CLUBES
-// ======================================================
-
-document.getElementById("create-club")?.addEventListener("click", async () => {
-  try {
-    const nombre = document.getElementById("club-name").value.trim();
-    const ciudad = document.getElementById("club-city").value.trim();
-    const logoUrl = document.getElementById("club-logo-url").value.trim();
-
-    if (!nombre) return toast("Completá el nombre del club");
-
-    const body = {
-      nombre,
-      ciudad,
-      logo: logoUrl || null
-    };
-
-    const club = await safeFetch(`${API_URL}/api/clubs`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
-    });
-
-    toast("Club creado. ID: " + club.id);
-    await refreshClubs();
-  } catch (e) {
-    console.error(e);
-    toast("Error al crear club");
-  }
-});
-
-document.getElementById("delete-club")?.addEventListener("click", async () => {
-  try {
-    const id = parseInt(document.getElementById("club-del-id").value, 10);
-    if (!id || Number.isNaN(id)) {
-      return toast("ID inválido para club");
-    }
-
-    if (!confirm(`¿Eliminar club ID ${id}?`)) return;
-
-    await safeFetch(`${API_URL}/api/clubs/${id}`, {
-      method: "DELETE"
-    });
-
-    toast("Club eliminado");
-    await refreshClubs();
-  } catch (e) {
-    console.error(e);
-    toast("Error al eliminar club");
-  }
-});
-
-document.getElementById("upload-club-logo")?.addEventListener("click", async () => {
-  try {
-    const id = parseInt(document.getElementById("club-logo-id").value, 10);
-    const fileInput = document.getElementById("club-logo-file");
-    const file = fileInput.files[0];
-
-    if (!id || Number.isNaN(id)) return toast("ID inválido para club");
-    if (!file) return toast("Seleccioná un archivo de logo");
-
-    const formData = new FormData();
-    formData.append("logo", file);
-
-    await safeFetch(`${API_URL}/api/upload-club-logo?id=${id}`, {
-      method: "POST",
-      body: formData
-    });
-
-    toast("Logo de club subido");
-    fileInput.value = "";
-    await refreshClubs();
-  } catch (e) {
-    console.error(e);
-    toast("Error al subir logo de club");
+  } else {
+    console.warn(
+      "[ADMIN] No se encontraron elementos para SUBIR LOGO. Revisar IDs en el HTML."
+    );
   }
 });
