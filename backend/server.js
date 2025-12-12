@@ -1,228 +1,236 @@
 // backend/server.js
-// Backend ABNECH – fixture + clubes + subida de logos a Firebase Storage
-
 const express = require("express");
 const cors = require("cors");
+const fs = require("fs");
 const path = require("path");
-const fs = require("fs").promises;
 const multer = require("multer");
-const admin = require("./firebase"); // inicialización de firebase-admin
 
+// Firebase Admin
+const admin = require("firebase-admin");
+
+// =====================
+// CONFIG
+// =====================
 const app = express();
-const PORT = process.env.PORT || 3000;
+app.use(express.json({ limit: "10mb" }));
 
-// ==== CORS ====
+// ✅ CORS (agregá acá tus dominios)
+const ALLOWED_ORIGINS = [
+  "http://localhost:5500",
+  "http://127.0.0.1:5500",
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+  "https://abnech-basket.web.app",
+  "https://abnech-basket.firebaseapp.com",
+  "https://abnech-basket.web.app/",
+  "https://abnech-basket.firebaseapp.com/",
+];
+
 app.use(
   cors({
-    origin: [
-      "http://localhost:3000",
-      "http://127.0.0.1:3000",
-      "http://localhost:5500",
-      "http://127.0.0.1:5500",
-      "https://abnech-basket.web.app",
-    ],
+    origin: function (origin, cb) {
+      // permitir llamadas server-to-server o tools sin origin
+      if (!origin) return cb(null, true);
+      if (ALLOWED_ORIGINS.includes(origin)) return cb(null, true);
+      return cb(new Error("CORS: Origin no permitido -> " + origin));
+    },
+    credentials: true,
   })
 );
 
-app.use(express.json());
+// =====================
+// FIREBASE ADMIN INIT
+// =====================
+// ✅ Recomendado: usar variable de entorno FIREBASE_SERVICE_ACCOUNT (JSON completo)
+// Alternativa: archivo local backend/serviceAccountKey.json (solo local / Render secret file)
+function initFirebaseAdmin() {
+  if (admin.apps.length) return;
 
-// ==== RUTAS DATA ====
+  let serviceAccount = null;
+
+  // 1) desde ENV (preferido)
+  if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+    try {
+      serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+    } catch (e) {
+      console.error("❌ FIREBASE_SERVICE_ACCOUNT no es JSON válido:", e);
+    }
+  }
+
+  // 2) desde archivo (fallback)
+  if (!serviceAccount) {
+    const keyPath = path.join(__dirname, "serviceAccountKey.json");
+    if (fs.existsSync(keyPath)) {
+      serviceAccount = require(keyPath);
+    }
+  }
+
+  if (!serviceAccount) {
+    console.error(
+      "❌ No se encontró service account. Definí FIREBASE_SERVICE_ACCOUNT o colocá backend/serviceAccountKey.json"
+    );
+    return;
+  }
+
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET || "abnech-basket.firebasestorage.app",
+  });
+
+  console.log("✅ Firebase Admin inicializado");
+}
+
+initFirebaseAdmin();
+
+const bucket = admin.apps.length ? admin.storage().bucket() : null;
+
+// =====================
+// FILES / DATA
+// =====================
 const DATA_DIR = path.join(__dirname, "data");
-const FIXTURE_FILE = path.join(DATA_DIR, "fixture.json");
-const CLUBS_FILE = path.join(DATA_DIR, "clubs.json");
+const CLUBS_PATH = path.join(DATA_DIR, "clubs.json");
 
-// Helpers para leer / escribir JSON
-async function readJson(filePath, defaultValue) {
+function ensureDataFiles() {
+  if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+  if (!fs.existsSync(CLUBS_PATH)) fs.writeFileSync(CLUBS_PATH, "[]", "utf-8");
+}
+ensureDataFiles();
+
+function readJson(filePath) {
   try {
-    const txt = await fs.readFile(filePath, "utf8");
-    return JSON.parse(txt);
-  } catch (err) {
-    if (err.code === "ENOENT") return defaultValue;
-    throw err;
+    return JSON.parse(fs.readFileSync(filePath, "utf-8"));
+  } catch {
+    return [];
   }
 }
 
-async function writeJson(filePath, data) {
-  await fs.mkdir(path.dirname(filePath), { recursive: true });
-  await fs.writeFile(filePath, JSON.stringify(data, null, 2), "utf8");
+function writeJson(filePath, data) {
+  fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf-8");
 }
 
-// =======================
-//   API FIXTURE (FRONT)
-// =======================
-app.get("/api/fixture", async (req, res) => {
-  try {
-    const fixture = await readJson(FIXTURE_FILE, []);
-    res.json(fixture);
-  } catch (err) {
-    console.error("Error leyendo fixture:", err);
-    res.status(500).json({ error: "Error leyendo fixture" });
-  }
+function getNextId(items) {
+  const maxId = items.reduce((m, it) => Math.max(m, Number(it.id) || 0), 0);
+  return maxId + 1;
+}
+
+// =====================
+// MULTER
+// =====================
+const upload = multer({ storage: multer.memoryStorage() });
+
+// =====================
+// ROUTES
+// =====================
+
+// Health
+app.get("/api/health", (req, res) => {
+  res.json({ ok: true });
 });
 
-// =======================
-//   API CLUBES (FRONT+ADMIN)
-// =======================
-
-// Obtener lista de clubes
-app.get("/api/clubs", async (req, res) => {
-  try {
-    const clubs = await readJson(CLUBS_FILE, []);
-    res.json(clubs);
-  } catch (err) {
-    console.error("Error leyendo clubes:", err);
-    res.status(500).json({ error: "Error leyendo clubes" });
-  }
+// GET clubs
+app.get("/api/clubs", (req, res) => {
+  const clubs = readJson(CLUBS_PATH);
+  res.json(clubs);
 });
 
-// Crear club (ADMIN)
-app.post("/api/clubs", async (req, res) => {
+// CREATE club
+app.post("/api/clubs", (req, res) => {
   try {
-    // Admitimos tanto "name"/"city" como "nombre"/"ciudad" para no romper el frontend viejo
-    const name = req.body.name || req.body.nombre;
-    const city = req.body.city || req.body.ciudad || "";
+    const clubs = readJson(CLUBS_PATH);
+
+    // ✅ aceptar múltiples nombres de campos para compatibilidad
+    const name =
+      (req.body.name || req.body.nombre || req.body.clubName || req.body.club || "").toString().trim();
+    const city =
+      (req.body.city || req.body.ciudad || req.body.cityName || "").toString().trim();
+    const logoUrl =
+      (req.body.logoUrl || req.body.logo || req.body.logoURL || "").toString().trim();
 
     if (!name) {
-      return res.status(400).json({ error: "Falta nombre de club" });
+      return res.status(400).json({ error: "Falta nombre" });
     }
 
-    const clubs = await readJson(CLUBS_FILE, []);
-
-    // ID incremental
-    const newId =
-      clubs.length > 0
-        ? Math.max(
-            ...clubs.map((c) => {
-              const n = Number(c.id);
-              return Number.isNaN(n) ? 0 : n;
-            })
-          ) + 1
-        : 1;
-
-    const logoUrl = req.body.logoUrl || req.body.logo || "";
-
     const newClub = {
-      id: String(newId),
-
-      // nombres en inglés
+      id: getNextId(clubs),
       name,
       city,
       logoUrl,
-
-      // nombres “viejos” en español, para que el frontend que usa "nombre" y "logo" siga funcionando
-      nombre: name,
-      ciudad: city,
-      logo: logoUrl,
     };
 
     clubs.push(newClub);
-    await writeJson(CLUBS_FILE, clubs);
+    writeJson(CLUBS_PATH, clubs);
 
-    console.log("Club creado:", newClub);
-
-    res.status(201).json(newClub);
+    return res.status(201).json(newClub);
   } catch (err) {
-    console.error("Error creando club:", err);
-    res.status(500).json({ error: "Error creando club" });
+    console.error("❌ Error creando club:", err);
+    return res.status(500).json({ error: "Error creando club" });
   }
 });
 
-// Eliminar club (ADMIN)
-app.delete("/api/clubs/:id", async (req, res) => {
+// UPLOAD club logo (Firebase Storage)
+app.post("/api/upload-club-logo", upload.single("logo"), async (req, res) => {
   try {
-    const id = String(req.params.id);
-    let clubs = await readJson(CLUBS_FILE, []);
-    const originalLen = clubs.length;
-    clubs = clubs.filter((c) => String(c.id) !== id);
-
-    if (clubs.length === originalLen) {
-      return res.status(404).json({ error: "Club no encontrado" });
+    if (!bucket) {
+      return res.status(500).json({ error: "Firebase Admin no inicializado" });
     }
 
-    await writeJson(CLUBS_FILE, clubs);
-    res.json({ ok: true });
-  } catch (err) {
-    console.error("Error eliminando club:", err);
-    res.status(500).json({ error: "Error eliminando club" });
-  }
-});
+    const clubs = readJson(CLUBS_PATH);
 
-// =======================
-//   SUBIR LOGO DE CLUB
-// =======================
+    // ✅ aceptar "id" o "clubId"
+    let id = (req.body.id || req.body.clubId || "").toString().trim();
 
-// Multer en memoria -> subimos directo a Firebase Storage
-const upload = multer({ storage: multer.memoryStorage() });
+    // ✅ FIX DEFINITIVO: si NO llega id, usamos el último club creado (id más alto)
+    if (!id) {
+      const maxId = clubs.reduce((m, it) => Math.max(m, Number(it.id) || 0), 0);
+      if (maxId > 0) id = String(maxId);
+    }
 
-app.post(
-  "/api/upload-club-logo",
-  upload.single("logo"),
-  async (req, res) => {
-    try {
-      // Aceptamos tanto "clubId" como "id" por compatibilidad
-      const clubId = req.body.clubId || req.body.id;
+    if (!id) {
+      return res.status(400).json({ error: "Falta id" });
+    }
 
-      if (!clubId) {
-        console.warn(
-          "upload-club-logo llamado sin id. req.body=",
-          req.body
-        );
-        return res.status(400).json({ error: "Falta id" });
-      }
+    const clubIndex = clubs.findIndex((c) => String(c.id) === String(id));
+    if (clubIndex === -1) {
+      return res.status(404).json({ error: "Club no encontrado para id " + id });
+    }
 
-      if (!req.file) {
-        return res.status(400).json({ error: "Falta archivo de logo" });
-      }
+    if (!req.file) {
+      return res.status(400).json({ error: "Falta archivo logo" });
+    }
 
-      const bucket = admin.storage().bucket();
+    const ext = path.extname(req.file.originalname || "").toLowerCase() || ".png";
+    const filenameSafe = `logo-club-${id}${ext}`;
+    const filePath = `club-logos/${Date.now()}_${filenameSafe}`;
 
-      const ext =
-        path.extname(req.file.originalname || "").toLowerCase() || ".png";
-      const destination = `club-logos/club-${clubId}${ext}`;
+    const file = bucket.file(filePath);
 
-      const file = bucket.file(destination);
-
-      await file.save(req.file.buffer, {
+    await file.save(req.file.buffer, {
+      metadata: {
         contentType: req.file.mimetype || "image/png",
-        public: true,
-        resumable: false,
-      });
+      },
+      resumable: false,
+    });
 
-      const publicUrl = `https://storage.googleapis.com/${bucket.name}/${encodeURIComponent(
-        destination
-      )}`;
+    // Hacer público con URL firmada (mejor que público abierto)
+    const [signedUrl] = await file.getSignedUrl({
+      action: "read",
+      expires: "03-01-2035",
+    });
 
-      // Actualizar JSON de clubes con el logo
-      const clubs = await readJson(CLUBS_FILE, []);
-      const idx = clubs.findIndex((c) => String(c.id) === String(clubId));
+    clubs[clubIndex].logoUrl = signedUrl;
+    writeJson(CLUBS_PATH, clubs);
 
-      if (idx === -1) {
-        console.warn("Club no encontrado para logo. id=", clubId);
-        return res.status(404).json({ error: "Club no encontrado" });
-      }
-
-      clubs[idx].logoUrl = publicUrl;
-      clubs[idx].logo = publicUrl; // campo “viejo” usado por el frontend
-      await writeJson(CLUBS_FILE, clubs);
-
-      console.log("Logo actualizado para club", clubId, "=>", publicUrl);
-
-      res.json({ ok: true, url: publicUrl });
-    } catch (err) {
-      console.error("Error subiendo logo de club:", err);
-      res.status(500).json({ error: "Error subiendo logo de club" });
-    }
+    return res.json({ ok: true, id: clubs[clubIndex].id, url: signedUrl });
+  } catch (err) {
+    console.error("❌ Error subiendo logo:", err);
+    return res.status(500).json({ error: "Error subiendo logo" });
   }
-);
-
-// =======================
-//   ARRANQUE SERVIDOR
-// =======================
-
-app.get("/", (req, res) => {
-  res.send("API ABNECH Basket funcionando");
 });
 
+// =====================
+// START
+// =====================
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Backend ABNECH escuchando en puerto ${PORT}`);
+  console.log("✅ Backend escuchando en puerto", PORT);
 });
