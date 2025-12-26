@@ -6,50 +6,106 @@
   <title>ABNECH Basket</title>
 
   <link rel="stylesheet" href="./css/style.css" />
+
+  <style>
+    /* Landing */
+    .landing {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+      text-align: center;
+    }
+
+    .landing h1 {
+      font-size: 2.5rem;
+    }
+
+    .enter-btn {
+      padding: 1rem 2.5rem;
+      font-size: 1.2rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      background: #ff6b00;
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
 </head>
 
 <body>
 
-  <header class="site-header">
-    <span class="logo-main">ABNECH Basket</span>
-  </header>
+  <!-- 🔥 LANDING -->
+  <section id="landing" class="landing">
+    <h1>ABNECH Basket</h1>
+    <p>Liga Regional de Básquet</p>
+    <button class="enter-btn" id="enterBtn">Entrar</button>
+  </section>
 
-  <main id="app">
+  <!-- 🔥 APP REAL -->
+  <div id="app" class="hidden">
 
-    <section id="fixture" class="section-block">
-      <h2>FIXTURE</h2>
-      <div id="fixture-grid" class="match-grid"></div>
-    </section>
+    <header class="site-header">
+      <span class="logo-main">ABNECH Basket</span>
+    </header>
 
-    <section id="tabla" class="section-block">
-      <h2>TABLA DE POSICIONES</h2>
-      <div class="standings-table-wrapper">
-        <table class="standings-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Club</th>
-              <th>PJ</th>
-              <th>PG</th>
-              <th>PP</th>
-              <th>PF</th>
-              <th>PC</th>
-              <th>DG</th>
-              <th>PTS</th>
-            </tr>
-          </thead>
-          <tbody id="standingsBody"></tbody>
-        </table>
-      </div>
-    </section>
+    <main>
 
-  </main>
+      <section id="fixture" class="section-block">
+        <h2>FIXTURE</h2>
+        <div id="fixture-grid" class="match-grid"></div>
+      </section>
 
-  <footer class="site-footer">
-    <p>© 2025 ABNECH Basket (MecInfoTec)</p>
-  </footer>
+      <section id="tabla" class="section-block">
+        <h2>TABLA DE POSICIONES</h2>
+        <div class="standings-table-wrapper">
+          <table class="standings-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Club</th>
+                <th>PJ</th>
+                <th>PG</th>
+                <th>PP</th>
+                <th>PF</th>
+                <th>PC</th>
+                <th>DG</th>
+                <th>PTS</th>
+              </tr>
+            </thead>
+            <tbody id="standingsBody"></tbody>
+          </table>
+        </div>
+      </section>
 
-  <!-- 🔴 SOLO ESTE SCRIPT -->
-  <script type="module" src="./js/public.js"></script>
+    </main>
+
+    <footer class="site-footer">
+      <p>© 2025 ABNECH Basket</p>
+    </footer>
+  </div>
+
+  <!-- 🔴 SCRIPT -->
+  <script type="module">
+    import { initPublicPage } from "./js/public.js";
+
+    const enterBtn = document.getElementById("enterBtn");
+    const landing = document.getElementById("landing");
+    const app = document.getElementById("app");
+
+    enterBtn.addEventListener("click", () => {
+      landing.classList.add("hidden");
+      app.classList.remove("hidden");
+      initPublicPage();
+    });
+  </script>
+
 </body>
 </html>
