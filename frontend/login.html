@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login Admin - ABNECH</title>
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+
+<section class="login-container">
+  <div class="login-box">
+    <h2>ADMINISTRADOR</h2>
+
+    <label>Email</label>
+    <input type="email" id="email" autocomplete="username" />
+
+    <label>Contraseña</label>
+    <div class="password-wrapper">
+      <input
+        type="password"
+        id="password"
+        autocomplete="current-password"
+      />
+      <button id="togglePassword" type="button">
+        👁
+      </button>
+    </div>
+
+    <button id="loginBtn">Ingresar</button>
+    <p id="loginError" class="error-text"></p>
+  </div>
+</section>
+
+<script type="module" src="./js/auth.js"></script>
+</body>
+</html>

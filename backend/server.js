@@ -1,261 +1,241 @@
 // backend/server.js
-const express = require("express");
-const cors = require("cors");
-const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
+'use strict';
 
-const { bucket } = require("./firebase");
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+const fs = require('fs');
+const fsp = require('fs/promises');
+const multer = require('multer');
+
+// Firebase Admin (opcional: si hay credenciales)
+let admin = null;
+try {
+  admin = require('firebase-admin');
+} catch (e) {
+  admin = null;
+}
 
 const app = express();
-const PORT = process.env.PORT || 10000;
+app.use(cors());
+app.use(express.json({ limit: '2mb' }));
 
-// ===== CORS =====
-const ALLOWED_ORIGINS = [
-  "https://abnech-basket.web.app",
-  "https://abnech-basket.firebaseapp.com",
-  "http://localhost:5000",
-  "http://127.0.0.1:5000",
-  "http://localhost:5500",
-  "http://127.0.0.1:5500",
-];
+// ---------- Paths / Storage local (Render Disk recomendado) ----------
+const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, 'data'); // local dev
+const RENDER_DISK_DIR = process.env.RENDER_DISK_DIR || '/var/data';    // Render Disk mount recomendado
+const USE_RENDER_DISK = process.env.USE_RENDER_DISK === '1';           // opcional
 
-app.use(
-  cors({
-    origin: function (origin, cb) {
-      // Permitir herramientas y llamadas sin origin (curl/postman)
-      if (!origin) return cb(null, true);
-      if (ALLOWED_ORIGINS.includes(origin)) return cb(null, true);
-      return cb(new Error("CORS: Origin no permitido: " + origin));
-    },
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type"],
-  })
-);
+const BASE_STORAGE_DIR = USE_RENDER_DISK ? RENDER_DISK_DIR : DATA_DIR;
+const CLUBS_FILE = path.join(DATA_DIR, 'clubs.json'); // tus datos de clubes (como ya tenías)
+const LOCAL_UPLOADS_DIR = path.join(BASE_STORAGE_DIR, 'uploads');
+const LOCAL_CLUB_LOGOS_DIR = path.join(LOCAL_UPLOADS_DIR, 'club-logos');
 
-app.use(express.json());
+// Servir logos locales si caemos al modo local
+app.use('/uploads', express.static(LOCAL_UPLOADS_DIR));
 
-// ===== Helpers JSON =====
-const DATA_DIR = path.join(__dirname, "data");
+// ---------- Helpers ----------
+async function ensureDirs() {
+  await fsp.mkdir(DATA_DIR, { recursive: true });
+  await fsp.mkdir(LOCAL_CLUB_LOGOS_DIR, { recursive: true });
+}
+function isValidBucketName(b) {
+  // bucket real suele ser xxxx.appspot.com o un bucket GCS real, NO una URL web.app
+  if (!b) return false;
+  if (b.includes('web.app') || b.startsWith('http')) return false;
+  return true;
+}
 
-function readJsonSafe(fileName, fallback) {
+async function readClubs() {
   try {
-    const p = path.join(DATA_DIR, fileName);
-    if (!fs.existsSync(p)) return fallback;
-    const raw = fs.readFileSync(p, "utf-8");
-    if (!raw.trim()) return fallback;
-    return JSON.parse(raw);
-  } catch (e) {
-    console.error(`[BACKEND] Error leyendo ${fileName}:`, e);
-    return fallback;
+    const raw = await fsp.readFile(CLUBS_FILE, 'utf-8');
+    const data = JSON.parse(raw);
+    return Array.isArray(data) ? data : [];
+  } catch {
+    return [];
+  }
+}
+async function writeClubs(clubs) {
+  await fsp.writeFile(CLUBS_FILE, JSON.stringify(clubs, null, 2), 'utf-8');
+}
+
+function sanitizeFileName(name) {
+  return name
+    .replace(/\s+/g, '-')
+    .replace(/[^a-zA-Z0-9.\-_]/g, '')
+    .toLowerCase();
+}
+
+// ---------- Firebase init (si hay credenciales) ----------
+let firebaseReady = false;
+let bucket = null;
+let bucketMode = 'local'; // 'firebase' o 'local'
+
+function initFirebaseIfPossible() {
+  if (!admin) return;
+
+  if (firebaseReady) return;
+
+  try {
+    const serviceAccountRaw = process.env.FIREBASE_SERVICE_ACCOUNT;
+    const storageBucket = process.env.FIREBASE_STORAGE_BUCKET;
+
+    // Si no hay service account, no iniciamos Firebase
+    if (!serviceAccountRaw) {
+      firebaseReady = false;
+      bucket = null;
+      bucketMode = 'local';
+      return;
+    }
+
+    const serviceAccount = JSON.parse(serviceAccountRaw);
+
+    // Inicializa Firebase Admin
+    if (!admin.apps.length) {
+      const initConfig = {
+        credential: admin.credential.cert(serviceAccount),
+      };
+      if (isValidBucketName(storageBucket)) {
+        initConfig.storageBucket = storageBucket;
+      }
+      admin.initializeApp(initConfig);
+    }
+
+    // Si hay bucket válido, lo usamos
+    if (isValidBucketName(storageBucket)) {
+      bucket = admin.storage().bucket(storageBucket);
+      bucketMode = 'firebase';
+    } else {
+      bucket = null;
+      bucketMode = 'local';
+    }
+
+    firebaseReady = true;
+  } catch (err) {
+    firebaseReady = false;
+    bucket = null;
+    bucketMode = 'local';
   }
 }
 
-function writeJsonSafe(fileName, data) {
-  const p = path.join(DATA_DIR, fileName);
-  fs.writeFileSync(p, JSON.stringify(data, null, 2), "utf-8");
-}
-
-function normalizeCategoria(s) {
-  return String(s || "").trim().toLowerCase();
-}
-
-// ===== Multer (upload en memoria) =====
+// Multer: recibimos archivo en memoria (más simple)
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB
+  limits: { fileSize: 2 * 1024 * 1024 }, // 2MB
 });
 
-// ===== Health =====
-app.get("/", (_req, res) => res.send("ABNECH backend OK"));
+// ---------- Health ----------
+app.get('/api/health', async (req, res) => {
+  initFirebaseIfPossible();
+  await ensureDirs();
 
-// =========================
-// CLUBES
-// =========================
-app.get("/api/clubs", (_req, res) => {
-  const clubs = readJsonSafe("clubs.json", []);
-  return res.json(clubs);
+  res.json({
+    ok: true,
+    firebaseModule: !!admin,
+    firebaseReady,
+    bucketMode,
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET || null,
+    note:
+      bucketMode === 'firebase'
+        ? 'Subidas irán a Firebase Storage (bucket real tipo *.appspot.com).'
+        : 'Subidas irán a almacenamiento local (Render Disk recomendado).',
+  });
 });
 
-app.post("/api/clubs", (req, res) => {
-  try {
-    const clubs = readJsonSafe("clubs.json", []);
+// ---------- Crear club (ejemplo mínimo, por si lo usás) ----------
+app.post('/api/clubs', async (req, res) => {
+  await ensureDirs();
 
-    const name =
-      (req.body.name || req.body.nombre || req.body.clubName || "").trim();
-    const city = (req.body.city || req.body.ciudad || "").trim();
-    const logoUrl = (req.body.logoUrl || req.body.logo || "").trim();
-
-    if (!name) return res.status(400).json({ error: "Falta nombre" });
-    if (!city) return res.status(400).json({ error: "Falta ciudad" });
-
-    const nextId =
-      clubs.length > 0
-        ? Math.max(...clubs.map((c) => Number(c.id) || 0)) + 1
-        : 1;
-
-    const club = {
-      id: nextId,
-      name,
-      city,
-      logoUrl: logoUrl || "",
-    };
-
-    clubs.push(club);
-    writeJsonSafe("clubs.json", clubs);
-
-    return res.status(201).json(club);
-  } catch (e) {
-    console.error("[BACKEND] Error creando club:", e);
-    return res.status(500).json({ error: "Error creando club" });
+  const { name, city, logoUrl } = req.body || {};
+  if (!name || !city) {
+    return res.status(400).json({ error: 'Faltan campos: name y city son obligatorios' });
   }
+
+  const clubs = await readClubs();
+  const nextId = clubs.length ? Math.max(...clubs.map(c => Number(c.id) || 0)) + 1 : 1;
+
+  const club = { id: nextId, name, city, logoUrl: logoUrl || '' };
+  clubs.push(club);
+  await writeClubs(clubs);
+
+  res.status(201).json(club);
 });
 
-app.delete("/api/clubs/:id", (req, res) => {
-  try {
-    const id = Number(req.params.id);
-    const clubs = readJsonSafe("clubs.json", []);
-    const before = clubs.length;
-    const afterList = clubs.filter((c) => Number(c.id) !== id);
+// ---------- Subir logo (Firebase si existe bucket; si no, local) ----------
+app.post('/api/upload-club-logo', upload.single('logo'), async (req, res) => {
+  initFirebaseIfPossible();
+  await ensureDirs();
 
-    if (afterList.length === before) {
-      return res.status(404).json({ error: "Club no encontrado" });
+  try {
+    const clubId = Number(req.body.clubId || req.body.id || req.query.clubId || 0);
+    if (!clubId) return res.status(400).json({ error: 'Falta clubId' });
+
+    if (!req.file) return res.status(400).json({ error: 'Falta archivo (logo)' });
+
+    const original = req.file.originalname || 'logo.png';
+    const safeName = sanitizeFileName(original);
+    const ext = path.extname(safeName) || '.png';
+    const filename = `club-${clubId}-${Date.now()}${ext}`;
+    const objectPath = `club-logos/${filename}`;
+
+    let publicUrl = '';
+
+    // --- MODO FIREBASE ---
+    if (bucketMode === 'firebase' && bucket) {
+      const file = bucket.file(objectPath);
+
+      await file.save(req.file.buffer, {
+        contentType: req.file.mimetype || 'image/png',
+        resumable: false,
+        metadata: {
+          cacheControl: 'public, max-age=31536000',
+        },
+      });
+
+      // OJO: si tu bucket NO es público, usamos Signed URL
+      const [signedUrl] = await file.getSignedUrl({
+        action: 'read',
+        expires: '2035-01-01', // largo plazo
+      });
+
+      publicUrl = signedUrl;
+    } else {
+      // --- MODO LOCAL (Render Disk / local dev) ---
+      const dest = path.join(LOCAL_CLUB_LOGOS_DIR, filename);
+      await fsp.writeFile(dest, req.file.buffer);
+      // URL pública desde tu backend:
+      publicUrl = `${req.protocol}://${req.get('host')}/uploads/club-logos/${filename}`;
     }
 
-    writeJsonSafe("clubs.json", afterList);
-    return res.json({ ok: true });
-  } catch (e) {
-    console.error("[BACKEND] Error eliminando club:", e);
-    return res.status(500).json({ error: "Error eliminando club" });
-  }
-});
-
-// =========================
-// PLAYERS
-// =========================
-app.get("/api/players", (_req, res) => {
-  const players = readJsonSafe("players.json", []);
-  return res.json(players);
-});
-
-// =========================
-// FIXTURE / RESULTADOS / TABLAS
-// (para que NO dé 404 en tu main.js)
-// =========================
-app.get("/api/fixture", (req, res) => {
-  const categoria = normalizeCategoria(req.query.categoria);
-  const data = readJsonSafe("fixture.json", []);
-
-  // Si el JSON es { "primera": [...], "u19": [...] }
-  if (data && typeof data === "object" && !Array.isArray(data)) {
-    const key = categoria || "primera";
-    const found =
-      data[key] || data[key.toUpperCase()] || data[key.toLowerCase()];
-    return res.json(found || []);
-  }
-
-  // Si el JSON es array con campo "categoria"
-  if (Array.isArray(data) && categoria) {
-    return res.json(
-      data.filter((x) => normalizeCategoria(x.categoria) === categoria)
-    );
-  }
-
-  return res.json(data);
-});
-
-app.get("/api/results", (req, res) => {
-  const categoria = normalizeCategoria(req.query.categoria);
-  const data = readJsonSafe("results.json", []);
-
-  if (data && typeof data === "object" && !Array.isArray(data)) {
-    const key = categoria || "primera";
-    const found =
-      data[key] || data[key.toUpperCase()] || data[key.toLowerCase()];
-    return res.json(found || []);
-  }
-
-  if (Array.isArray(data) && categoria) {
-    return res.json(
-      data.filter((x) => normalizeCategoria(x.categoria) === categoria)
-    );
-  }
-
-  return res.json(data);
-});
-
-app.get("/api/standings", (req, res) => {
-  const categoria = normalizeCategoria(req.query.categoria);
-  const data = readJsonSafe("standings.json", []);
-
-  if (data && typeof data === "object" && !Array.isArray(data)) {
-    const key = categoria || "primera";
-    const found =
-      data[key] || data[key.toUpperCase()] || data[key.toLowerCase()];
-    return res.json(found || []);
-  }
-
-  if (Array.isArray(data) && categoria) {
-    return res.json(
-      data.filter((x) => normalizeCategoria(x.categoria) === categoria)
-    );
-  }
-
-  return res.json(data);
-});
-
-// =========================
-// UPLOAD LOGO CLUB (Firebase Storage)
-// =========================
-app.post("/api/upload-club-logo", upload.single("logo"), async (req, res) => {
-  try {
-    const clubIdRaw = (req.body.clubId || req.body.id || "").trim();
-    const clubId = Number(clubIdRaw);
-
-    if (!clubIdRaw || Number.isNaN(clubId)) {
-      return res.status(400).json({ error: "Falta id" });
-    }
-    if (!req.file) {
-      return res.status(400).json({ error: "Falta archivo logo" });
+    // Actualizar club en clubs.json
+    const clubs = await readClubs();
+    const idx = clubs.findIndex(c => Number(c.id) === clubId);
+    if (idx !== -1) {
+      clubs[idx].logoUrl = publicUrl;
+      await writeClubs(clubs);
     }
 
-    const ext = path.extname(req.file.originalname || "").toLowerCase() || ".png";
-    const safeName = `logo-${clubId}-${Date.now()}${ext}`;
-    const storagePath = `club-logos/${safeName}`;
-
-    const file = bucket.file(storagePath);
-
-    await file.save(req.file.buffer, {
-      metadata: {
-        contentType: req.file.mimetype || "image/png",
-        cacheControl: "public, max-age=31536000",
-      },
-      resumable: false,
+    return res.json({
+      ok: true,
+      clubId,
+      logoUrl: publicUrl,
+      mode: bucketMode,
     });
-
-    // URL firmada (evita problemas si el bucket no está público)
-    const [signedUrl] = await file.getSignedUrl({
-      action: "read",
-      expires: Date.now() + 1000 * 60 * 60 * 24 * 365, // 1 año
+  } catch (err) {
+    // devolvemos el error real para que no adivines más
+    return res.status(500).json({
+      error: 'Error subiendo logo',
+      detail: err?.message || String(err),
     });
-
-    // Actualizar clubs.json con logoUrl
-    const clubs = readJsonSafe("clubs.json", []);
-    const idx = clubs.findIndex((c) => Number(c.id) === clubId);
-    if (idx === -1) {
-      return res.status(404).json({ error: "Club no encontrado" });
-    }
-
-    clubs[idx].logoUrl = signedUrl;
-    writeJsonSafe("clubs.json", clubs);
-
-    return res.json({ ok: true, url: signedUrl, path: storagePath });
-  } catch (e) {
-    console.error("[BACKEND] Error subiendo logo:", e);
-    return res.status(500).json({ error: "Error subiendo logo" });
   }
 });
 
+// ---------- Root ----------
+app.get('/', (req, res) => {
+  res.send('ABNECH backend OK. Usa /api/health');
+});
+
+// ---------- Start ----------
+const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
-  console.log(`[BACKEND] Running on port ${PORT}`);
+  console.log(`Backend listening on port ${PORT}`);
 });

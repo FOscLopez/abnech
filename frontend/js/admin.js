@@ -1,163 +1,162 @@
 // frontend/js/admin.js
-// Panel de administración ABNECH – Clubes + subida de logos
+'use strict';
 
-// ⚠️ PONÉ ACÁ LA URL DE TU API EN RENDER
-// Ejemplo: "https://abnech.onrender.com"
-const API_BASE = "https://abnech.onrender.com";
+// Ajustá esto si tu backend está en otro dominio:
+const API_BASE =
+  (typeof window !== 'undefined' && window.location.hostname.includes('web.app'))
+    ? 'https://abnech.onrender.com'
+    : 'http://localhost:3000';
 
-// Helper para mostrar errores en consola y alert
-function showError(msg, err) {
-  console.error(msg, err || "");
-  alert(msg);
+function $(id) {
+  return document.getElementById(id);
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  console.log("[ADMIN] Panel cargado");
+async function safeJson(res) {
+  const text = await res.text();
+  try {
+    return { ok: true, data: JSON.parse(text), rawText: text };
+  } catch {
+    return { ok: false, data: null, rawText: text };
+  }
+}
 
-  // ----------- CREAR CLUB ----------- //
-  const clubNameInput = document.getElementById("club-name");
-  const clubCityInput = document.getElementById("club-city");
-  const clubLogoUrlInput = document.getElementById("club-logo-url");
-  const createClubBtn = document.getElementById("create-club-btn");
+function log(...args) {
+  console.log('[ADMIN]', ...args);
+}
 
-  if (clubNameInput && clubCityInput && createClubBtn) {
-    createClubBtn.addEventListener("click", async () => {
-      const name = (clubNameInput.value || "").trim();
-      const city = (clubCityInput.value || "").trim();
-      const logoUrl = (clubLogoUrlInput?.value || "").trim();
+document.addEventListener('DOMContentLoaded', () => {
+  log('admin.js cargado');
 
-      if (!name) {
-        alert("Ingresá el nombre del club");
-        return;
-      }
-      if (!city) {
-        alert("Ingresá la ciudad del club");
-        return;
-      }
+  // Crear club
+  const clubNameInput = $('club-name');
+  const clubCityInput = $('club-city');
+  const clubLogoUrlInput = $('club-logo-url');
+  const createClubBtn = $('create-club-btn');
 
-      try {
-        const res = await fetch(`${API_BASE}/api/clubs`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, city, logoUrl })
-        });
+  // Eliminar club
+  const deleteClubIdInput = $('delete-club-id');
+  const deleteClubBtn = $('delete-club-btn');
 
-        const data = await res.json().catch(() => ({}));
+  // Subir logo
+  const logoClubIdInput = $('logo-club-id');
+  const logoFileInput = $('logo-file');
+  const uploadLogoBtn = $('upload-logo-btn');
 
-        if (!res.ok || !data.ok) {
-          showError(data.error || "Error creando club");
-          return;
-        }
-
-        alert(`Club creado con ID: ${data.club.id}`);
-        console.log("[ADMIN] Club creado:", data.club);
-
-        // limpiamos campos
-        clubNameInput.value = "";
-        clubCityInput.value = "";
-        if (clubLogoUrlInput) clubLogoUrlInput.value = "";
-      } catch (err) {
-        showError("Error de conexión al crear club", err);
-      }
-    });
-  } else {
-    console.warn(
-      "[ADMIN] No se encontraron elementos para CREAR CLUB. Revisar IDs en el HTML."
-    );
+  // Validación mínima (si faltan IDs en HTML, al menos lo sabés)
+  if (!clubNameInput || !clubCityInput || !createClubBtn) {
+    log('No se encontraron elementos para CREAR CLUB. Revisar IDs en el HTML.');
+  }
+  if (!deleteClubIdInput || !deleteClubBtn) {
+    log('No se encontraron elementos para ELIMINAR CLUB. Revisar IDs en el HTML.');
+  }
+  if (!logoClubIdInput || !logoFileInput || !uploadLogoBtn) {
+    log('No se encontraron elementos para SUBIR LOGO. Revisar IDs en el HTML.');
   }
 
-  // ----------- ELIMINAR CLUB ----------- //
-  const deleteClubIdInput = document.getElementById("delete-club-id");
-  const deleteClubBtn = document.getElementById("delete-club-btn");
+  async function createClub() {
+    const name = (clubNameInput?.value || '').trim();
+    const city = (clubCityInput?.value || '').trim();
+    const logoUrl = (clubLogoUrlInput?.value || '').trim();
 
-  if (deleteClubIdInput && deleteClubBtn) {
-    deleteClubBtn.addEventListener("click", async () => {
-      const id = (deleteClubIdInput.value || "").trim();
-      if (!id) {
-        alert("Ingresá el ID del club a eliminar");
+    if (!name) return alert('Falta nombre');
+    if (!city) return alert('Falta ciudad');
+
+    try {
+      const res = await fetch(`${API_BASE}/api/clubs`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, city, logoUrl }),
+      });
+
+      const parsed = await safeJson(res);
+      log('Respuesta /api/clubs:', { status: res.status, rawText: parsed.rawText, data: parsed.data });
+
+      if (!res.ok) {
+        alert((parsed.data && parsed.data.error) || 'Error creando club');
         return;
       }
 
-      if (!confirm(`¿Seguro que querés eliminar el club ID ${id}?`)) return;
-
-      try {
-        const res = await fetch(`${API_BASE}/api/clubs/${encodeURIComponent(id)}`, {
-          method: "DELETE"
-        });
-
-        const data = await res.json().catch(() => ({}));
-
-        if (!res.ok || !data.ok) {
-          showError(data.error || "Error eliminando club");
-          return;
-        }
-
-        alert("Club eliminado correctamente");
-        console.log("[ADMIN] Club eliminado:", id);
-        deleteClubIdInput.value = "";
-      } catch (err) {
-        showError("Error de conexión al eliminar club", err);
-      }
-    });
-  } else {
-    console.warn(
-      "[ADMIN] No se encontraron elementos para ELIMINAR CLUB. Revisar IDs en el HTML."
-    );
+      alert(`Club creado. ID: ${parsed.data.id}`);
+      // Limpio inputs (sin romper nada más)
+      clubNameInput.value = '';
+      clubCityInput.value = '';
+      if (clubLogoUrlInput) clubLogoUrlInput.value = '';
+    } catch (err) {
+      console.error(err);
+      alert('Error creando club');
+    }
   }
 
-  // ----------- SUBIR LOGO (ARCHIVO) ----------- //
-  const logoClubIdInput = document.getElementById("logo-club-id");
-  const logoFileInput = document.getElementById("logo-file");
-  const uploadLogoBtn = document.getElementById("upload-logo-btn");
+  async function deleteClub() {
+    const id = Number((deleteClubIdInput?.value || '').trim());
+    if (!id) return alert('Falta ID del club');
 
-  if (logoClubIdInput && logoFileInput && uploadLogoBtn) {
-    uploadLogoBtn.addEventListener("click", async () => {
-      const clubId = (logoClubIdInput.value || "").trim();
-      const file = logoFileInput.files && logoFileInput.files[0];
+    try {
+      const res = await fetch(`${API_BASE}/api/clubs/${id}`, { method: 'DELETE' });
+      const parsed = await safeJson(res);
+      log('Respuesta DELETE /api/clubs/:id:', { status: res.status, rawText: parsed.rawText, data: parsed.data });
 
-      if (!clubId) {
-        alert("Ingresá el ID del club para el logo");
-        return;
-      }
-      if (!file) {
-        alert("Seleccioná un archivo de imagen para el logo");
+      if (!res.ok) {
+        alert((parsed.data && parsed.data.error) || 'Error eliminando club');
         return;
       }
 
+      alert('Club eliminado');
+      deleteClubIdInput.value = '';
+    } catch (err) {
+      console.error(err);
+      alert('Error eliminando club');
+    }
+  }
+
+  async function uploadClubLogo() {
+    const clubId = Number((logoClubIdInput?.value || '').trim());
+    const file = logoFileInput?.files?.[0];
+
+    if (!clubId) return alert('Falta id');
+    if (!file) return alert('Seleccioná un archivo');
+
+    try {
       const formData = new FormData();
-      formData.append("clubId", clubId);
-      formData.append("logo", file);
+      formData.append('clubId', String(clubId));
+      formData.append('logo', file); // <- IMPORTANTE: 'logo'
 
-      try {
-        const res = await fetch(`${API_BASE}/api/upload-club-logo`, {
-          method: "POST",
-          body: formData
-        });
+      const res = await fetch(`${API_BASE}/api/upload-club-logo`, {
+        method: 'POST',
+        body: formData,
+      });
 
-        const data = await res.json().catch(() => ({}));
+      const parsed = await safeJson(res);
+      log('Respuesta /api/upload-club-logo:', { status: res.status, rawText: parsed.rawText, data: parsed.data });
 
-        if (!res.ok || !data.ok || !data.url) {
-          showError(data.error || "Error al subir logo de club");
-          return;
-        }
-
-        console.log("[ADMIN] Logo subido. URL pública:", data.url);
-        alert("Logo subido correctamente");
-
-        // Si existe el campo de URL de logo, lo completamos automáticamente
-        if (clubLogoUrlInput) {
-          clubLogoUrlInput.value = data.url;
-        }
-
-        // limpiamos input de archivo
-        logoFileInput.value = "";
-      } catch (err) {
-        showError("Error de conexión al subir logo", err);
+      if (!res.ok || !parsed.data?.ok) {
+        alert(parsed.data?.error || 'Error subiendo logo');
+        // Si backend manda "detail", lo dejamos visible en consola
+        if (parsed.data?.detail) console.error('[ADMIN] DETAIL:', parsed.data.detail);
+        if (parsed.data?.stack) console.error('[ADMIN] STACK:', parsed.data.stack);
+        return;
       }
-    });
-  } else {
-    console.warn(
-      "[ADMIN] No se encontraron elementos para SUBIR LOGO. Revisar IDs en el HTML."
-    );
+
+      alert('Logo subido correctamente');
+      logoFileInput.value = '';
+    } catch (err) {
+      console.error(err);
+      alert('Error subiendo logo');
+    }
   }
+
+  createClubBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    createClub();
+  });
+
+  deleteClubBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    deleteClub();
+  });
+
+  uploadLogoBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    uploadClubLogo();
+  });
 });

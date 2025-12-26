@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin ABNECH</title>
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+
+<header class="site-header">
+  <span class="logo-main">ADMIN · ABNECH</span>
+  <button onclick="logout()">Salir</button>
+</header>
+
+<main class="app">
+
+  <section class="admin-section">
+    <h2>Cargar Partido</h2>
+
+    <input id="admin-category" placeholder="Categoría" />
+    <input id="admin-order" type="number" placeholder="Jornada" />
+
+    <select id="admin-home"></select>
+    <select id="admin-away"></select>
+
+    <input id="admin-date" type="date" />
+    <input id="admin-time" type="time" />
+    <input id="admin-venue" placeholder="Sede" />
+    
+    <div class="result-form">
+      <input type="number" class="score-local" placeholder="Local" />
+      <input type="number" class="score-away" placeholder="Visitante" />
+      <button class="save-result">Guardar resultado</button>
+    </div>
+
+    <button id="admin-save">Guardar partido</button>
+  </section>
+  
+  <section class="section-block">
+    <h2>Cargar Resultados</h2>
+    <div id="fixturesResults"></div>
+  </section>
+
+</main>
+
+<script type="module" src="./js/auth.js"></script>
+<script type="module" src="./js/main.js"></script>
+</body>
+</html>

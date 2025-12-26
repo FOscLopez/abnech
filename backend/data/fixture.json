@@ -1,47 +1,33 @@
 [
-  {
-    "id": 1,
-    "categoria": "Primera",
-    "jornada": "Fecha 1",
-    "fechaTexto": "Vie 05/12 • 21:30",
-    "local": "Bermejo",
-    "ciudadLocal": "Pto Bermejo",
-    "visitante": "Unión",
-    "ciudadVisitante": "La Leonesa",
-    "estado": "Finalizado",
-    "scoreLocal": 78,
-    "scoreVisitante": 71,
-    "cancha": "Estadio Bermejo",
-    "planillaUrl": "#"
-  },
-  {
-    "id": 2,
-    "categoria": "Primera",
-    "jornada": "Fecha 1",
-    "fechaTexto": "Sáb 06/12 • 20:00",
-    "local": "Palermo",
-    "ciudadLocal": "Las Palmas",
-    "visitante": "Funebrero",
-    "ciudadVisitante": "Las Palmas",
-    "estado": "Finalizado",
-    "scoreLocal": 56,
-    "scoreVisitante": 60,
-    "cancha": "Polideportivo Las Palmas",
-    "planillaUrl": "#"
-  },
-  {
-    "categoria": "Maxi35",
-    "jornada": "Fecha 3",
-    "fechaTexto": "Vie 05/12 21:00 hs",
-    "local": "Bermejo",
-    "visitante": "Palermo",
-    "ciudadLocal": "Pto Berrmejo",
-    "ciudadVisitante": "Las Palmas",
-    "estado": "Programado",
-    "scoreLocal": null,
-    "scoreVisitante": null,
-    "cancha": "Estadio Bermejo",
-    "planillaUrl": "#",
-    "id": 3
-  }
-]
+    {
+      "id": 1,
+      "categoria": "Primera",
+      "jornada": "Fecha 1",
+      "fechaTexto": "Vie 05/12 • 21:30",
+      "local": "Bermejo",
+      "ciudadLocal": "Pto Bermejo",
+      "visitante": "Unión",
+      "ciudadVisitante": "La Leonesa",
+      "estado": "Finalizado",
+      "scoreLocal": 78,
+      "scoreVisitante": 71,
+      "cancha": "Estadio Bermejo",
+      "planillaUrl": "#"
+    },
+    {
+      "id": 2,
+      "categoria": "Primera",
+      "jornada": "Fecha 1",
+      "fechaTexto": "Sáb 06/12 • 20:00",
+      "local": "Palermo",
+      "ciudadLocal": "Las Palmas",
+      "visitante": "Funebrero",
+      "ciudadVisitante": "Las Palmas",
+      "estado": "Finalizado",
+      "scoreLocal": 56,
+      "scoreVisitante": 60,
+      "cancha": "Polideportivo Las Palmas",
+      "planillaUrl": "#"
+    }
+  ]
+  
