@@ -3,17 +3,40 @@ import { getClubsFromApi } from "../services/clubs.service.js";
 import { getFixturesFromApi } from "../services/fixtures.service.js";
 
 export async function initPublicPage() {
-  console.log("Public page init");
+  const clubs = await getClubsFromApi();
+  const fixtures = await getFixturesFromApi();
 
-  try {
-    const clubs = await getClubsFromApi();
-    const fixtures = await getFixturesFromApi();
+  renderFixture(fixtures, clubs);
 
-    const standings = buildStandings(fixtures, clubs);
-    renderStandings(standings);
-  } catch (error) {
-    console.error("Error cargando datos públicos:", error);
-  }
+  const standings = buildStandings(fixtures, clubs);
+  renderStandings(standings);
+}
+
+function renderFixture(fixtures, clubs) {
+  const grid = document.getElementById("fixture-grid");
+  if (!grid) return;
+
+  grid.innerHTML = "";
+
+  fixtures.forEach(match => {
+    const home = clubs.find(c => c.id === match.homeClubId);
+    const away = clubs.find(c => c.id === match.awayClubId);
+
+    const card = document.createElement("div");
+    card.className = "fixture-card";
+
+    card.innerHTML = `
+      <div class="fixture-info">Fecha ${match.round || "-"}</div>
+      <div class="fixture-teams">
+        <span>${home?.name || "Local"}</span>
+        <span class="fixture-vs">VS</span>
+        <span>${away?.name || "Visitante"}</span>
+      </div>
+      <div class="fixture-info">${match.date || ""}</div>
+    `;
+
+    grid.appendChild(card);
+  });
 }
 
 function renderStandings(standings) {
@@ -24,7 +47,6 @@ function renderStandings(standings) {
 
   standings.forEach((t, index) => {
     const tr = document.createElement("tr");
-
     tr.innerHTML = `
       <td>${index + 1}</td>
       <td>${t.name}</td>
@@ -36,7 +58,6 @@ function renderStandings(standings) {
       <td>${t.DG}</td>
       <td>${t.PTS}</td>
     `;
-
     tableBody.appendChild(tr);
   });
 }

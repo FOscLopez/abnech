@@ -25,15 +25,6 @@
       pointer-events: none;
     }
 
-    .landing h1 {
-      font-size: 3rem;
-      color: #fff;
-    }
-
-    .landing p {
-      color: #ccc;
-    }
-
     .enter-btn {
       padding: 1rem 2.8rem;
       font-size: 1.2rem;
@@ -43,12 +34,6 @@
       background: #ff6b00;
       color: #fff;
       font-weight: bold;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .enter-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 10px 30px rgba(255, 107, 0, 0.4);
     }
 
     /* ===== APP ===== */
@@ -66,19 +51,52 @@
     .hidden {
       display: none;
     }
+
+    /* ===== FIXTURE ===== */
+    .fixture-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .fixture-card {
+      background: linear-gradient(145deg, #0f172a, #020617);
+      border-radius: 12px;
+      padding: 1rem;
+      text-align: center;
+      border: 1px solid #1e293b;
+    }
+
+    .fixture-teams {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: bold;
+      margin: 1rem 0;
+    }
+
+    .fixture-vs {
+      color: #ff6b00;
+    }
+
+    .fixture-info {
+      font-size: 0.85rem;
+      color: #94a3b8;
+    }
   </style>
 </head>
 
 <body>
 
-  <!-- 🔥 LANDING -->
+  <!-- LANDING -->
   <section id="landing" class="landing">
     <h1>ABNECH Basket</h1>
     <p>Liga Regional de Básquet</p>
     <button class="enter-btn" id="enterBtn">Entrar</button>
   </section>
 
-  <!-- 🔥 APP -->
+  <!-- APP -->
   <div id="app" class="hidden">
 
     <header class="site-header">
@@ -89,7 +107,7 @@
 
       <section id="fixture" class="section-block">
         <h2>FIXTURE</h2>
-        <div id="fixture-grid" class="match-grid"></div>
+        <div id="fixture-grid" class="fixture-grid"></div>
       </section>
 
       <section id="tabla" class="section-block">
@@ -117,31 +135,35 @@
     </main>
 
     <footer class="site-footer">
-      <p>© 2025 ABNECH Basket</p>
+      <p>© 2025 ABNECH Basket (MecInfoTec)</p>
     </footer>
   </div>
 
-  <!-- 🔴 SCRIPT -->
+  <!-- SCRIPT -->
   <script type="module">
     import { initPublicPage } from "./js/public.js";
 
-    const enterBtn = document.getElementById("enterBtn");
     const landing = document.getElementById("landing");
     const app = document.getElementById("app");
+    const enterBtn = document.getElementById("enterBtn");
+
+    const entered = localStorage.getItem("abnech_entered");
+
+    if (entered === "true") {
+      landing.classList.add("hidden");
+      app.classList.remove("hidden");
+      app.classList.add("show");
+      initPublicPage();
+    }
 
     enterBtn.addEventListener("click", () => {
-      // fade out landing
+      localStorage.setItem("abnech_entered", "true");
       landing.classList.add("fade-out");
 
       setTimeout(() => {
         landing.classList.add("hidden");
         app.classList.remove("hidden");
-
-        // small delay for animation
-        requestAnimationFrame(() => {
-          app.classList.add("show");
-        });
-
+        app.classList.add("show");
         initPublicPage();
       }, 600);
     });
