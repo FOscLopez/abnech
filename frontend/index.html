@@ -8,30 +8,59 @@
   <link rel="stylesheet" href="./css/style.css" />
 
   <style>
-    /* Landing */
+    /* ===== LANDING ===== */
     .landing {
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      gap: 2rem;
+      gap: 1.5rem;
       text-align: center;
+      transition: opacity 0.6s ease;
+    }
+
+    .landing.fade-out {
+      opacity: 0;
+      pointer-events: none;
     }
 
     .landing h1 {
-      font-size: 2.5rem;
+      font-size: 3rem;
+      color: #fff;
+    }
+
+    .landing p {
+      color: #ccc;
     }
 
     .enter-btn {
-      padding: 1rem 2.5rem;
+      padding: 1rem 2.8rem;
       font-size: 1.2rem;
-      border-radius: 8px;
+      border-radius: 10px;
       border: none;
       cursor: pointer;
       background: #ff6b00;
       color: #fff;
       font-weight: bold;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .enter-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 30px rgba(255, 107, 0, 0.4);
+    }
+
+    /* ===== APP ===== */
+    #app {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    #app.show {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     .hidden {
@@ -49,7 +78,7 @@
     <button class="enter-btn" id="enterBtn">Entrar</button>
   </section>
 
-  <!-- 🔥 APP REAL -->
+  <!-- 🔥 APP -->
   <div id="app" class="hidden">
 
     <header class="site-header">
@@ -101,9 +130,20 @@
     const app = document.getElementById("app");
 
     enterBtn.addEventListener("click", () => {
-      landing.classList.add("hidden");
-      app.classList.remove("hidden");
-      initPublicPage();
+      // fade out landing
+      landing.classList.add("fade-out");
+
+      setTimeout(() => {
+        landing.classList.add("hidden");
+        app.classList.remove("hidden");
+
+        // small delay for animation
+        requestAnimationFrame(() => {
+          app.classList.add("show");
+        });
+
+        initPublicPage();
+      }, 600);
     });
   </script>
 
