@@ -1,6 +1,10 @@
 import { buildStandings } from "../services/firestore.service.js";
 import { getClubsFromApi } from "../services/clubs.service.js";
 import { getFixturesFromApi } from "../services/fixtures.service.js";
+import { getStandings } from "../services/standings.service.js";
+
+const standings = await getStandings();
+renderStandings(standings);
 
 export async function initPublicPage() {
   const clubs = await getClubsFromApi();
