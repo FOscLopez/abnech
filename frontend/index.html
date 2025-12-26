@@ -129,15 +129,28 @@
     const landing = document.getElementById("landing");
     const app = document.getElementById("app");
 
+    // 👉 Si ya entró antes, salteamos el landing
+    const alreadyEntered = localStorage.getItem("abnech_entered");
+
+    if (alreadyEntered === "true") {
+      landing.classList.add("hidden");
+      app.classList.remove("hidden");
+      app.classList.add("show");
+      initPublicPage();
+    }
+
+    // 👉 Click en Entrar
     enterBtn.addEventListener("click", () => {
-      // fade out landing
+      // guardamos preferencia
+      localStorage.setItem("abnech_entered", "true");
+
+      // animación
       landing.classList.add("fade-out");
 
       setTimeout(() => {
         landing.classList.add("hidden");
         app.classList.remove("hidden");
 
-        // small delay for animation
         requestAnimationFrame(() => {
           app.classList.add("show");
         });
