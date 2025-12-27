@@ -1,21 +1,15 @@
-const admin = require("firebase-admin");
+const admin = require("../firebase");
 
-const db = admin.firestore();
-
-async function adminOnly(req, res, next) {
+module.exports = async function adminOnly(req, res, next) {
   try {
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader) {
+    const token = req.headers.authorization?.replace("Bearer ", "");
+    if (!token) {
       return res.status(401).json({ error: "No token provided" });
     }
 
-    const token = authHeader.replace("Bearer ", "");
     const decoded = await admin.auth().verifyIdToken(token);
 
-    const userDoc = await db.collection("users").doc(decoded.email).get();
-
-    if (!userDoc.exists || userDoc.data().role !== "admin") {
+    if (!decoded.admin) {
       return res.status(403).json({ error: "Admin only" });
     }
 
@@ -24,6 +18,4 @@ async function adminOnly(req, res, next) {
   } catch (err) {
     res.status(401).json({ error: "Invalid token" });
   }
-}
-
-module.exports = adminOnly;
+};

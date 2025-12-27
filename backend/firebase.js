@@ -1,14 +1,13 @@
 const admin = require("firebase-admin");
 
 if (!admin.apps.length) {
+  const serviceAccount = JSON.parse(
+    Buffer.from(process.env.FIREBASE_SERVICE_ACCOUNT, "base64").toString("utf8")
+  );
+
   admin.initializeApp({
-    credential: admin.credential.cert(
-      JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)
-    ),
-    storageBucket: "abnech-basket.appspot.com", // ✅ ESTE ES EL BUCKET REAL
+    credential: admin.credential.cert(serviceAccount)
   });
 }
 
-const bucket = admin.storage().bucket();
-
-module.exports = { admin, bucket };
+module.exports = admin;
