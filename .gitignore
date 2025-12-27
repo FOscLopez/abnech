@@ -1,20 +1,8 @@
+# Firebase / secretos
+serviceAccountKey.json
+firebase-admin
+salida.txt
+
 # Node
-node_modules/
-
-# Backend
-backend/node_modules/
-
-# Frontend
-frontend/node_modules/
-
-# Firebase / Admin SDK
-frontend/js/firebase-admin/node_modules/
-
-# Logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# OS
-.DS_Store
-Thumbs.db
+node_modules
+.env
