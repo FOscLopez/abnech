@@ -1,3 +1,5 @@
+require("./firebase"); // ← esto inicializa Firebase una sola vez
+
 const express = require("express");
 const cors = require("cors");
 const admin = require("./firebase");
