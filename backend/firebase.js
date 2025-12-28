@@ -1,20 +1,31 @@
 const admin = require("firebase-admin");
 
-function initFirebase() {
-  if (admin.apps.length) return admin;
+let initialized = false;
 
-  if (!process.env.FIREBASE_SERVICE_ACCOUNT) {
-    throw new Error("FIREBASE_SERVICE_ACCOUNT no está configurada");
+function initFirebase() {
+  if (initialized) {
+    return admin;
   }
 
-  const serviceAccount = JSON.parse(
-    process.env.FIREBASE_SERVICE_ACCOUNT
-  );
+  const base64 = process.env.FIREBASE_SERVICE_ACCOUNT;
+
+  if (!base64) {
+    throw new Error("FIREBASE_SERVICE_ACCOUNT no está definido en Render");
+  }
+
+  let serviceAccount;
+  try {
+    const json = Buffer.from(base64, "base64").toString("utf8");
+    serviceAccount = JSON.parse(json);
+  } catch (err) {
+    throw new Error("Error decodificando FIREBASE_SERVICE_ACCOUNT");
+  }
 
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
   });
 
+  initialized = true;
   return admin;
 }
 
