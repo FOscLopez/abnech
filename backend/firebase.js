@@ -1,17 +1,28 @@
 const admin = require("firebase-admin");
 
-if (!process.env.FIREBASE_BASE64) {
-  throw new Error("FIREBASE_BASE64 no definida");
+function initFirebase() {
+  if (admin.apps.length) return admin.app();
+
+  if (!process.env.FIREBASE_SERVICE_ACCOUNT) {
+    throw new Error("FIREBASE_SERVICE_ACCOUNT no definida");
+  }
+
+  let serviceAccount;
+
+  try {
+    serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+  } catch (err) {
+    throw new Error("FIREBASE_SERVICE_ACCOUNT no es un JSON válido");
+  }
+
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+  });
+
+  return admin.app();
 }
 
-const serviceAccount = JSON.parse(
-  Buffer.from(process.env.FIREBASE_BASE64, "base64").toString("utf-8")
-);
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
-
-const db = admin.firestore();
-
-module.exports = { db };
+module.exports = {
+  admin,
+  initFirebase,
+};

@@ -1,10 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
-// 🔹 IMPORT CORRECTO DEL SERVICE
 const { getStandingsPre } = require("../services/firestore.service");
 
-// 🔹 GET /api/standings/pre
 router.get("/pre", async (req, res) => {
   try {
     const data = await getStandingsPre();

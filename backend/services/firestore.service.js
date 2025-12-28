@@ -1,15 +1,18 @@
-const { db } = require("../firebase");
+const { admin, initFirebase } = require("../firebase");
 
-// standings pretemporada
+initFirebase();
+
+const db = admin.firestore();
+
 async function getStandingsPre() {
-  const snapshot = await db.collection("standings_pre").get();
+  const snapshot = await db
+    .collection("standings")
+    .orderBy("PTS", "desc")
+    .get();
 
-  return snapshot.docs.map(doc => ({
-    id: doc.id,
-    ...doc.data()
-  }));
+  return snapshot.docs.map(doc => doc.data());
 }
 
 module.exports = {
-  getStandingsPre
+  getStandingsPre,
 };
