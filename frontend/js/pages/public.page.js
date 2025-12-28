@@ -5,6 +5,11 @@ export async function initPublicPage() {
 
   try {
     const standings = await getStandings();
+
+    if (!Array.isArray(standings)) {
+      throw new Error("La API no devolvió un array de standings");
+    }
+
     renderStandings(standings);
   } catch (err) {
     console.error("Error cargando standings:", err.message);
