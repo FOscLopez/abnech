@@ -3,16 +3,19 @@ const admin = require("firebase-admin");
 function initFirebase() {
   if (admin.apps.length) return admin.app();
 
-  if (!process.env.FIREBASE_SERVICE_ACCOUNT) {
+  const raw = process.env.FIREBASE_SERVICE_ACCOUNT;
+  if (!raw) {
     throw new Error("FIREBASE_SERVICE_ACCOUNT no definida");
   }
 
   let serviceAccount;
 
   try {
-    serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+    // 🔒 Decode base64 → JSON
+    const json = Buffer.from(raw, "base64").toString("utf8");
+    serviceAccount = JSON.parse(json);
   } catch (err) {
-    throw new Error("FIREBASE_SERVICE_ACCOUNT no es un JSON válido");
+    throw new Error("FIREBASE_SERVICE_ACCOUNT inválida (base64 → JSON falló)");
   }
 
   admin.initializeApp({
