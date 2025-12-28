@@ -1,17 +1,22 @@
 const express = require("express");
 const cors = require("cors");
 
-require("./firebase"); // inicializa Firebase una sola vez
+const standingsRoutes = require("./routes/standings.routes");
 
 const app = express();
+const PORT = process.env.PORT || 3000;
+
 app.use(cors());
 app.use(express.json());
 
-app.get("/api/health", (req, res) => {
-  res.json({ status: "ok" });
+// 🔹 Ruta raíz (para Render)
+app.get("/", (req, res) => {
+  res.send("ABNECH Backend OK");
 });
 
-const PORT = process.env.PORT || 3000;
+// 🔹 API
+app.use("/api/standings", standingsRoutes);
+
 app.listen(PORT, () => {
-  console.log("Servidor corriendo en puerto", PORT);
+  console.log(`Backend corriendo en puerto ${PORT}`);
 });

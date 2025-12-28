@@ -1,15 +1,16 @@
 const express = require("express");
 const router = express.Router();
 
-const { getStandingsPre } = require("./firestore.service");
+// 🔹 IMPORT CORRECTO DEL SERVICE
+const { getStandingsPre } = require("../services/firestore.service");
 
-// 🔹 /api/standings/pre
+// 🔹 GET /api/standings/pre
 router.get("/pre", async (req, res) => {
   try {
     const data = await getStandingsPre();
     res.json(data);
   } catch (err) {
-    console.error(err);
+    console.error("Error standings pre:", err);
     res.status(500).json({ error: "Error obteniendo standings" });
   }
 });
