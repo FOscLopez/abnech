@@ -7,7 +7,7 @@ export async function initPublicPage() {
     const standings = await getStandings();
 
     if (!Array.isArray(standings)) {
-      throw new Error("La API no devolvió un array de standings");
+      throw new Error("Respuesta inválida de standings");
     }
 
     renderStandings(standings);
@@ -21,6 +21,17 @@ function renderStandings(standings) {
   if (!tableBody) return;
 
   tableBody.innerHTML = "";
+
+  if (standings.length === 0) {
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="9" style="text-align:center;">
+          No hay datos cargados todavía
+        </td>
+      </tr>
+    `;
+    return;
+  }
 
   standings.forEach((t, index) => {
     const tr = document.createElement("tr");

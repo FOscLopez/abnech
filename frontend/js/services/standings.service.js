@@ -1,5 +1,7 @@
 export async function getStandings() {
-  const res = await fetch("/api/standings/pre");
+  const API_URL = "https://abnech.onrender.com/api/standings/pre";
+
+  const res = await fetch(API_URL);
 
   if (!res.ok) {
     throw new Error("Error API standings");
