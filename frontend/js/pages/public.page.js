@@ -1,4 +1,4 @@
-import { getStandings } from "../services/standings.service.js";
+import { getStandings } from "./services/standings.service.js";
 
 export async function initPublicPage() {
   console.log("Public page init");
