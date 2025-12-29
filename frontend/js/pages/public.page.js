@@ -5,11 +5,6 @@ export async function initPublicPage() {
 
   try {
     const standings = await getStandings();
-
-    if (!Array.isArray(standings)) {
-      throw new Error("Respuesta inválida de standings");
-    }
-
     renderStandings(standings);
   } catch (err) {
     console.error("Error cargando standings:", err.message);
@@ -21,17 +16,6 @@ function renderStandings(standings) {
   if (!tableBody) return;
 
   tableBody.innerHTML = "";
-
-  if (standings.length === 0) {
-    tableBody.innerHTML = `
-      <tr>
-        <td colspan="9" style="text-align:center;">
-          No hay datos cargados todavía
-        </td>
-      </tr>
-    `;
-    return;
-  }
 
   standings.forEach((t, index) => {
     const tr = document.createElement("tr");
