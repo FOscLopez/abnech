@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = "https://abnech.onrender.com";
 
 export async function getStandings() {
   const response = await fetch(`${API_URL}/api/standings/pre`);
