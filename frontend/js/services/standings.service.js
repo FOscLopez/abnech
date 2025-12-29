@@ -1,9 +1,11 @@
-export async function getStandings() {
-  const res = await fetch("/api/standings/pre");
+const API_URL = import.meta.env.VITE_API_URL;
 
-  if (!res.ok) {
+export async function getStandings() {
+  const response = await fetch(`${API_URL}/api/standings/pre`);
+
+  if (!response.ok) {
     throw new Error("Error API standings");
   }
 
-  return res.json();
+  return response.json();
 }
