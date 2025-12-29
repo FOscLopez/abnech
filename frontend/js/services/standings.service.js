@@ -1,12 +1,9 @@
-import { API_BASE } from "../config.js";
-
 export async function getStandings() {
-  const response = await fetch(`${API_BASE}/api/standings`);
+  const res = await fetch("/api/standings/pre");
 
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error("Error API standings: " + text);
+  if (!res.ok) {
+    throw new Error("Error API standings");
   }
 
-  return await response.json();
+  return await res.json();
 }
