@@ -10,11 +10,11 @@ async function getStandingsPre() {
     .where("active", "==", true)
     .get();
 
-  const clubsMap = {};
-
+  const clubs = {};
   clubsSnap.forEach(doc => {
     const c = doc.data();
-    clubsMap[c.id] = {
+    clubs[c.id] = {
+      id: c.id,
       name: c.name,
       PJ: 0,
       PG: 0,
@@ -30,14 +30,16 @@ async function getStandingsPre() {
   const fixturesSnap = await db
     .collection("fixtures")
     .where("status", "==", "finished")
+    .where("active", "==", true)
     .get();
 
   fixturesSnap.forEach(doc => {
     const f = doc.data();
 
-    const home = clubsMap[f.homeClubId];
-    const away = clubsMap[f.awayClubId];
+    const home = clubs[f.homeClubId];
+    const away = clubs[f.awayClubId];
 
+    // Si algún club no existe o está inactivo → saltar
     if (!home || !away) return;
 
     home.PJ++;
@@ -53,20 +55,24 @@ async function getStandingsPre() {
       home.PG++;
       home.PTS += 2;
       away.PP++;
-    } else {
+    } else if (f.scoreLocal < f.scoreAway) {
       away.PG++;
       away.PTS += 2;
       home.PP++;
     }
   });
 
-  // 3️⃣ Calcular DG y ordenar
-  return Object.values(clubsMap)
-    .map(t => ({
-      ...t,
-      DG: t.PF - t.PC
-    }))
-    .sort((a, b) => b.PTS - a.PTS || b.DG - a.DG);
+  // 3️⃣ Calcular diferencia de goles
+  Object.values(clubs).forEach(c => {
+    c.DG = c.PF - c.PC;
+  });
+
+  // 4️⃣ Ordenar tabla
+  return Object.values(clubs).sort((a, b) => {
+    if (b.PTS !== a.PTS) return b.PTS - a.PTS;
+    if (b.DG !== a.DG) return b.DG - a.DG;
+    return b.PF - a.PF;
+  });
 }
 
 module.exports = { getStandingsPre };
