@@ -1,4 +1,4 @@
-const API_URL = "https://abnech-basket.onrender.com/api/standings/pre";
+const API_URL = "https://abnech.onrender.com/api/standings/pre";
 
 export async function getStandings() {
   const res = await fetch(API_URL);
