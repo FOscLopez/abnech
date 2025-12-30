@@ -16,7 +16,7 @@ export async function initPublicPage() {
 }
 
 /* =====================
-   STANDINGS
+   STANDINGS (YA OK)
 ===================== */
 function renderStandings(standings) {
   const tableBody = document.getElementById("standingsBody");
@@ -26,6 +26,7 @@ function renderStandings(standings) {
 
   standings.forEach((t, index) => {
     const tr = document.createElement("tr");
+
     tr.innerHTML = `
       <td>${index + 1}</td>
       <td>${t.name}</td>
@@ -37,29 +38,46 @@ function renderStandings(standings) {
       <td>${t.DG}</td>
       <td>${t.PTS}</td>
     `;
+
     tableBody.appendChild(tr);
   });
 }
 
 /* =====================
-   FIXTURES
+   FIXTURE (ESTE ES EL PASO NUEVO)
 ===================== */
 function renderFixtures(fixtures) {
-  const container = document.getElementById("fixturesList");
-  if (!container) return;
+  const container = document.getElementById("fixtureList");
+  if (!container) {
+    console.warn("No existe #fixtureList en el HTML");
+    return;
+  }
 
   container.innerHTML = "";
+
+  if (!fixtures.length) {
+    container.innerHTML = "<p>No hay partidos cargados</p>";
+    return;
+  }
 
   fixtures.forEach(f => {
     const div = document.createElement("div");
     div.className = "fixture-item";
 
     div.innerHTML = `
-      <strong>${f.homeClubId}</strong>
-      ${f.scoreLocal ?? "-"} :
-      ${f.scoreAway ?? "-"}
-      <strong>${f.awayClubId}</strong>
-      <span>(${f.status})</span>
+      <div>
+        <strong>${f.homeClubId}</strong>
+        ${f.scoreLocal ?? "-"} :
+        ${f.scoreAway ?? "-"}
+        <strong>${f.awayClubId}</strong>
+      </div>
+      <div>
+        ${f.date} - ${f.time} | ${f.venue}
+      </div>
+      <div>
+        Estado: ${f.status}
+      </div>
+      <hr />
     `;
 
     container.appendChild(div);
