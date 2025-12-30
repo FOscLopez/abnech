@@ -17,7 +17,10 @@ app.use(
 app.options("*", cors());
 app.use(express.json());
 
+// Standings
 app.use("/api/standings", standingsRoutes);
+
+// Fixtures (con id dinámico)
 app.use("/api/fixtures", fixturesRoutes);
 
 const PORT = process.env.PORT || 3000;
