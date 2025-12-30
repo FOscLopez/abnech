@@ -3,7 +3,9 @@ const { admin, initFirebase } = require("../firebase");
 initFirebase();
 const db = admin.firestore();
 
-// standings (ya funcionando)
+/* =====================
+   STANDINGS (OK)
+===================== */
 async function getStandingsPre() {
   const snap = await db
     .collection("standings")
@@ -13,15 +15,19 @@ async function getStandingsPre() {
   return snap.docs.map(d => d.data());
 }
 
-// fixtures por id
+/* =====================
+   FIXTURES (FIX 500)
+===================== */
 async function getFixturesById(id) {
   const snap = await db
     .collection("fixtures")
     .where("categoryId", "==", id)
-    .orderBy("order", "asc")
-    .get();
+    .get(); // 👈 SIN orderBy
 
-  return snap.docs.map(d => d.data());
+  return snap.docs.map(d => ({
+    id: d.id,
+    ...d.data()
+  }));
 }
 
 module.exports = {
