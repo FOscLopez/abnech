@@ -1,30 +1,31 @@
 const express = require("express");
 const cors = require("cors");
 
-const standingsRouter = require("./services/standings.routes");
+// ✅ RUTA CORRECTA
+const standingsRoutes = require("./routes/standings.routes");
 
 const app = express();
 
-/* =======================
-   CORS – SOLUCIÓN REAL
-======================= */
+/* =====================
+   CORS (NO ROMPE NADA)
+===================== */
 app.use(
   cors({
-    origin: "*", // luego si querés lo limitamos
+    origin: "*",
     methods: ["GET"],
   })
 );
 
 app.use(express.json());
 
-/* =======================
-   RUTAS
-======================= */
-app.use("/api/standings", standingsRouter);
+/* =====================
+   RUTAS API
+===================== */
+app.use("/api/standings", standingsRoutes);
 
-/* =======================
-   START
-======================= */
+/* =====================
+   START SERVER
+===================== */
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log("Server running on port", PORT);
