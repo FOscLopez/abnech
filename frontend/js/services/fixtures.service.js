@@ -1,4 +1,4 @@
-const API_URL = "https://abnech.onrender.com/api/fixtures";
+const API_URL = "https://abnech.onrender.com/api/fixtures/B1";
 
 export async function getFixtures() {
   const res = await fetch(API_URL);
