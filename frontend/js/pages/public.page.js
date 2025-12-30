@@ -13,10 +13,7 @@ export async function initPublicPage() {
 
 function renderStandings(standings) {
   const tableBody = document.getElementById("standingsBody");
-  if (!tableBody) {
-    console.warn("No se encontró standingsBody");
-    return;
-  }
+  if (!tableBody) return;
 
   tableBody.innerHTML = "";
 
@@ -25,14 +22,14 @@ function renderStandings(standings) {
 
     tr.innerHTML = `
       <td>${index + 1}</td>
-      <td>${t.name ?? "-"}</td>
-      <td>${t.PJ ?? 0}</td>
-      <td>${t.PG ?? 0}</td>
-      <td>${t.PP ?? 0}</td>
-      <td>${t.PF ?? 0}</td>
-      <td>${t.PC ?? 0}</td>
-      <td>${t.DG ?? 0}</td>
-      <td>${t.PTS ?? 0}</td>
+      <td>${t.name}</td>
+      <td>${t.PJ}</td>
+      <td>${t.PG}</td>
+      <td>${t.PP}</td>
+      <td>${t.PF}</td>
+      <td>${t.PC}</td>
+      <td>${t.DG}</td>
+      <td>${t.PTS}</td>
     `;
 
     tableBody.appendChild(tr);
