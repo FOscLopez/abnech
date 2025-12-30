@@ -4,7 +4,6 @@ import { getFixturesByCategory } from "../services/fixtures.service.js";
 export async function initPublicPage() {
   console.log("Public page init");
 
-  // STANDINGS
   try {
     const standings = await getStandings();
     renderStandings(standings);
@@ -12,65 +11,15 @@ export async function initPublicPage() {
     console.error("Error cargando standings:", err.message);
   }
 
-  // FIXTURE
   try {
     const fixtures = await getFixturesByCategory("B1");
     renderFixtures(fixtures);
   } catch (err) {
-    console.error("Error cargando fixture:", err.message);
+    console.error("Error cargando fixtures:", err.message);
   }
 }
 
-/* =========================
-   FIXTURE
-========================= */
-
-function renderFixtures(fixtures) {
-  const grid = document.getElementById("fixture-grid");
-
-  if (!grid) {
-    console.warn("No existe #fixture-grid en el HTML");
-    return;
-  }
-
-  grid.innerHTML = "";
-
-  if (!fixtures || fixtures.length === 0) {
-    grid.innerHTML = "<p>No hay partidos cargados</p>";
-    return;
-  }
-
-  fixtures.forEach(f => {
-    const card = document.createElement("div");
-    card.className = "fixture-card";
-
-    card.innerHTML = `
-      <div class="fixture-info">
-        <div>${f.date} - ${f.time}</div>
-        <div>${f.venue}</div>
-      </div>
-
-      <div class="fixture-teams">
-        <span>${f.homeClubId}</span>
-        <span class="fixture-vs">vs</span>
-        <span>${f.awayClubId}</span>
-      </div>
-
-      <div class="fixture-info">
-        ${f.status === "finished"
-          ? `<strong>${f.scoreLocal} - ${f.scoreAway}</strong>`
-          : `<span>Próximo partido</span>`
-        }
-      </div>
-    `;
-
-    grid.appendChild(card);
-  });
-}
-
-/* =========================
-   STANDINGS
-========================= */
+/* ================= TABLA ================= */
 
 function renderStandings(standings) {
   const tableBody = document.getElementById("standingsBody");
@@ -94,5 +43,36 @@ function renderStandings(standings) {
     `;
 
     tableBody.appendChild(tr);
+  });
+}
+
+/* ================= FIXTURE ================= */
+
+function renderFixtures(fixtures) {
+  const grid = document.getElementById("fixture-grid");
+
+  if (!grid) {
+    console.warn("No existe #fixture-grid en el HTML");
+    return;
+  }
+
+  grid.innerHTML = "";
+
+  fixtures.forEach(f => {
+    const card = document.createElement("div");
+    card.className = "fixture-card";
+
+    card.innerHTML = `
+      <div class="fixture-info">${f.date} · ${f.time}</div>
+      <div class="fixture-teams">
+        <span>${f.homeClubId}</span>
+        <span class="fixture-vs">VS</span>
+        <span>${f.awayClubId}</span>
+      </div>
+      <div class="fixture-info">${f.venue}</div>
+      <div class="fixture-info">${f.scoreLocal} - ${f.scoreAway}</div>
+    `;
+
+    grid.appendChild(card);
   });
 }
