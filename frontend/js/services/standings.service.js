@@ -1,12 +1,17 @@
-const API_BASE_URL = "https://abnech-basket.onrender.com";
+const API_URL = "https://abnech-basket.onrender.com/api/standings/pre";
 
 export async function getStandings() {
-  const res = await fetch(`${API_BASE_URL}/api/standings/pre`);
+  const res = await fetch(API_URL);
 
+  // 🔴 SI NO ES JSON, CORTAMOS ACÁ
   if (!res.ok) {
-    throw new Error(`Error backend: ${res.status}`);
+    throw new Error(`Backend error ${res.status}`);
   }
 
-  const data = await res.json();
-  return data;
+  const contentType = res.headers.get("content-type");
+  if (!contentType || !contentType.includes("application/json")) {
+    throw new Error("Respuesta inválida del backend");
+  }
+
+  return await res.json();
 }

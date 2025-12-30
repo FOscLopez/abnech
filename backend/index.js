@@ -1,22 +1,31 @@
 const express = require("express");
 const cors = require("cors");
 
-const standingsRoutes = require("./routes/standings.routes");
+const standingsRouter = require("./services/standings.routes");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+/* =======================
+   CORS – SOLUCIÓN REAL
+======================= */
+app.use(
+  cors({
+    origin: "*", // luego si querés lo limitamos
+    methods: ["GET"],
+  })
+);
+
 app.use(express.json());
 
-// 🔹 Ruta raíz (para Render)
-app.get("/", (req, res) => {
-  res.send("ABNECH Backend OK");
-});
+/* =======================
+   RUTAS
+======================= */
+app.use("/api/standings", standingsRouter);
 
-// 🔹 API
-app.use("/api/standings", standingsRoutes);
-
+/* =======================
+   START
+======================= */
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Backend corriendo en puerto ${PORT}`);
+  console.log("Server running on port", PORT);
 });
