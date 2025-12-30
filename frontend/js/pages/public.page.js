@@ -14,7 +14,7 @@ export async function initPublicPage() {
 function renderStandings(standings) {
   const tableBody = document.getElementById("standingsBody");
   if (!tableBody) {
-    console.warn("No existe #standingsBody en el DOM");
+    console.warn("No se encontró standingsBody");
     return;
   }
 
