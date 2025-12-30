@@ -1,7 +1,11 @@
-import { API_BASE } from "../config.js";
+const API_URL = "https://abnech.onrender.com/api/fixtures";
 
-export async function getFixturesFromApi() {
-  const res = await fetch(`${API_BASE}/api/fixtures`);
-  if (!res.ok) throw new Error("Error cargando fixtures");
-  return res.json();
+export async function getFixtures() {
+  const res = await fetch(API_URL);
+
+  if (!res.ok) {
+    throw new Error(`Error backend ${res.status}`);
+  }
+
+  return await res.json();
 }

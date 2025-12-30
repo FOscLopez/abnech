@@ -2,13 +2,10 @@ const express = require("express");
 const cors = require("cors");
 
 const standingsRoutes = require("./routes/standings.routes");
+const fixturesRoutes = require("./routes/fixtures.routes");
 
 const app = express();
 
-/* =========================
-   CORS — CONFIG CORRECTA
-   (ESTO ES LO CLAVE)
-========================= */
 app.use(
   cors({
     origin: "*",
@@ -17,19 +14,12 @@ app.use(
   })
 );
 
-// IMPORTANTE para preflight
 app.options("*", cors());
-
 app.use(express.json());
 
-/* =========================
-   ROUTES
-========================= */
 app.use("/api/standings", standingsRoutes);
+app.use("/api/fixtures", fixturesRoutes);
 
-/* =========================
-   START
-========================= */
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log("Server running on port", PORT);
