@@ -36,7 +36,7 @@ export async function initPublicPage() {
 }
 
 /* =========================
-   FIXTURE CON LOGOS
+   FIXTURE (SIN CAMBIOS)
 ========================= */
 
 function renderFixtures(fixtures) {
@@ -46,46 +46,20 @@ function renderFixtures(fixtures) {
   grid.innerHTML = "";
 
   fixtures.forEach(f => {
-    const homeLogo = CLUB_LOGOS[f.homeClubId];
-    const awayLogo = CLUB_LOGOS[f.awayClubId];
-
     const card = document.createElement("div");
     card.className = "fixture-card";
 
     card.innerHTML = `
-      <div class="fixture-info">
-        ${f.date} · ${f.time}
-      </div>
+      <div class="fixture-info">${f.date} · ${f.time}</div>
 
       <div class="fixture-teams">
-        <div>
-          ${
-            homeLogo
-              ? `<img src="${CLUBS_PATH}${homeLogo}" alt="${f.homeClubId}" height="48" />`
-              : `<span>${f.homeClubId}</span>`
-          }
-        </div>
-
+        <img src="${CLUBS_PATH}${CLUB_LOGOS[f.homeClubId]}" height="48" />
         <span class="fixture-vs">VS</span>
-
-        <div>
-          ${
-            awayLogo
-              ? `<img src="${CLUBS_PATH}${awayLogo}" alt="${f.awayClubId}" height="48" />`
-              : `<span>${f.awayClubId}</span>`
-          }
-        </div>
+        <img src="${CLUBS_PATH}${CLUB_LOGOS[f.awayClubId]}" height="48" />
       </div>
 
-      <div class="fixture-info">
-        ${f.venue}
-      </div>
-
-      <div class="fixture-info">
-        ${f.status === "finished"
-          ? `<strong>${f.scoreLocal} - ${f.scoreAway}</strong>`
-          : "Próximo partido"}
-      </div>
+      <div class="fixture-info">${f.venue}</div>
+      <div class="fixture-info"><strong>${f.scoreLocal} - ${f.scoreAway}</strong></div>
     `;
 
     grid.appendChild(card);
@@ -93,7 +67,7 @@ function renderFixtures(fixtures) {
 }
 
 /* =========================
-   STANDINGS (SIN CAMBIOS)
+   TABLA CON LOGOS (PASO NUEVO)
 ========================= */
 
 function renderStandings(standings) {
@@ -105,9 +79,20 @@ function renderStandings(standings) {
   standings.forEach((t, index) => {
     const tr = document.createElement("tr");
 
+    const logo = CLUB_LOGOS[t.id];
+
     tr.innerHTML = `
       <td>${index + 1}</td>
-      <td>${t.name}</td>
+
+      <td style="display:flex; align-items:center; gap:8px;">
+        ${
+          logo
+            ? `<img src="${CLUBS_PATH}${logo}" height="24" />`
+            : ""
+        }
+        <span>${t.name}</span>
+      </td>
+
       <td>${t.PJ}</td>
       <td>${t.PG}</td>
       <td>${t.PP}</td>
