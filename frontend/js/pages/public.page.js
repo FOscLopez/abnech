@@ -36,9 +36,8 @@ export async function initPublicPage() {
 }
 
 /* =========================
-   FIXTURE (SIN CAMBIOS)
+   FIXTURE (LOGOS + NOMBRES)
 ========================= */
-
 function renderFixtures(fixtures) {
   const grid = document.getElementById("fixture-grid");
   if (!grid) return;
@@ -46,6 +45,9 @@ function renderFixtures(fixtures) {
   grid.innerHTML = "";
 
   fixtures.forEach(f => {
+    const homeLogo = CLUB_LOGOS[f.homeClubId];
+    const awayLogo = CLUB_LOGOS[f.awayClubId];
+
     const card = document.createElement("div");
     card.className = "fixture-card";
 
@@ -53,9 +55,17 @@ function renderFixtures(fixtures) {
       <div class="fixture-info">${f.date} · ${f.time}</div>
 
       <div class="fixture-teams">
-        <img src="${CLUBS_PATH}${CLUB_LOGOS[f.homeClubId]}" height="48" />
+        <div style="display:flex; flex-direction:column; align-items:center;">
+          ${homeLogo ? `<img src="${CLUBS_PATH}${homeLogo}" height="48" />` : ""}
+          <span>${f.homeClubId}</span>
+        </div>
+
         <span class="fixture-vs">VS</span>
-        <img src="${CLUBS_PATH}${CLUB_LOGOS[f.awayClubId]}" height="48" />
+
+        <div style="display:flex; flex-direction:column; align-items:center;">
+          ${awayLogo ? `<img src="${CLUBS_PATH}${awayLogo}" height="48" />` : ""}
+          <span>${f.awayClubId}</span>
+        </div>
       </div>
 
       <div class="fixture-info">${f.venue}</div>
@@ -67,9 +77,8 @@ function renderFixtures(fixtures) {
 }
 
 /* =========================
-   TABLA CON LOGOS (PASO NUEVO)
+   TABLA (LOGOS + NOMBRE SEGURO)
 ========================= */
-
 function renderStandings(standings) {
   const tableBody = document.getElementById("standingsBody");
   if (!tableBody) return;
@@ -77,22 +86,19 @@ function renderStandings(standings) {
   tableBody.innerHTML = "";
 
   standings.forEach((t, index) => {
-    const tr = document.createElement("tr");
+    const clubKey = t.id || t.name?.toLowerCase().replace(/\s/g, "-");
+    const logo = CLUB_LOGOS[clubKey];
 
-    const logo = CLUB_LOGOS[t.id];
+    const tr = document.createElement("tr");
 
     tr.innerHTML = `
       <td>${index + 1}</td>
-
-      <td style="display:flex; align-items:center; gap:8px;">
-        ${
-          logo
-            ? `<img src="${CLUBS_PATH}${logo}" height="24" />`
-            : ""
-        }
-        <span>${t.name}</span>
+      <td>
+        <div style="display:flex; align-items:center; gap:8px;">
+          ${logo ? `<img src="${CLUBS_PATH}${logo}" height="24" />` : ""}
+          <span>${t.name}</span>
+        </div>
       </td>
-
       <td>${t.PJ}</td>
       <td>${t.PG}</td>
       <td>${t.PP}</td>
