@@ -1,22 +1,6 @@
-const { admin, initFirebase } = require("../firebase");
+const db = require("./firebase");
 
-initFirebase();
-const db = admin.firestore();
-
-async function getFixturesByCategory(categoryId) {
-  const snap = await db
-    .collection("fixtures")
-    .where("categoryId", "==", categoryId)
-    .orderBy("order", "asc")
-    .get();
-
-  return snap.docs.map(d => ({
-    id: d.id,
-    ...d.data()
-  }));
-}
-
-async function updateFixture(fixtureId, data) {
+async function updateFixture(fixtureId, body) {
   const fixtureRef = db.collection("fixtures").doc(fixtureId);
 
   await db.runTransaction(async (tx) => {
@@ -25,14 +9,18 @@ async function updateFixture(fixtureId, data) {
 
     const fixture = snap.data();
 
-    // 1️⃣ Actualizar fixture SIEMPRE
-    tx.update(fixtureRef, data);
+    // 🔒 1️⃣ OBJETO LIMPIO (SOLO CAMPOS PERMITIDOS)
+    const updateData = {
+      scoreLocal: Number(body.scoreLocal),
+      scoreAway: Number(body.scoreAway),
+      status: body.status,
+    };
 
-    // 2️⃣ Si ya estaba finalizado → NO tocar standings
+    tx.update(fixtureRef, updateData);
+
+    // 🔒 2️⃣ SI YA ESTABA FINALIZADO → NO RECALCULAR
     if (fixture.status === "finished") return;
-
-    // 3️⃣ Solo calcular cuando PASA a finalizado
-    if (data.status !== "finished") return;
+    if (body.status !== "finished") return;
 
     const homeRef = db.collection("standings").doc(fixture.homeClubId);
     const awayRef = db.collection("standings").doc(fixture.awayClubId);
@@ -47,8 +35,8 @@ async function updateFixture(fixtureId, data) {
     const home = homeSnap.data();
     const away = awaySnap.data();
 
-    const local = Number(data.scoreLocal);
-    const awayScore = Number(data.scoreAway);
+    const local = Number(body.scoreLocal);
+    const awayScore = Number(body.scoreAway);
 
     const homeWin = local > awayScore;
     const awayWin = awayScore > local;
@@ -76,6 +64,5 @@ async function updateFixture(fixtureId, data) {
 }
 
 module.exports = {
-  getFixturesByCategory,
-  updateFixture
+  updateFixture,
 };
