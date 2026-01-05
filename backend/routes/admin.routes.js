@@ -3,17 +3,21 @@ const router = express.Router();
 
 const {
   getFixturesByCategory,
-  updateFixture
+} = require("../services/fixtures.service");
+
+const {
+  updateFixture,
 } = require("../services/admin.service");
 
 // GET fixtures
 router.get("/fixtures/:categoryId", async (req, res) => {
   try {
-    const data = await getFixturesByCategory(req.params.categoryId);
-    res.json(data);
+    const { categoryId } = req.params;
+    const fixtures = await getFixturesByCategory(categoryId);
+    res.json(fixtures);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Error admin fixtures" });
+    res.status(500).json({ error: "Error cargando fixtures" });
   }
 });
 

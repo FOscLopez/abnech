@@ -1,16 +1,18 @@
-const { admin, initFirebase } = require("../firebase");
-
-initFirebase();
-const db = admin.firestore();
+const db = require("../firebase");
 
 async function getFixturesByCategory(categoryId) {
-  const snap = await db
+  const snapshot = await db
     .collection("fixtures")
     .where("categoryId", "==", categoryId)
-    .orderBy("order", "asc")
+    .orderBy("order")
     .get();
 
-  return snap.docs.map(d => d.data());
+  return snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
 }
 
-module.exports = { getFixturesByCategory };
+module.exports = {
+  getFixturesByCategory,
+};
