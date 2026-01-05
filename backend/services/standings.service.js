@@ -1,17 +1,30 @@
-const express = require("express");
-const router = express.Router();
+const db = require("./firebase");
 
-const { getStandingsPre } = require("./firestore.service");
+async function getStandings(categoryId) {
+  const snapshot = await db
+    .collection("standings")
+    .where("categoryId", "==", categoryId)
+    .get();
 
-// 🔹 /api/standings/pre
-router.get("/pre", async (req, res) => {
-  try {
-    const data = await getStandingsPre();
-    res.json(data);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Error obteniendo standings" });
-  }
-});
+  return snapshot.docs.map((doc) => {
+    const data = doc.data();
 
-module.exports = router;
+    return {
+      id: doc.id,
+      clubId: doc.id,
+      name: data.name,
+      logo: data.logo || `${doc.id}.png`, // ⬅️ FIX CLAVE
+      PJ: data.PJ || 0,
+      PG: data.PG || 0,
+      PP: data.PP || 0,
+      PF: data.PF || 0,
+      PC: data.PC || 0,
+      DG: data.DG || 0,
+      PTS: data.PTS || 0,
+    };
+  });
+}
+
+module.exports = {
+  getStandings,
+};
