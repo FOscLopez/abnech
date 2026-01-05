@@ -25,14 +25,16 @@ async function updateFixture(fixtureId, data) {
 
     const fixture = snap.data();
 
-    // 1️⃣ Actualizamos el fixture
+    // 1️⃣ Actualizamos fixture
     tx.update(fixtureRef, data);
 
-    // 2️⃣ Solo si pasa a FINALIZADO y antes NO lo estaba
-    if (
-      data.status !== "finished" ||
-      fixture.status === "finished"
-    ) {
+    // 2️⃣ SI YA ESTABA FINALIZADO → NO recalculamos standings
+    if (fixture.status === "finished") {
+      return;
+    }
+
+    // 3️⃣ Solo calculamos cuando PASA a finalizado
+    if (data.status !== "finished") {
       return;
     }
 
@@ -40,11 +42,8 @@ async function updateFixture(fixtureId, data) {
       homeClubId,
       awayClubId,
       scoreLocal,
-      scoreAway
-    } = {
-      ...fixture,
-      ...data
-    };
+      scoreAway,
+    } = { ...fixture, ...data };
 
     const homeRef = db.collection("standings").doc(homeClubId);
     const awayRef = db.collection("standings").doc(awayClubId);
@@ -68,8 +67,8 @@ async function updateFixture(fixtureId, data) {
       PP: home.PP + (homeWin ? 0 : 1),
       PF: home.PF + scoreLocal,
       PC: home.PC + scoreAway,
-      DG: (home.PF + scoreLocal) - (home.PC + scoreAway),
-      PTS: home.PTS + (homeWin ? 2 : 1)
+      DG: home.PF + scoreLocal - (home.PC + scoreAway),
+      PTS: home.PTS + (homeWin ? 2 : 1),
     });
 
     tx.update(awayRef, {
@@ -78,11 +77,12 @@ async function updateFixture(fixtureId, data) {
       PP: away.PP + (awayWin ? 0 : 1),
       PF: away.PF + scoreAway,
       PC: away.PC + scoreLocal,
-      DG: (away.PF + scoreAway) - (away.PC + scoreLocal),
-      PTS: away.PTS + (awayWin ? 2 : 1)
+      DG: away.PF + scoreAway - (away.PC + scoreLocal),
+      PTS: away.PTS + (awayWin ? 2 : 1),
     });
   });
 }
+
 
 
 module.exports = {
