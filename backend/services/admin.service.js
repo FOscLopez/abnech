@@ -25,28 +25,20 @@ async function updateFixture(fixtureId, data) {
 
     const fixture = snap.data();
 
-    // 1️⃣ Actualizamos fixture
+    // 1️⃣ Actualizar fixture
     tx.update(fixtureRef, data);
 
-    // 2️⃣ SI YA ESTABA FINALIZADO → NO recalculamos standings
-    if (fixture.status === "finished") {
-      return;
-    }
+    // 2️⃣ Si ya estaba finalizado → NO tocar standings
+    if (fixture.status === "finished") return;
 
-    // 3️⃣ Solo calculamos cuando PASA a finalizado
-    if (data.status !== "finished") {
-      return;
-    }
+    // 3️⃣ Solo calcular cuando PASA a finalizado
+    if (data.status !== "finished") return;
 
-    const {
-      homeClubId,
-      awayClubId,
-      scoreLocal,
-      scoreAway,
-    } = { ...fixture, ...data };
+    const homeId = fixture.homeClubId;
+    const awayId = fixture.awayClubId;
 
-    const homeRef = db.collection("standings").doc(homeClubId);
-    const awayRef = db.collection("standings").doc(awayClubId);
+    const homeRef = db.collection("standings").doc(homeId);
+    const awayRef = db.collection("standings").doc(awayId);
 
     const homeSnap = await tx.get(homeRef);
     const awaySnap = await tx.get(awayRef);
@@ -58,16 +50,19 @@ async function updateFixture(fixtureId, data) {
     const home = homeSnap.data();
     const away = awaySnap.data();
 
-    const homeWin = scoreLocal > scoreAway;
-    const awayWin = scoreAway > scoreLocal;
+    const local = Number(data.scoreLocal);
+    const awayScore = Number(data.scoreAway);
+
+    const homeWin = local > awayScore;
+    const awayWin = awayScore > local;
 
     tx.update(homeRef, {
       PJ: home.PJ + 1,
       PG: home.PG + (homeWin ? 1 : 0),
       PP: home.PP + (homeWin ? 0 : 1),
-      PF: home.PF + scoreLocal,
-      PC: home.PC + scoreAway,
-      DG: home.PF + scoreLocal - (home.PC + scoreAway),
+      PF: home.PF + local,
+      PC: home.PC + awayScore,
+      DG: home.DG + (local - awayScore),
       PTS: home.PTS + (homeWin ? 2 : 1),
     });
 
@@ -75,14 +70,13 @@ async function updateFixture(fixtureId, data) {
       PJ: away.PJ + 1,
       PG: away.PG + (awayWin ? 1 : 0),
       PP: away.PP + (awayWin ? 0 : 1),
-      PF: away.PF + scoreAway,
-      PC: away.PC + scoreLocal,
-      DG: away.PF + scoreAway - (away.PC + scoreLocal),
+      PF: away.PF + awayScore,
+      PC: away.PC + local,
+      DG: away.DG + (awayScore - local),
       PTS: away.PTS + (awayWin ? 2 : 1),
     });
   });
 }
-
 
 
 module.exports = {
