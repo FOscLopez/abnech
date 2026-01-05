@@ -25,7 +25,7 @@ async function updateFixture(fixtureId, data) {
 
     const fixture = snap.data();
 
-    // 1️⃣ Actualizar fixture
+    // 1️⃣ Actualizar fixture SIEMPRE
     tx.update(fixtureRef, data);
 
     // 2️⃣ Si ya estaba finalizado → NO tocar standings
@@ -34,11 +34,8 @@ async function updateFixture(fixtureId, data) {
     // 3️⃣ Solo calcular cuando PASA a finalizado
     if (data.status !== "finished") return;
 
-    const homeId = fixture.homeClubId;
-    const awayId = fixture.awayClubId;
-
-    const homeRef = db.collection("standings").doc(homeId);
-    const awayRef = db.collection("standings").doc(awayId);
+    const homeRef = db.collection("standings").doc(fixture.homeClubId);
+    const awayRef = db.collection("standings").doc(fixture.awayClubId);
 
     const homeSnap = await tx.get(homeRef);
     const awaySnap = await tx.get(awayRef);
@@ -77,7 +74,6 @@ async function updateFixture(fixtureId, data) {
     });
   });
 }
-
 
 module.exports = {
   getFixturesByCategory,
