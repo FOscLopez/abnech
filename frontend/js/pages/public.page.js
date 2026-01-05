@@ -14,13 +14,14 @@ export async function initPublicPage() {
     tr.innerHTML = `
       <td>${index + 1}</td>
       <td class="club-cell">
-        <img 
-          src="./img/clubs/${team.logo}" 
+        <img
+          src="./img/clubs/${team.logo}"
           alt="${team.name}"
           class="club-logo"
         />
         ${team.name}
       </td>
+
       <td>${team.PJ}</td>
       <td>${team.PG}</td>
       <td>${team.PP}</td>
