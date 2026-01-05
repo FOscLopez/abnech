@@ -10,10 +10,11 @@ const app = express();
 app.use(
   cors({
     origin: "*",
-    methods: ["GET", "OPTIONS"],
+    methods: ["GET", "POST", "PUT", "OPTIONS"],
     allowedHeaders: ["Content-Type"],
   })
 );
+
 
 app.use("/api/admin", adminRoutes);
 app.options("*", cors());
