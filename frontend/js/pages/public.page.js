@@ -11,17 +11,20 @@ export async function initPublicPage() {
   standings.forEach((team, index) => {
     const tr = document.createElement("tr");
 
+    // 🔒 FORZAMOS clubId COMO FUENTE DE VERDAD
+    const clubId = team.clubId || team.id;
+    const logo = `${clubId}.png`;
+
     tr.innerHTML = `
       <td>${index + 1}</td>
       <td class="club-cell">
-        <img
-          src="./img/clubs/${team.logo}"
+        <img 
+          src="./img/clubs/${logo}" 
           alt="${team.name}"
           class="club-logo"
         />
         ${team.name}
       </td>
-
       <td>${team.PJ}</td>
       <td>${team.PG}</td>
       <td>${team.PP}</td>
