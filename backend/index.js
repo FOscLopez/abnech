@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 
+const adminRoutes = require("./routes/admin.routes");
 const standingsRoutes = require("./routes/standings.routes");
 const fixturesRoutes = require("./routes/fixtures.routes");
 
@@ -14,6 +15,7 @@ app.use(
   })
 );
 
+app.use("/api/admin", adminRoutes);
 app.options("*", cors());
 app.use(express.json());
 
