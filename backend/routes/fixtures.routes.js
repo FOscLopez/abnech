@@ -1,17 +1,15 @@
 const express = require("express");
 const router = express.Router();
 
-const { getFixturesById } = require("../services/firestore.service");
+const { getFixturesByCategory } = require("../services/fixtures.service");
 
-// /api/fixtures/:id
-router.get("/:id", async (req, res) => {
+router.get("/:categoryId", async (req, res) => {
   try {
-    const { id } = req.params;
-    const data = await getFixturesById(id);
+    const data = await getFixturesByCategory(req.params.categoryId);
     res.json(data);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Error obteniendo fixture" });
+    console.error("Error fixtures:", err);
+    res.status(500).json({ error: "Error obteniendo fixtures" });
   }
 });
 
