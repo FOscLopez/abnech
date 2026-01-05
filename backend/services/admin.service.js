@@ -1,4 +1,4 @@
-const db = require("./firebase");
+const db = require("../firebase");
 
 async function updateFixture(fixtureId, body) {
   const fixtureRef = db.collection("fixtures").doc(fixtureId);
