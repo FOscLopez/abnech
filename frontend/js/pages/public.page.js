@@ -1,113 +1,35 @@
 import { getStandings } from "../services/standings.service.js";
-import { getFixturesByCategory } from "../services/fixtures.service.js";
-
-/* =========================
-   MAPA DE LOGOS
-========================= */
-const CLUB_LOGOS = {
-  union: "union.png",
-  funebrero: "cfa.png",
-  "general-vedia": "general-vedia.png",
-  "la-leonesa": "la-leonesa.png",
-  palermo: "palermo.png",
-  "palermo-cap": "palermo-cap.png",
-  "puerto-bermejo": "puerto-bermejo.png",
-  zapallar: "zapallar.png"
-};
-
-const CLUBS_PATH = "./img/clubs/";
 
 export async function initPublicPage() {
   console.log("Public page init");
 
-  try {
-    const standings = await getStandings();
-    renderStandings(standings);
-  } catch (err) {
-    console.error("Error cargando standings:", err.message);
-  }
+  const tbody = document.getElementById("standingsBody");
+  tbody.innerHTML = "";
 
-  try {
-    const fixtures = await getFixturesByCategory("B1");
-    renderFixtures(fixtures);
-  } catch (err) {
-    console.error("Error cargando fixtures:", err.message);
-  }
-}
+  const standings = await getStandings();
 
-/* =========================
-   FIXTURE (LOGOS + NOMBRES)
-========================= */
-function renderFixtures(fixtures) {
-  const grid = document.getElementById("fixture-grid");
-  if (!grid) return;
-
-  grid.innerHTML = "";
-
-  fixtures.forEach(f => {
-    const homeLogo = CLUB_LOGOS[f.homeClubId];
-    const awayLogo = CLUB_LOGOS[f.awayClubId];
-
-    const card = document.createElement("div");
-    card.className = "fixture-card";
-
-    card.innerHTML = `
-      <div class="fixture-info">${f.date} · ${f.time}</div>
-
-      <div class="fixture-teams">
-        <div style="display:flex; flex-direction:column; align-items:center;">
-          ${homeLogo ? `<img src="${CLUBS_PATH}${homeLogo}" height="48" />` : ""}
-          <span>${f.homeClubId}</span>
-        </div>
-
-        <span class="fixture-vs">VS</span>
-
-        <div style="display:flex; flex-direction:column; align-items:center;">
-          ${awayLogo ? `<img src="${CLUBS_PATH}${awayLogo}" height="48" />` : ""}
-          <span>${f.awayClubId}</span>
-        </div>
-      </div>
-
-      <div class="fixture-info">${f.venue}</div>
-      <div class="fixture-info"><strong>${f.scoreLocal} - ${f.scoreAway}</strong></div>
-    `;
-
-    grid.appendChild(card);
-  });
-}
-
-/* =========================
-   TABLA (LOGOS + NOMBRE SEGURO)
-========================= */
-function renderStandings(standings) {
-  const tableBody = document.getElementById("standingsBody");
-  if (!tableBody) return;
-
-  tableBody.innerHTML = "";
-
-  standings.forEach((t, index) => {
-    const clubKey = t.id || t.name?.toLowerCase().replace(/\s/g, "-");
-    const logo = CLUB_LOGOS[clubKey];
-
+  standings.forEach((team, index) => {
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
       <td>${index + 1}</td>
-      <td>
-        <div style="display:flex; align-items:center; gap:8px;">
-          ${logo ? `<img src="${CLUBS_PATH}${logo}" height="24" />` : ""}
-          <span>${t.name}</span>
-        </div>
+      <td class="club-cell">
+        <img 
+          src="./img/clubs/${team.logo}" 
+          alt="${team.name}"
+          class="club-logo"
+        />
+        ${team.name}
       </td>
-      <td>${t.PJ}</td>
-      <td>${t.PG}</td>
-      <td>${t.PP}</td>
-      <td>${t.PF}</td>
-      <td>${t.PC}</td>
-      <td>${t.DG}</td>
-      <td>${t.PTS}</td>
+      <td>${team.PJ}</td>
+      <td>${team.PG}</td>
+      <td>${team.PP}</td>
+      <td>${team.PF}</td>
+      <td>${team.PC}</td>
+      <td>${team.DG}</td>
+      <td>${team.PTS}</td>
     `;
 
-    tableBody.appendChild(tr);
+    tbody.appendChild(tr);
   });
 }
