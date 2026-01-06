@@ -1,11 +1,7 @@
-const API_BASE = "https://abnech.onrender.com";
+const BASE_URL = "https://abnech.onrender.com";
 
-export async function getStandings() {
-  const res = await fetch(`${API_BASE}/api/standings`);
-
-  if (!res.ok) {
-    throw new Error(`Backend error ${res.status}`);
-  }
-
-  return await res.json();
+export async function getStandings(categoryId) {
+  const res = await fetch(`${BASE_URL}/api/standings/${categoryId}`);
+  if (!res.ok) throw new Error("Backend error");
+  return res.json();
 }
