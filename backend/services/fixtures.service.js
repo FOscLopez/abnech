@@ -1,5 +1,4 @@
-const admin = require("../firebase");
-const db = admin.firestore();
+const db = require("../firebase");
 
 async function getFixturesByCategory(categoryId) {
   const snapshot = await db
