@@ -1,14 +1,16 @@
 const express = require("express");
 const router = express.Router();
 
-const { getStandingsPre } = require("../services/firestore.service");
+const {
+  getStandingsByCategory,
+} = require("../services/firestore.service");
 
-router.get("/", async (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
-    const data = await getStandingsPre();
+    const data = await getStandingsByCategory(req.params.id);
     res.json(data);
   } catch (err) {
-    console.error("Error standings:", err);
+    console.error(err);
     res.status(500).json({ error: "Error obteniendo standings" });
   }
 });

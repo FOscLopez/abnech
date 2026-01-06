@@ -1,17 +1,34 @@
-const { admin, initFirebase } = require("../firebase");
+const db = require("../firebase");
 
-initFirebase();
-const db = admin.firestore();
-
-async function getStandingsPre() {
-  const snap = await db
+// ===== STANDINGS =====
+async function getStandingsByCategory(categoryId) {
+  const snapshot = await db
     .collection("standings")
+    .where("categoryId", "==", categoryId)
     .orderBy("PTS", "desc")
-    .orderBy("DG", "desc")
-    .orderBy("PF", "desc")
     .get();
 
-  return snap.docs.map(d => d.data());
+  return snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
 }
 
-module.exports = { getStandingsPre };
+// ===== FIXTURES =====
+async function getFixturesById(categoryId) {
+  const snapshot = await db
+    .collection("fixtures")
+    .where("categoryId", "==", categoryId)
+    .orderBy("order")
+    .get();
+
+  return snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+}
+
+module.exports = {
+  getStandingsByCategory,
+  getFixturesById,
+};
