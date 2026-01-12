@@ -2,7 +2,7 @@ import { getFixtures } from "./services/fixtures.service.js";
 import { getStandings } from "./services/standings.service.js";
 
 /* =========================
-   MAPA DE CLUBES (FIJO)
+   MAPA DE CLUBES
 ========================= */
 const CLUBS_MAP = {
   union: { name: "Unión", logo: "/img/clubs/union.png" },
@@ -19,19 +19,17 @@ const CLUBS_MAP = {
    FIXTURE
 ========================= */
 function renderFixtures(fixtures) {
-  const fixtureGrid = document.getElementById("fixture-grid");
+  const grid = document.getElementById("fixture-grid");
+  if (!grid) return;
 
-  if (!fixtureGrid) return;
+  grid.innerHTML = "";
 
-  fixtureGrid.innerHTML = "";
-
-  fixtures.forEach((fixture) => {
-    const home = CLUBS_MAP[fixture.homeClubId];
-    const away = CLUBS_MAP[fixture.awayClubId];
-
+  fixtures.forEach((f) => {
+    const home = CLUBS_MAP[f.homeClubId];
+    const away = CLUBS_MAP[f.awayClubId];
     if (!home || !away) return;
 
-    fixtureGrid.innerHTML += `
+    grid.innerHTML += `
       <div class="fixture-card">
         <div class="fixture-teams">
           <span>${home.name}</span>
@@ -39,7 +37,7 @@ function renderFixtures(fixtures) {
           <span>${away.name}</span>
         </div>
         <div class="fixture-info">
-          ${fixture.scoreLocal} - ${fixture.scoreAway}
+          ${f.scoreLocal} - ${f.scoreAway}
         </div>
       </div>
     `;
@@ -50,24 +48,24 @@ async function loadFixtures() {
   try {
     const fixtures = await getFixtures("B1");
     renderFixtures(fixtures);
-  } catch (err) {
-    console.error("Error cargando fixture", err);
+  } catch (e) {
+    console.error("Error cargando fixture", e);
   }
 }
 
 /* =========================
    TABLA DE POSICIONES
 ========================= */
-function renderStandings(standings) {
+function renderStandings(list) {
   const tbody = document.getElementById("standingsBody");
   if (!tbody) return;
 
   tbody.innerHTML = "";
 
-  standings.forEach((team, index) => {
+  list.forEach((team, i) => {
     tbody.innerHTML += `
       <tr>
-        <td>${index + 1}</td>
+        <td>${i + 1}</td>
         <td>${team.name}</td>
         <td>${team.PJ}</td>
         <td>${team.PG}</td>
@@ -83,15 +81,21 @@ function renderStandings(standings) {
 
 async function loadStandings() {
   try {
-    const standings = await getStandings("B1");
+    const response = await getStandings("B1");
+
+    // 🔴 CLAVE: soporta ambos formatos
+    const standings = Array.isArray(response)
+      ? response
+      : response.standings || [];
+
     renderStandings(standings);
-  } catch (err) {
-    console.error("Error cargando standings", err);
+  } catch (e) {
+    console.error("Error cargando tabla", e);
   }
 }
 
 /* =========================
-   INIT PUBLIC PAGE
+   INIT
 ========================= */
 export function initPublicPage() {
   loadFixtures();
