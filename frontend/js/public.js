@@ -1,18 +1,17 @@
 import { getFixtures } from "./services/fixtures.service.js";
-import { getStandings } from "./services/standings.service.js";
 
 /* =========================
    MAPA DE CLUBES
 ========================= */
-const CLUBS_MAP = {
-  union: { name: "Unión", logo: "/img/clubs/union.png" },
-  funebrero: { name: "Funebrero", logo: "/img/clubs/palermo.png" },
-  cfa: { name: "CFA", logo: "/img/clubs/cfa.png" },
-  "general-vedia": { name: "General Vedia", logo: "/img/clubs/general-vedia.png" },
-  "la-leonesa": { name: "La Leonesa", logo: "/img/clubs/la-leonesa.png" },
-  "palermo-cap": { name: "Palermo CAP", logo: "/img/clubs/palermo-cap.png" },
-  "puerto-bermejo": { name: "Puerto Bermejo", logo: "/img/clubs/puerto-bermejo.png" },
-  zapallar: { name: "Zapallar", logo: "/img/clubs/zapallar.png" },
+const CLUBS = {
+  union: "Unión",
+  funebrero: "Funebrero",
+  cfa: "CFA",
+  "general-vedia": "General Vedia",
+  "la-leonesa": "La Leonesa",
+  "palermo-cap": "Palermo CAP",
+  "puerto-bermejo": "Puerto Bermejo",
+  zapallar: "Zapallar",
 };
 
 /* =========================
@@ -24,17 +23,13 @@ function renderFixtures(fixtures) {
 
   grid.innerHTML = "";
 
-  fixtures.forEach((f) => {
-    const home = CLUBS_MAP[f.homeClubId];
-    const away = CLUBS_MAP[f.awayClubId];
-    if (!home || !away) return;
-
+  fixtures.forEach(f => {
     grid.innerHTML += `
       <div class="fixture-card">
         <div class="fixture-teams">
-          <span>${home.name}</span>
+          <span>${CLUBS[f.homeClubId]}</span>
           <span class="fixture-vs">VS</span>
-          <span>${away.name}</span>
+          <span>${CLUBS[f.awayClubId]}</span>
         </div>
         <div class="fixture-info">
           ${f.scoreLocal} - ${f.scoreAway}
@@ -44,60 +39,92 @@ function renderFixtures(fixtures) {
   });
 }
 
-async function loadFixtures() {
-  try {
-    const fixtures = await getFixtures("B1");
-    renderFixtures(fixtures);
-  } catch (e) {
-    console.error("Error cargando fixture", e);
-  }
+/* =========================
+   STANDINGS DESDE FIXTURES
+========================= */
+function buildStandings(fixtures) {
+  const table = {};
+
+  fixtures
+    .filter(f => f.status === "finished")
+    .forEach(f => {
+      const home = f.homeClubId;
+      const away = f.awayClubId;
+
+      if (!table[home]) table[home] = baseTeam(home);
+      if (!table[away]) table[away] = baseTeam(away);
+
+      table[home].PJ++;
+      table[away].PJ++;
+
+      table[home].PF += f.scoreLocal;
+      table[home].PC += f.scoreAway;
+
+      table[away].PF += f.scoreAway;
+      table[away].PC += f.scoreLocal;
+
+      if (f.scoreLocal > f.scoreAway) {
+        table[home].PG++;
+        table[away].PP++;
+        table[home].PTS += 2;
+        table[away].PTS += 1;
+      } else {
+        table[away].PG++;
+        table[home].PP++;
+        table[away].PTS += 2;
+        table[home].PTS += 1;
+      }
+    });
+
+  return Object.values(table)
+    .map(t => ({ ...t, DG: t.PF - t.PC }))
+    .sort((a, b) => b.PTS - a.PTS || b.DG - a.DG);
 }
 
-/* =========================
-   TABLA DE POSICIONES
-========================= */
-function renderStandings(list) {
+function baseTeam(id) {
+  return {
+    id,
+    name: CLUBS[id],
+    PJ: 0,
+    PG: 0,
+    PP: 0,
+    PF: 0,
+    PC: 0,
+    DG: 0,
+    PTS: 0,
+  };
+}
+
+function renderStandings(standings) {
   const tbody = document.getElementById("standingsBody");
   if (!tbody) return;
 
   tbody.innerHTML = "";
 
-  list.forEach((team, i) => {
+  standings.forEach((t, i) => {
     tbody.innerHTML += `
       <tr>
         <td>${i + 1}</td>
-        <td>${team.name}</td>
-        <td>${team.PJ}</td>
-        <td>${team.PG}</td>
-        <td>${team.PP}</td>
-        <td>${team.PF}</td>
-        <td>${team.PC}</td>
-        <td>${team.DG}</td>
-        <td>${team.PTS}</td>
+        <td>${t.name}</td>
+        <td>${t.PJ}</td>
+        <td>${t.PG}</td>
+        <td>${t.PP}</td>
+        <td>${t.PF}</td>
+        <td>${t.PC}</td>
+        <td>${t.DG}</td>
+        <td>${t.PTS}</td>
       </tr>
     `;
   });
 }
 
-async function loadStandings() {
-  try {
-    const response = await getStandings("B1");
-
-    // 🔴 CLAVE: soporta ambos formatos
-    const standings = Array.isArray(response)
-      ? response
-      : response.standings || [];
-
-    renderStandings(standings);
-  } catch (e) {
-    console.error("Error cargando tabla", e);
-  }
-}
-
 /* =========================
    INIT
 ========================= */
-export function initPublicPage() {
-  loadFixtures();
-  loadStandings();
+export async function initPublicPage() {
+  const fixtures = await getFixtures("B1");
+  renderFixtures(fixtures);
+
+  const standings = buildStandings(fixtures);
+  renderStandings(standings);
 }
