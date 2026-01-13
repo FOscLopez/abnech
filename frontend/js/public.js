@@ -4,38 +4,14 @@ import { getFixtures } from "./services/fixtures.service.js";
    CLUBES (nombre + logo)
 ========================= */
 const CLUBS = {
-  union: {
-    name: "Unión",
-    logo: "/img/clubs/union.png",
-  },
-  funebrero: {
-    name: "Funebrero",
-    logo: "/img/clubs/palermo.png",
-  },
-  cfa: {
-    name: "CFA",
-    logo: "/img/clubs/cfa.png",
-  },
-  "general-vedia": {
-    name: "General Vedia",
-    logo: "/img/clubs/general-vedia.png",
-  },
-  "la-leonesa": {
-    name: "La Leonesa",
-    logo: "/img/clubs/la-leonesa.png",
-  },
-  "palermo-cap": {
-    name: "Palermo CAP",
-    logo: "/img/clubs/palermo-cap.png",
-  },
-  "puerto-bermejo": {
-    name: "Puerto Bermejo",
-    logo: "/img/clubs/puerto-bermejo.png",
-  },
-  zapallar: {
-    name: "Zapallar",
-    logo: "/img/clubs/zapallar.png",
-  },
+  union: { name: "Unión", logo: "/img/clubs/union.png" },
+  funebrero: { name: "Funebrero", logo: "/img/clubs/palermo.png" },
+  cfa: { name: "CFA", logo: "/img/clubs/cfa.png" },
+  "general-vedia": { name: "General Vedia", logo: "/img/clubs/general-vedia.png" },
+  "la-leonesa": { name: "La Leonesa", logo: "/img/clubs/la-leonesa.png" },
+  "palermo-cap": { name: "Palermo CAP", logo: "/img/clubs/palermo-cap.png" },
+  "puerto-bermejo": { name: "Puerto Bermejo", logo: "/img/clubs/puerto-bermejo.png" },
+  zapallar: { name: "Zapallar", logo: "/img/clubs/zapallar.png" },
 };
 
 /* =========================
@@ -52,20 +28,30 @@ function renderFixtures(fixtures) {
     const away = CLUBS[f.awayClubId];
     if (!home || !away) return;
 
+    const homeWin = f.scoreLocal > f.scoreAway;
+    const awayWin = f.scoreAway > f.scoreLocal;
+
     grid.innerHTML += `
       <div class="fixture-card">
-        <div class="fixture-team">
-          <img src="${home.logo}" alt="${home.name}" />
+        <div class="fixture-team ${homeWin ? "winner" : "loser"}">
+          <img src="${home.logo}" alt="${home.name}">
           <span>${home.name}</span>
         </div>
 
         <div class="fixture-center">
-          <span class="fixture-vs">VS</span>
-          <div class="fixture-score">${f.scoreLocal} - ${f.scoreAway}</div>
+          <div class="fixture-score">
+            <span class="${homeWin ? "win" : awayWin ? "lose" : ""}">
+              ${f.scoreLocal}
+            </span>
+            -
+            <span class="${awayWin ? "win" : homeWin ? "lose" : ""}">
+              ${f.scoreAway}
+            </span>
+          </div>
         </div>
 
-        <div class="fixture-team">
-          <img src="${away.logo}" alt="${away.name}" />
+        <div class="fixture-team ${awayWin ? "winner" : "loser"}">
+          <img src="${away.logo}" alt="${away.name}">
           <span>${away.name}</span>
         </div>
       </div>
@@ -74,7 +60,7 @@ function renderFixtures(fixtures) {
 }
 
 /* =========================
-   STANDINGS DESDE FIXTURE
+   STANDINGS DESDE FIXTURES
 ========================= */
 function baseTeam(id) {
   return {
@@ -140,13 +126,15 @@ function renderStandings(standings) {
       <tr class="${i === 0 ? "leader" : ""}">
         <td>${i + 1}</td>
         <td class="club-cell">
-          <img src="${t.logo}" alt="${t.name}" />
+          <img src="${t.logo}" alt="${t.name}">
           <span>${t.name}</span>
         </td>
         <td>${t.PJ}</td>
         <td>${t.PG}</td>
         <td>${t.PP}</td>
-        <td>${t.PF}</td>
+        <td class="${t.DG > 0 ? "dg-positive" : t.DG < 0 ? "dg-negative" : ""}">
+          ${t.PF}
+        </td>
         <td>${t.PC}</td>
         <td>${t.DG}</td>
         <td>${t.PTS}</td>
