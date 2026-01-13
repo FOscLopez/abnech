@@ -689,3 +689,55 @@ body {
 .standings-table td:first-child {
   font-weight: bold;
 }
+
+/* =========================
+   FIXTURE CON LOGOS
+========================= */
+.fixture-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.fixture-team {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fixture-team img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+
+.fixture-center {
+  text-align: center;
+}
+
+.fixture-score {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #e5e7eb;
+}
+
+/* =========================
+   TABLA CON LOGOS
+========================= */
+.club-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.club-cell img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+/* líder */
+tr.leader {
+  background: linear-gradient(90deg, #1e293b, #020617);
+  box-shadow: inset 0 0 0 1px #f59e0b;
+}

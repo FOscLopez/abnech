@@ -1,17 +1,41 @@
 import { getFixtures } from "./services/fixtures.service.js";
 
 /* =========================
-   MAPA DE CLUBES
+   CLUBES (nombre + logo)
 ========================= */
 const CLUBS = {
-  union: "Unión",
-  funebrero: "Funebrero",
-  cfa: "CFA",
-  "general-vedia": "General Vedia",
-  "la-leonesa": "La Leonesa",
-  "palermo-cap": "Palermo CAP",
-  "puerto-bermejo": "Puerto Bermejo",
-  zapallar: "Zapallar",
+  union: {
+    name: "Unión",
+    logo: "/img/clubs/union.png",
+  },
+  funebrero: {
+    name: "Funebrero",
+    logo: "/img/clubs/palermo.png",
+  },
+  cfa: {
+    name: "CFA",
+    logo: "/img/clubs/cfa.png",
+  },
+  "general-vedia": {
+    name: "General Vedia",
+    logo: "/img/clubs/general-vedia.png",
+  },
+  "la-leonesa": {
+    name: "La Leonesa",
+    logo: "/img/clubs/la-leonesa.png",
+  },
+  "palermo-cap": {
+    name: "Palermo CAP",
+    logo: "/img/clubs/palermo-cap.png",
+  },
+  "puerto-bermejo": {
+    name: "Puerto Bermejo",
+    logo: "/img/clubs/puerto-bermejo.png",
+  },
+  zapallar: {
+    name: "Zapallar",
+    logo: "/img/clubs/zapallar.png",
+  },
 };
 
 /* =========================
@@ -24,15 +48,25 @@ function renderFixtures(fixtures) {
   grid.innerHTML = "";
 
   fixtures.forEach(f => {
+    const home = CLUBS[f.homeClubId];
+    const away = CLUBS[f.awayClubId];
+    if (!home || !away) return;
+
     grid.innerHTML += `
       <div class="fixture-card">
-        <div class="fixture-teams">
-          <span>${CLUBS[f.homeClubId]}</span>
-          <span class="fixture-vs">VS</span>
-          <span>${CLUBS[f.awayClubId]}</span>
+        <div class="fixture-team">
+          <img src="${home.logo}" alt="${home.name}" />
+          <span>${home.name}</span>
         </div>
-        <div class="fixture-info">
-          ${f.scoreLocal} - ${f.scoreAway}
+
+        <div class="fixture-center">
+          <span class="fixture-vs">VS</span>
+          <div class="fixture-score">${f.scoreLocal} - ${f.scoreAway}</div>
+        </div>
+
+        <div class="fixture-team">
+          <img src="${away.logo}" alt="${away.name}" />
+          <span>${away.name}</span>
         </div>
       </div>
     `;
@@ -40,51 +74,13 @@ function renderFixtures(fixtures) {
 }
 
 /* =========================
-   STANDINGS DESDE FIXTURES
+   STANDINGS DESDE FIXTURE
 ========================= */
-function buildStandings(fixtures) {
-  const table = {};
-
-  fixtures
-    .filter(f => f.status === "finished")
-    .forEach(f => {
-      const home = f.homeClubId;
-      const away = f.awayClubId;
-
-      if (!table[home]) table[home] = baseTeam(home);
-      if (!table[away]) table[away] = baseTeam(away);
-
-      table[home].PJ++;
-      table[away].PJ++;
-
-      table[home].PF += f.scoreLocal;
-      table[home].PC += f.scoreAway;
-
-      table[away].PF += f.scoreAway;
-      table[away].PC += f.scoreLocal;
-
-      if (f.scoreLocal > f.scoreAway) {
-        table[home].PG++;
-        table[away].PP++;
-        table[home].PTS += 2;
-        table[away].PTS += 1;
-      } else {
-        table[away].PG++;
-        table[home].PP++;
-        table[away].PTS += 2;
-        table[home].PTS += 1;
-      }
-    });
-
-  return Object.values(table)
-    .map(t => ({ ...t, DG: t.PF - t.PC }))
-    .sort((a, b) => b.PTS - a.PTS || b.DG - a.DG);
-}
-
 function baseTeam(id) {
   return {
     id,
-    name: CLUBS[id],
+    name: CLUBS[id].name,
+    logo: CLUBS[id].logo,
     PJ: 0,
     PG: 0,
     PP: 0,
@@ -95,6 +91,44 @@ function baseTeam(id) {
   };
 }
 
+function buildStandings(fixtures) {
+  const table = {};
+
+  fixtures
+    .filter(f => f.status === "finished")
+    .forEach(f => {
+      const h = f.homeClubId;
+      const a = f.awayClubId;
+
+      if (!table[h]) table[h] = baseTeam(h);
+      if (!table[a]) table[a] = baseTeam(a);
+
+      table[h].PJ++;
+      table[a].PJ++;
+
+      table[h].PF += f.scoreLocal;
+      table[h].PC += f.scoreAway;
+      table[a].PF += f.scoreAway;
+      table[a].PC += f.scoreLocal;
+
+      if (f.scoreLocal > f.scoreAway) {
+        table[h].PG++;
+        table[a].PP++;
+        table[h].PTS += 2;
+        table[a].PTS += 1;
+      } else {
+        table[a].PG++;
+        table[h].PP++;
+        table[a].PTS += 2;
+        table[h].PTS += 1;
+      }
+    });
+
+  return Object.values(table)
+    .map(t => ({ ...t, DG: t.PF - t.PC }))
+    .sort((a, b) => b.PTS - a.PTS || b.DG - a.DG);
+}
+
 function renderStandings(standings) {
   const tbody = document.getElementById("standingsBody");
   if (!tbody) return;
@@ -103,9 +137,12 @@ function renderStandings(standings) {
 
   standings.forEach((t, i) => {
     tbody.innerHTML += `
-      <tr>
+      <tr class="${i === 0 ? "leader" : ""}">
         <td>${i + 1}</td>
-        <td>${t.name}</td>
+        <td class="club-cell">
+          <img src="${t.logo}" alt="${t.name}" />
+          <span>${t.name}</span>
+        </td>
         <td>${t.PJ}</td>
         <td>${t.PG}</td>
         <td>${t.PP}</td>
