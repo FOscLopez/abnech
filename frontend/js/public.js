@@ -1,7 +1,7 @@
 import { getFixtures } from "./services/fixtures.service.js";
 
 /* =========================
-   CLUBES (nombre + logo)
+   CLUBES
 ========================= */
 const CLUBS = {
   union: { name: "Unión", logo: "/img/clubs/union.png" },
@@ -13,6 +13,41 @@ const CLUBS = {
   "puerto-bermejo": { name: "Puerto Bermejo", logo: "/img/clubs/puerto-bermejo.png" },
   zapallar: { name: "Zapallar", logo: "/img/clubs/zapallar.png" },
 };
+
+/* =========================
+   SKELETON RENDER
+========================= */
+function renderFixtureSkeleton() {
+  const grid = document.getElementById("fixture-grid");
+  if (!grid) return;
+
+  grid.innerHTML = "";
+  for (let i = 0; i < 4; i++) {
+    grid.innerHTML += `
+      <div class="fixture-card skeleton">
+        <div class="skeleton-circle"></div>
+        <div class="skeleton-line wide"></div>
+        <div class="skeleton-circle"></div>
+      </div>
+    `;
+  }
+}
+
+function renderTableSkeleton() {
+  const tbody = document.getElementById("standingsBody");
+  if (!tbody) return;
+
+  tbody.innerHTML = "";
+  for (let i = 0; i < 6; i++) {
+    tbody.innerHTML += `
+      <tr class="skeleton-row">
+        <td colspan="9">
+          <div class="skeleton-line"></div>
+        </td>
+      </tr>
+    `;
+  }
+}
 
 /* =========================
    FIXTURE
@@ -33,25 +68,23 @@ function renderFixtures(fixtures) {
 
     grid.innerHTML += `
       <div class="fixture-card">
-        <div class="fixture-team ${homeWin ? "winner" : "loser"}">
-          <img src="${home.logo}" alt="${home.name}">
+        <div class="fixture-team">
+          <img src="${home.logo}">
           <span>${home.name}</span>
         </div>
 
         <div class="fixture-center">
-          <div class="fixture-score">
-            <span class="${homeWin ? "win" : awayWin ? "lose" : ""}">
-              ${f.scoreLocal}
-            </span>
-            -
-            <span class="${awayWin ? "win" : homeWin ? "lose" : ""}">
-              ${f.scoreAway}
-            </span>
-          </div>
+          <span class="${homeWin ? "win" : awayWin ? "lose" : ""}">
+            ${f.scoreLocal}
+          </span>
+          -
+          <span class="${awayWin ? "win" : homeWin ? "lose" : ""}">
+            ${f.scoreAway}
+          </span>
         </div>
 
-        <div class="fixture-team ${awayWin ? "winner" : "loser"}">
-          <img src="${away.logo}" alt="${away.name}">
+        <div class="fixture-team">
+          <img src="${away.logo}">
           <span>${away.name}</span>
         </div>
       </div>
@@ -60,23 +93,8 @@ function renderFixtures(fixtures) {
 }
 
 /* =========================
-   STANDINGS DESDE FIXTURES
+   STANDINGS (DESDE FIXTURE)
 ========================= */
-function baseTeam(id) {
-  return {
-    id,
-    name: CLUBS[id].name,
-    logo: CLUBS[id].logo,
-    PJ: 0,
-    PG: 0,
-    PP: 0,
-    PF: 0,
-    PC: 0,
-    DG: 0,
-    PTS: 0,
-  };
-}
-
 function buildStandings(fixtures) {
   const table = {};
 
@@ -115,6 +133,20 @@ function buildStandings(fixtures) {
     .sort((a, b) => b.PTS - a.PTS || b.DG - a.DG);
 }
 
+function baseTeam(id) {
+  return {
+    name: CLUBS[id].name,
+    logo: CLUBS[id].logo,
+    PJ: 0,
+    PG: 0,
+    PP: 0,
+    PF: 0,
+    PC: 0,
+    DG: 0,
+    PTS: 0,
+  };
+}
+
 function renderStandings(standings) {
   const tbody = document.getElementById("standingsBody");
   if (!tbody) return;
@@ -126,17 +158,17 @@ function renderStandings(standings) {
       <tr class="${i === 0 ? "leader" : ""}">
         <td>${i + 1}</td>
         <td class="club-cell">
-          <img src="${t.logo}" alt="${t.name}">
+          <img src="${t.logo}">
           <span>${t.name}</span>
         </td>
         <td>${t.PJ}</td>
         <td>${t.PG}</td>
         <td>${t.PP}</td>
-        <td class="${t.DG > 0 ? "dg-positive" : t.DG < 0 ? "dg-negative" : ""}">
-          ${t.PF}
-        </td>
+        <td>${t.PF}</td>
         <td>${t.PC}</td>
-        <td>${t.DG}</td>
+        <td class="${t.DG > 0 ? "dg-positive" : t.DG < 0 ? "dg-negative" : ""}">
+          ${t.DG}
+        </td>
         <td>${t.PTS}</td>
       </tr>
     `;
@@ -147,9 +179,12 @@ function renderStandings(standings) {
    INIT
 ========================= */
 export async function initPublicPage() {
-  const fixtures = await getFixtures("B1");
-  renderFixtures(fixtures);
+  renderFixtureSkeleton();
+  renderTableSkeleton();
 
-  const standings = buildStandings(fixtures);
-  renderStandings(standings);
+  const fixtures = await getFixtures("B1");
+
+  renderFixtures(fixtures);
+  renderStandings(buildStandings(fixtures));
 }
+
