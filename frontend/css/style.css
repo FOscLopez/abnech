@@ -369,3 +369,42 @@ tr.leader {
     transform: translateY(0);
   }
 }
+/* =========================
+   STICKY NAV ANIMADA
+========================= */
+.site-header {
+  transition: padding 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+}
+
+.site-header.is-sticky {
+  padding: 0.4rem 1rem;
+  background: rgba(0,0,0,0.75);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+}
+
+/* =========================
+   CATEGORÍA TRANSITION
+========================= */
+.content-area {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.content-area.fade-out {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+/* =========================
+   ANIMACIONES FLUIDAS
+========================= */
+.fixture-card,
+.standings-table tbody tr {
+  will-change: transform, opacity;
+}
+
+/* =========================
+   FLIP SUPPORT
+========================= */
+.standings-table tbody tr {
+  transition: transform 0.35s ease;
+}

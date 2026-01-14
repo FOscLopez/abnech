@@ -17,51 +17,49 @@ const CLUBS = {
 let currentCategory = "B1";
 
 /* =========================
-   SKELETONS
+   STICKY NAV (PERFORMANCE)
 ========================= */
-function renderSkeletons() {
-  document.getElementById("fixture-grid").innerHTML = `
-    <div class="fixture-card skeleton"></div>
-    <div class="fixture-card skeleton"></div>
-    <div class="fixture-card skeleton"></div>
-  `;
+let lastScroll = 0;
+window.addEventListener(
+  "scroll",
+  () => {
+    requestAnimationFrame(() => {
+      const header = document.querySelector(".site-header");
+      if (!header) return;
 
-  document.getElementById("standingsBody").innerHTML = `
-    <tr class="skeleton-row"><td colspan="9"><div class="skeleton-line"></div></td></tr>
-    <tr class="skeleton-row"><td colspan="9"><div class="skeleton-line"></div></td></tr>
-    <tr class="skeleton-row"><td colspan="9"><div class="skeleton-line"></div></td></tr>
-  `;
-}
+      const scrolled = window.scrollY > 20;
+      header.classList.toggle("is-sticky", scrolled);
+    });
+  },
+  { passive: true }
+);
 
 /* =========================
    FIXTURE
 ========================= */
 function renderFixtures(fixtures) {
   const grid = document.getElementById("fixture-grid");
+  if (!grid) return;
+
   grid.innerHTML = "";
 
-  if (!fixtures.length) {
-    grid.innerHTML = `<div class="empty-state">No hay partidos</div>`;
-    return;
-  }
-
   fixtures.forEach(f => {
-    const home = CLUBS[f.homeClubId];
-    const away = CLUBS[f.awayClubId];
-    if (!home || !away) return;
+    const h = CLUBS[f.homeClubId];
+    const a = CLUBS[f.awayClubId];
+    if (!h || !a) return;
 
     grid.innerHTML += `
       <div class="fixture-card animate-in">
         <div class="fixture-team">
-          <img src="${home.logo}">
-          <span>${home.name}</span>
+          <img src="${h.logo}">
+          <span>${h.name}</span>
         </div>
         <div class="fixture-center">
           ${f.scoreLocal} - ${f.scoreAway}
         </div>
         <div class="fixture-team">
-          <img src="${away.logo}">
-          <span>${away.name}</span>
+          <img src="${a.logo}">
+          <span>${a.name}</span>
         </div>
       </div>
     `;
@@ -69,10 +67,11 @@ function renderFixtures(fixtures) {
 }
 
 /* =========================
-   STANDINGS
+   STANDINGS (FLIP SORT)
 ========================= */
 function baseTeam(id) {
   return {
+    id,
     name: CLUBS[id].name,
     logo: CLUBS[id].logo,
     PJ: 0, PG: 0, PP: 0, PF: 0, PC: 0, DG: 0, PTS: 0,
@@ -106,18 +105,42 @@ function buildStandings(fixtures) {
     .sort((a, b) => b.PTS - a.PTS || b.DG - a.DG);
 }
 
+/* =========================
+   FLIP ANIMATION
+========================= */
+function animateTable(tbody, newRowsHTML) {
+  const oldRects = {};
+  [...tbody.children].forEach(row => {
+    oldRects[row.dataset.id] = row.getBoundingClientRect();
+  });
+
+  tbody.innerHTML = newRowsHTML;
+
+  [...tbody.children].forEach(row => {
+    const old = oldRects[row.dataset.id];
+    if (!old) return;
+
+    const newRect = row.getBoundingClientRect();
+    const dy = old.top - newRect.top;
+
+    row.style.transform = `translateY(${dy}px)`;
+    row.style.transition = "none";
+
+    requestAnimationFrame(() => {
+      row.style.transform = "";
+      row.style.transition = "transform 0.35s ease";
+    });
+  });
+}
+
 function renderStandings(standings) {
   const tbody = document.getElementById("standingsBody");
-  tbody.innerHTML = "";
+  if (!tbody) return;
 
-  if (!standings.length) {
-    tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state">Sin tabla</div></td></tr>`;
-    return;
-  }
-
-  standings.forEach((t, i) => {
-    tbody.innerHTML += `
-      <tr class="animate-in ${i === 0 ? "leader" : ""}">
+  const rows = standings
+    .map(
+      (t, i) => `
+      <tr data-id="${t.id}" class="${i === 0 ? "leader" : ""}">
         <td>${i + 1}</td>
         <td class="club-cell">
           <img src="${t.logo}">
@@ -130,28 +153,28 @@ function renderStandings(standings) {
         <td>${t.PC}</td>
         <td>${t.DG}</td>
         <td>${t.PTS}</td>
-      </tr>
-    `;
-  });
+      </tr>`
+    )
+    .join("");
+
+  animateTable(tbody, rows);
 }
 
 /* =========================
-   CATEGORÍA CON ANIMACIÓN
+   CATEGORÍA
 ========================= */
-async function loadCategory(categoryId) {
-  currentCategory = categoryId;
+async function loadCategory(category) {
+  currentCategory = category;
 
-  document.querySelector(".content-area")?.classList.add("fade-out");
+  const content = document.querySelector(".content-area");
+  content?.classList.add("fade-out");
 
   setTimeout(async () => {
-    renderSkeletons();
-
-    const fixtures = await getFixtures(categoryId);
+    const fixtures = await getFixtures(category);
     renderFixtures(fixtures);
     renderStandings(buildStandings(fixtures));
-
-    document.querySelector(".content-area")?.classList.remove("fade-out");
-  }, 250);
+    content?.classList.remove("fade-out");
+  }, 200);
 }
 
 /* =========================
@@ -164,7 +187,6 @@ export function initPublicPage() {
     btn.addEventListener("click", () => {
       document.querySelector(".category-btn.active")?.classList.remove("active");
       btn.classList.add("active");
-
       loadCategory(btn.dataset.category);
     });
   });
