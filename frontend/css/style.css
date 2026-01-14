@@ -413,3 +413,29 @@ tr.leader {
 .content-area.fade-out {
   pointer-events: none;
 }
+/* =========================
+   TABLA – ESTADOS VISUALES
+========================= */
+
+/* Líder */
+.standings-table tbody tr.leader {
+  background: linear-gradient(90deg, #1e293b, #020617);
+  box-shadow: inset 0 0 0 1px #f59e0b;
+}
+
+/* Diferencia de gol */
+.standings-table td.dg-positive {
+  color: #22c55e; /* verde */
+  font-weight: 600;
+}
+
+.standings-table td.dg-negative {
+  color: #ef4444; /* rojo */
+  font-weight: 600;
+}
+
+/* Puntos */
+.standings-table td.pts {
+  color: #f59e0b;
+  font-weight: bold;
+}

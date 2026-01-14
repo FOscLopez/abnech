@@ -142,29 +142,30 @@ function animateTable(tbody, newRowsHTML) {
   });
 }
 
-
 function renderStandings(standings) {
   const tbody = document.getElementById("standingsBody");
   if (!tbody) return;
 
   const rows = standings
-    .map(
-      (t, i) => `
-      <tr data-id="${t.id}" class="${i === 0 ? "leader" : ""}">
-        <td>${i + 1}</td>
-        <td class="club-cell">
-          <img src="${t.logo}">
-          <span>${t.name}</span>
-        </td>
-        <td>${t.PJ}</td>
-        <td>${t.PG}</td>
-        <td>${t.PP}</td>
-        <td>${t.PF}</td>
-        <td>${t.PC}</td>
-        <td>${t.DG}</td>
-        <td>${t.PTS}</td>
-      </tr>`
-    )
+    .map((t, i) => {
+      const dgClass = t.DG > 0 ? "dg-positive" : t.DG < 0 ? "dg-negative" : "";
+      return `
+        <tr data-id="${t.id}" class="${i === 0 ? "leader" : ""}">
+          <td>${i + 1}</td>
+          <td class="club-cell">
+            <img src="${t.logo}">
+            <span>${t.name}</span>
+          </td>
+          <td>${t.PJ}</td>
+          <td>${t.PG}</td>
+          <td>${t.PP}</td>
+          <td>${t.PF}</td>
+          <td>${t.PC}</td>
+          <td class="${dgClass}">${t.DG}</td>
+          <td class="pts">${t.PTS}</td>
+        </tr>
+      `;
+    })
     .join("");
 
   animateTable(tbody, rows);
