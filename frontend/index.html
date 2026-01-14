@@ -51,39 +51,6 @@
     .hidden {
       display: none;
     }
-
-    /* ===== FIXTURE ===== */
-    .fixture-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-
-    .fixture-card {
-      background: linear-gradient(145deg, #0f172a, #020617);
-      border-radius: 12px;
-      padding: 1rem;
-      text-align: center;
-      border: 1px solid #1e293b;
-    }
-
-    .fixture-teams {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: bold;
-      margin: 1rem 0;
-    }
-
-    .fixture-vs {
-      color: #ff6b00;
-    }
-
-    .fixture-info {
-      font-size: 0.85rem;
-      color: #94a3b8;
-    }
   </style>
 </head>
 
@@ -103,42 +70,44 @@
       <span class="logo-main">ABNECH Basket</span>
     </header>
 
+    <!-- 🔑 CONTENEDOR ÚNICO PARA ANIMACIONES -->
     <main>
+      <div class="content-area">
 
-      <!-- FIXTURE -->
-      <section id="fixture" class="section-block">
-        <h2>FIXTURE</h2>
+        <!-- FIXTURE -->
+        <section id="fixture" class="section-block">
+          <h2>FIXTURE</h2>
 
-        <!-- CONTENEDOR ESTABLE PARA JS -->
-        <div id="fixturesContainer">
-          <div id="fixture-grid" class="fixture-grid"></div>
-        </div>
+          <div id="fixturesContainer">
+            <div id="fixture-grid" class="fixture-grid"></div>
+          </div>
+        </section>
 
-      </section>
+        <!-- TABLA -->
+        <section id="tabla" class="section-block">
+          <h2>TABLA DE POSICIONES</h2>
 
-      <!-- TABLA -->
-      <section id="tabla" class="section-block">
-        <h2>TABLA DE POSICIONES</h2>
-        <div class="standings-table-wrapper">
-          <table class="standings-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Club</th>
-                <th>PJ</th>
-                <th>PG</th>
-                <th>PP</th>
-                <th>PF</th>
-                <th>PC</th>
-                <th>DG</th>
-                <th>PTS</th>
-              </tr>
-            </thead>
-            <tbody id="standingsBody"></tbody>
-          </table>
-        </div>
-      </section>
+          <div class="standings-table-wrapper">
+            <table class="standings-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Club</th>
+                  <th>PJ</th>
+                  <th>PG</th>
+                  <th>PP</th>
+                  <th>PF</th>
+                  <th>PC</th>
+                  <th>DG</th>
+                  <th>PTS</th>
+                </tr>
+              </thead>
+              <tbody id="standingsBody"></tbody>
+            </table>
+          </div>
+        </section>
 
+      </div>
     </main>
 
     <footer class="site-footer">
