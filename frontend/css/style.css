@@ -439,3 +439,45 @@ tr.leader {
   color: #f59e0b;
   font-weight: bold;
 }
+/* =========================
+   SKELETON LOADERS
+========================= */
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: #1e293b;
+  border-radius: 8px;
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.08),
+    transparent
+  );
+  animation: skeleton-shimmer 1.2s infinite;
+}
+
+@keyframes skeleton-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Fixture skeleton */
+.skeleton-fixture {
+  height: 64px;
+  margin-bottom: 12px;
+}
+
+/* Table skeleton */
+.skeleton-row {
+  height: 36px;
+  margin-bottom: 8px;
+}

@@ -37,6 +37,9 @@ window.addEventListener(
 /* =========================
    FIXTURE
 ========================= */
+showSkeleton("fixture-skeleton");
+showSkeleton("table-skeleton");
+
 function renderFixtures(fixtures) {
   const grid = document.getElementById("fixture-grid");
   if (!grid) return;
@@ -104,6 +107,9 @@ function buildStandings(fixtures) {
     .map(t => ({ ...t, DG: t.PF - t.PC }))
     .sort((a, b) => b.PTS - a.PTS || b.DG - a.DG);
 }
+
+hideSkeleton("fixture-skeleton");
+hideSkeleton("table-skeleton");
 
 /* =========================
    FLIP ANIMATION
@@ -201,4 +207,14 @@ export function initPublicPage() {
       loadCategory(btn.dataset.category);
     });
   });
+}
+
+function showSkeleton(id) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = "block";
+}
+
+function hideSkeleton(id) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = "none";
 }
