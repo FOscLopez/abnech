@@ -5,7 +5,7 @@ import { getFixtures } from "./services/fixtures.service.js";
 ========================= */
 const CLUBS = {
   union: { name: "Unión", logo: "/img/clubs/union.png" },
-  funebrero: { name: "Funebrero", logo: "/img/clubs/palermo.png" },
+  funebrero: { name: "Funebrero", logo: "/img/clubs/funebrero.png" },
   cfa: { name: "CFA", logo: "/img/clubs/cfa.png" },
   "general-vedia": { name: "General Vedia", logo: "/img/clubs/general-vedia.png" },
   "la-leonesa": { name: "La Leonesa", logo: "/img/clubs/la-leonesa.png" },
@@ -15,7 +15,7 @@ const CLUBS = {
 };
 
 /* =========================
-   SKELETON RENDER
+   SKELETONS
 ========================= */
 function renderFixtureSkeleton() {
   const grid = document.getElementById("fixture-grid");
@@ -33,7 +33,7 @@ function renderFixtureSkeleton() {
   }
 }
 
-function renderTableSkeleton() {
+function renderStandingsSkeleton() {
   const tbody = document.getElementById("standingsBody");
   if (!tbody) return;
 
@@ -55,6 +55,11 @@ function renderTableSkeleton() {
 function renderFixtures(fixtures) {
   const grid = document.getElementById("fixture-grid");
   if (!grid) return;
+
+  if (!fixtures.length) {
+    grid.innerHTML = `<div class="empty-state">No hay partidos cargados</div>`;
+    return;
+  }
 
   grid.innerHTML = "";
 
@@ -93,63 +98,62 @@ function renderFixtures(fixtures) {
 }
 
 /* =========================
-   STANDINGS (DESDE FIXTURE)
+   STANDINGS
 ========================= */
+function baseTeam(id) {
+  return {
+    name: CLUBS[id].name,
+    logo: CLUBS[id].logo,
+    PJ: 0, PG: 0, PP: 0,
+    PF: 0, PC: 0, DG: 0, PTS: 0,
+  };
+}
+
 function buildStandings(fixtures) {
   const table = {};
 
-  fixtures
-    .filter(f => f.status === "finished")
-    .forEach(f => {
-      const h = f.homeClubId;
-      const a = f.awayClubId;
+  fixtures.filter(f => f.status === "finished").forEach(f => {
+    const h = f.homeClubId;
+    const a = f.awayClubId;
 
-      if (!table[h]) table[h] = baseTeam(h);
-      if (!table[a]) table[a] = baseTeam(a);
+    if (!table[h]) table[h] = baseTeam(h);
+    if (!table[a]) table[a] = baseTeam(a);
 
-      table[h].PJ++;
-      table[a].PJ++;
+    table[h].PJ++;
+    table[a].PJ++;
 
-      table[h].PF += f.scoreLocal;
-      table[h].PC += f.scoreAway;
-      table[a].PF += f.scoreAway;
-      table[a].PC += f.scoreLocal;
+    table[h].PF += f.scoreLocal;
+    table[h].PC += f.scoreAway;
+    table[a].PF += f.scoreAway;
+    table[a].PC += f.scoreLocal;
 
-      if (f.scoreLocal > f.scoreAway) {
-        table[h].PG++;
-        table[a].PP++;
-        table[h].PTS += 2;
-        table[a].PTS += 1;
-      } else {
-        table[a].PG++;
-        table[h].PP++;
-        table[a].PTS += 2;
-        table[h].PTS += 1;
-      }
-    });
+    if (f.scoreLocal > f.scoreAway) {
+      table[h].PG++; table[a].PP++;
+      table[h].PTS += 2; table[a].PTS += 1;
+    } else {
+      table[a].PG++; table[h].PP++;
+      table[a].PTS += 2; table[h].PTS += 1;
+    }
+  });
 
   return Object.values(table)
     .map(t => ({ ...t, DG: t.PF - t.PC }))
     .sort((a, b) => b.PTS - a.PTS || b.DG - a.DG);
 }
 
-function baseTeam(id) {
-  return {
-    name: CLUBS[id].name,
-    logo: CLUBS[id].logo,
-    PJ: 0,
-    PG: 0,
-    PP: 0,
-    PF: 0,
-    PC: 0,
-    DG: 0,
-    PTS: 0,
-  };
-}
-
 function renderStandings(standings) {
   const tbody = document.getElementById("standingsBody");
   if (!tbody) return;
+
+  if (!standings.length) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="9">
+          <div class="empty-state">No hay tabla disponible</div>
+        </td>
+      </tr>`;
+    return;
+  }
 
   tbody.innerHTML = "";
 
@@ -180,11 +184,10 @@ function renderStandings(standings) {
 ========================= */
 export async function initPublicPage() {
   renderFixtureSkeleton();
-  renderTableSkeleton();
+  renderStandingsSkeleton();
 
   const fixtures = await getFixtures("B1");
 
   renderFixtures(fixtures);
   renderStandings(buildStandings(fixtures));
 }
-
