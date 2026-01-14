@@ -14,39 +14,23 @@ const CLUBS = {
   zapallar: { name: "Zapallar", logo: "/img/clubs/zapallar.png" },
 };
 
+let currentCategory = "B1";
+
 /* =========================
    SKELETONS
 ========================= */
-function renderFixtureSkeleton() {
-  const grid = document.getElementById("fixture-grid");
-  if (!grid) return;
+function renderSkeletons() {
+  document.getElementById("fixture-grid").innerHTML = `
+    <div class="fixture-card skeleton"></div>
+    <div class="fixture-card skeleton"></div>
+    <div class="fixture-card skeleton"></div>
+  `;
 
-  grid.innerHTML = "";
-  for (let i = 0; i < 4; i++) {
-    grid.innerHTML += `
-      <div class="fixture-card skeleton">
-        <div class="skeleton-circle"></div>
-        <div class="skeleton-line wide"></div>
-        <div class="skeleton-circle"></div>
-      </div>
-    `;
-  }
-}
-
-function renderStandingsSkeleton() {
-  const tbody = document.getElementById("standingsBody");
-  if (!tbody) return;
-
-  tbody.innerHTML = "";
-  for (let i = 0; i < 6; i++) {
-    tbody.innerHTML += `
-      <tr class="skeleton-row">
-        <td colspan="9">
-          <div class="skeleton-line"></div>
-        </td>
-      </tr>
-    `;
-  }
+  document.getElementById("standingsBody").innerHTML = `
+    <tr class="skeleton-row"><td colspan="9"><div class="skeleton-line"></div></td></tr>
+    <tr class="skeleton-row"><td colspan="9"><div class="skeleton-line"></div></td></tr>
+    <tr class="skeleton-row"><td colspan="9"><div class="skeleton-line"></div></td></tr>
+  `;
 }
 
 /* =========================
@@ -54,40 +38,27 @@ function renderStandingsSkeleton() {
 ========================= */
 function renderFixtures(fixtures) {
   const grid = document.getElementById("fixture-grid");
-  if (!grid) return;
+  grid.innerHTML = "";
 
   if (!fixtures.length) {
-    grid.innerHTML = `<div class="empty-state">No hay partidos cargados</div>`;
+    grid.innerHTML = `<div class="empty-state">No hay partidos</div>`;
     return;
   }
-
-  grid.innerHTML = "";
 
   fixtures.forEach(f => {
     const home = CLUBS[f.homeClubId];
     const away = CLUBS[f.awayClubId];
     if (!home || !away) return;
 
-    const homeWin = f.scoreLocal > f.scoreAway;
-    const awayWin = f.scoreAway > f.scoreLocal;
-
     grid.innerHTML += `
-      <div class="fixture-card">
+      <div class="fixture-card animate-in">
         <div class="fixture-team">
           <img src="${home.logo}">
           <span>${home.name}</span>
         </div>
-
         <div class="fixture-center">
-          <span class="${homeWin ? "win" : awayWin ? "lose" : ""}">
-            ${f.scoreLocal}
-          </span>
-          -
-          <span class="${awayWin ? "win" : homeWin ? "lose" : ""}">
-            ${f.scoreAway}
-          </span>
+          ${f.scoreLocal} - ${f.scoreAway}
         </div>
-
         <div class="fixture-team">
           <img src="${away.logo}">
           <span>${away.name}</span>
@@ -104,14 +75,12 @@ function baseTeam(id) {
   return {
     name: CLUBS[id].name,
     logo: CLUBS[id].logo,
-    PJ: 0, PG: 0, PP: 0,
-    PF: 0, PC: 0, DG: 0, PTS: 0,
+    PJ: 0, PG: 0, PP: 0, PF: 0, PC: 0, DG: 0, PTS: 0,
   };
 }
 
 function buildStandings(fixtures) {
   const table = {};
-
   fixtures.filter(f => f.status === "finished").forEach(f => {
     const h = f.homeClubId;
     const a = f.awayClubId;
@@ -119,13 +88,9 @@ function buildStandings(fixtures) {
     if (!table[h]) table[h] = baseTeam(h);
     if (!table[a]) table[a] = baseTeam(a);
 
-    table[h].PJ++;
-    table[a].PJ++;
-
-    table[h].PF += f.scoreLocal;
-    table[h].PC += f.scoreAway;
-    table[a].PF += f.scoreAway;
-    table[a].PC += f.scoreLocal;
+    table[h].PJ++; table[a].PJ++;
+    table[h].PF += f.scoreLocal; table[h].PC += f.scoreAway;
+    table[a].PF += f.scoreAway; table[a].PC += f.scoreLocal;
 
     if (f.scoreLocal > f.scoreAway) {
       table[h].PG++; table[a].PP++;
@@ -143,23 +108,16 @@ function buildStandings(fixtures) {
 
 function renderStandings(standings) {
   const tbody = document.getElementById("standingsBody");
-  if (!tbody) return;
+  tbody.innerHTML = "";
 
   if (!standings.length) {
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="9">
-          <div class="empty-state">No hay tabla disponible</div>
-        </td>
-      </tr>`;
+    tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state">Sin tabla</div></td></tr>`;
     return;
   }
 
-  tbody.innerHTML = "";
-
   standings.forEach((t, i) => {
     tbody.innerHTML += `
-      <tr class="${i === 0 ? "leader" : ""}">
+      <tr class="animate-in ${i === 0 ? "leader" : ""}">
         <td>${i + 1}</td>
         <td class="club-cell">
           <img src="${t.logo}">
@@ -170,9 +128,7 @@ function renderStandings(standings) {
         <td>${t.PP}</td>
         <td>${t.PF}</td>
         <td>${t.PC}</td>
-        <td class="${t.DG > 0 ? "dg-positive" : t.DG < 0 ? "dg-negative" : ""}">
-          ${t.DG}
-        </td>
+        <td>${t.DG}</td>
         <td>${t.PTS}</td>
       </tr>
     `;
@@ -180,14 +136,36 @@ function renderStandings(standings) {
 }
 
 /* =========================
+   CATEGORÍA CON ANIMACIÓN
+========================= */
+async function loadCategory(categoryId) {
+  currentCategory = categoryId;
+
+  document.querySelector(".content-area")?.classList.add("fade-out");
+
+  setTimeout(async () => {
+    renderSkeletons();
+
+    const fixtures = await getFixtures(categoryId);
+    renderFixtures(fixtures);
+    renderStandings(buildStandings(fixtures));
+
+    document.querySelector(".content-area")?.classList.remove("fade-out");
+  }, 250);
+}
+
+/* =========================
    INIT
 ========================= */
-export async function initPublicPage() {
-  renderFixtureSkeleton();
-  renderStandingsSkeleton();
+export function initPublicPage() {
+  loadCategory(currentCategory);
 
-  const fixtures = await getFixtures("B1");
+  document.querySelectorAll(".category-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelector(".category-btn.active")?.classList.remove("active");
+      btn.classList.add("active");
 
-  renderFixtures(fixtures);
-  renderStandings(buildStandings(fixtures));
+      loadCategory(btn.dataset.category);
+    });
+  });
 }
