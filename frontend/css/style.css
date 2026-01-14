@@ -180,7 +180,9 @@ body {
 tr.leader {
   background: linear-gradient(90deg, #1e293b, #020617);
   box-shadow: inset 0 0 0 1px #f59e0b;
+  transform: scale(1.01);
 }
+
 
 /* diferencia */
 .dg-positive {
@@ -407,4 +409,7 @@ tr.leader {
 ========================= */
 .standings-table tbody tr {
   transition: transform 0.35s ease;
+}
+.content-area.fade-out {
+  pointer-events: none;
 }

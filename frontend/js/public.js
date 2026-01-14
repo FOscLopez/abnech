@@ -109,19 +109,28 @@ function buildStandings(fixtures) {
    FLIP ANIMATION
 ========================= */
 function animateTable(tbody, newRowsHTML) {
-  const oldRects = {};
-  [...tbody.children].forEach(row => {
-    oldRects[row.dataset.id] = row.getBoundingClientRect();
-  });
+  const oldOrder = [...tbody.children].map(tr => tr.dataset.id);
 
+  // Render nuevo
   tbody.innerHTML = newRowsHTML;
 
-  [...tbody.children].forEach(row => {
-    const old = oldRects[row.dataset.id];
-    if (!old) return;
+  const newOrder = [...tbody.children].map(tr => tr.dataset.id);
 
-    const newRect = row.getBoundingClientRect();
-    const dy = old.top - newRect.top;
+  // 👉 Si el orden es igual, no animamos
+  if (oldOrder.join() === newOrder.join()) return;
+
+  const newRects = {};
+  [...tbody.children].forEach(row => {
+    newRects[row.dataset.id] = row.getBoundingClientRect();
+  });
+
+  [...tbody.children].forEach(row => {
+    const oldIndex = oldOrder.indexOf(row.dataset.id);
+    if (oldIndex === -1) return;
+
+    const oldTop = newRects[row.dataset.id].top;
+    const newTop = row.getBoundingClientRect().top;
+    const dy = oldTop - newTop;
 
     row.style.transform = `translateY(${dy}px)`;
     row.style.transition = "none";
@@ -132,6 +141,7 @@ function animateTable(tbody, newRowsHTML) {
     });
   });
 }
+
 
 function renderStandings(standings) {
   const tbody = document.getElementById("standingsBody");
