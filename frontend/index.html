@@ -6,54 +6,7 @@
   <title>ABNECH Basket</title>
 
   <link rel="icon" href="data:,">
-
   <link rel="stylesheet" href="./css/style.css" />
-
-  <style>
-    /* ===== LANDING ===== */
-    .landing {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 1.5rem;
-      text-align: center;
-      transition: opacity 0.6s ease;
-    }
-
-    .landing.fade-out {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .enter-btn {
-      padding: 1rem 2.8rem;
-      font-size: 1.2rem;
-      border-radius: 10px;
-      border: none;
-      cursor: pointer;
-      background: #ff6b00;
-      color: #fff;
-      font-weight: bold;
-    }
-
-    /* ===== APP ===== */
-    #app {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.6s ease, transform 0.6s ease;
-    }
-
-    #app.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .hidden {
-      display: none;
-    }
-  </style>
 </head>
 
 <body>
@@ -72,19 +25,39 @@
       <span class="logo-main">ABNECH Basket</span>
     </header>
 
-    <!-- 🔑 CONTENEDOR ÚNICO PARA ANIMACIONES -->
     <main>
       <div class="content-area">
 
         <!-- FIXTURE -->
         <section id="fixture" class="section-block">
           <h2>FIXTURE</h2>
-          
+
+          <!-- FILTROS -->
+          <div class="filters-bar">
+            <input
+              type="number"
+              id="filter-round"
+              placeholder="Jornada"
+              min="1"
+            />
+
+            <select id="filter-status">
+              <option value="all">Todos</option>
+              <option value="finished">Finalizados</option>
+              <option value="scheduled">Programados</option>
+            </select>
+
+            <select id="filter-club">
+              <option value="all">Todos los clubes</option>
+            </select>
+          </div>
+
+          <!-- SKELETON -->
           <div id="fixture-skeleton">
             <div class="skeleton skeleton-fixture"></div>
             <div class="skeleton skeleton-fixture"></div>
           </div>
-          
+
           <div id="fixturesContainer">
             <div id="fixture-grid" class="fixture-grid"></div>
           </div>
@@ -99,7 +72,7 @@
             <div class="skeleton skeleton-row"></div>
             <div class="skeleton skeleton-row"></div>
           </div>
-          
+
           <div class="standings-table-wrapper">
             <table class="standings-table">
               <thead>

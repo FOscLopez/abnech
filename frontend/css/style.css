@@ -325,3 +325,30 @@ body {
     font-size: 1.2rem;
   }
 }
+/* =========================
+   FILTROS FIXTURE
+========================= */
+.filters-bar {
+  display: flex;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.filters-bar input,
+.filters-bar select {
+  padding: 0.45rem 0.7rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: #0b0f1f;
+  color: #fff;
+  font-size: 0.85rem;
+}
+
+.filters-bar input::placeholder {
+  color: #9ca3af;
+}
+
+.filters-bar select option {
+  background: #0b0f1f;
+}

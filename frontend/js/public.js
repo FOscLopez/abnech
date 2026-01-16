@@ -16,30 +16,21 @@ const CLUBS = {
 
 let currentCategory = "B1";
 let lastCategoryRendered = null;
+let allFixtures = [];
 
 /* =========================
-   STICKY NAV (PERFORMANCE)
-========================= */
-window.addEventListener(
-  "scroll",
-  () => {
-    requestAnimationFrame(() => {
-      const header = document.querySelector(".site-header");
-      if (!header) return;
-      header.classList.toggle("is-sticky", window.scrollY > 20);
-    });
-  },
-  { passive: true }
-);
-
-/* =========================
-   FIXTURE
+   FIXTURE RENDER
 ========================= */
 function renderFixtures(fixtures) {
   const grid = document.getElementById("fixture-grid");
   if (!grid) return;
 
   grid.innerHTML = "";
+
+  if (fixtures.length === 0) {
+    grid.innerHTML = `<div class="empty-state">No hay partidos con estos filtros</div>`;
+    return;
+  }
 
   fixtures.forEach(f => {
     const h = CLUBS[f.homeClubId];
@@ -106,71 +97,57 @@ function buildStandings(fixtures) {
     .sort((a, b) => b.PTS - a.PTS || b.DG - a.DG);
 }
 
-/* =========================
-   FLIP ANIMATION
-========================= */
-function animateTable(tbody, newRowsHTML) {
-  const oldOrder = [...tbody.children].map(tr => tr.dataset.id);
-
-  tbody.innerHTML = newRowsHTML;
-
-  const newOrder = [...tbody.children].map(tr => tr.dataset.id);
-  if (oldOrder.join() === newOrder.join()) return;
-
-  const newRects = {};
-  [...tbody.children].forEach(row => {
-    newRects[row.dataset.id] = row.getBoundingClientRect();
-  });
-
-  [...tbody.children].forEach(row => {
-    const oldIndex = oldOrder.indexOf(row.dataset.id);
-    if (oldIndex === -1) return;
-
-    const oldTop = newRects[row.dataset.id].top;
-    const newTop = row.getBoundingClientRect().top;
-    const dy = oldTop - newTop;
-
-    row.style.transform = `translateY(${dy}px)`;
-    row.style.transition = "none";
-
-    requestAnimationFrame(() => {
-      row.style.transform = "";
-      row.style.transition = "transform 0.35s ease";
-    });
-  });
-}
-
 function renderStandings(standings) {
   const tbody = document.getElementById("standingsBody");
   if (!tbody) return;
 
-  const rows = standings
-    .map((t, i) => {
-      const dgClass = t.DG > 0 ? "dg-positive" : t.DG < 0 ? "dg-negative" : "";
-      return `
-        <tr data-id="${t.id}" class="${i === 0 ? "leader" : ""}">
-          <td>${i + 1}</td>
-          <td class="club-cell">
-            <img src="${t.logo}">
-            <span>${t.name}</span>
-          </td>
-          <td>${t.PJ}</td>
-          <td>${t.PG}</td>
-          <td>${t.PP}</td>
-          <td>${t.PF}</td>
-          <td>${t.PC}</td>
-          <td class="${dgClass}">${t.DG}</td>
-          <td class="pts">${t.PTS}</td>
-        </tr>
-      `;
-    })
-    .join("");
-
-  animateTable(tbody, rows);
+  tbody.innerHTML = standings.map((t, i) => `
+    <tr class="${i === 0 ? "leader" : ""}">
+      <td>${i + 1}</td>
+      <td class="club-cell">
+        <img src="${t.logo}">
+        <span>${t.name}</span>
+      </td>
+      <td>${t.PJ}</td>
+      <td>${t.PG}</td>
+      <td>${t.PP}</td>
+      <td>${t.PF}</td>
+      <td>${t.PC}</td>
+      <td class="${t.DG > 0 ? "dg-positive" : t.DG < 0 ? "dg-negative" : ""}">${t.DG}</td>
+      <td class="pts">${t.PTS}</td>
+    </tr>
+  `).join("");
 }
 
 /* =========================
-   CATEGORÍA
+   FILTROS
+========================= */
+function applyFilters() {
+  const round = document.getElementById("filter-round").value;
+  const status = document.getElementById("filter-status").value;
+  const club = document.getElementById("filter-club").value;
+
+  let filtered = [...allFixtures];
+
+  if (round) {
+    filtered = filtered.filter(f => Number(f.order) === Number(round));
+  }
+
+  if (status !== "all") {
+    filtered = filtered.filter(f => f.status === status);
+  }
+
+  if (club !== "all") {
+    filtered = filtered.filter(
+      f => f.homeClubId === club || f.awayClubId === club
+    );
+  }
+
+  renderFixtures(filtered);
+}
+
+/* =========================
+   CARGA CATEGORÍA
 ========================= */
 async function loadCategory(category) {
   if (category === lastCategoryRendered) return;
@@ -179,16 +156,14 @@ async function loadCategory(category) {
 
   showSkeleton("fixture-skeleton");
   showSkeleton("table-skeleton");
-  startContentFeedback();
 
-  const fixtures = await getFixtures(category);
-
-  renderFixtures(fixtures);
-  renderStandings(buildStandings(fixtures));
+  allFixtures = await getFixtures(category);
 
   hideSkeleton("fixture-skeleton");
   hideSkeleton("table-skeleton");
-  stopContentFeedback();
+
+  renderFixtures(allFixtures);
+  renderStandings(buildStandings(allFixtures));
 }
 
 /* =========================
@@ -197,13 +172,18 @@ async function loadCategory(category) {
 export function initPublicPage() {
   loadCategory(currentCategory);
 
-  document.querySelectorAll(".category-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelector(".category-btn.active")?.classList.remove("active");
-      btn.classList.add("active");
-      loadCategory(btn.dataset.category);
-    });
+  // llenar select de clubes
+  const clubSelect = document.getElementById("filter-club");
+  Object.entries(CLUBS).forEach(([id, club]) => {
+    const opt = document.createElement("option");
+    opt.value = id;
+    opt.textContent = club.name;
+    clubSelect.appendChild(opt);
   });
+
+  document
+    .querySelectorAll("#filter-round, #filter-status, #filter-club")
+    .forEach(el => el.addEventListener("change", applyFilters));
 }
 
 /* =========================
@@ -217,14 +197,4 @@ function showSkeleton(id) {
 function hideSkeleton(id) {
   const el = document.getElementById(id);
   if (el) el.style.display = "none";
-}
-
-function startContentFeedback() {
-  const area = document.querySelector(".content-area");
-  if (area) area.classList.add("updating");
-}
-
-function stopContentFeedback() {
-  const area = document.querySelector(".content-area");
-  if (area) area.classList.remove("updating");
 }
