@@ -5,9 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ABNECH Basket</title>
 
-  <!-- evita warning favicon -->
   <link rel="icon" href="data:,">
-
   <link rel="stylesheet" href="./css/style.css" />
 
   <style>
@@ -41,23 +39,25 @@
 
     /* ===== APP ===== */
     #app {
-      display: none;
       opacity: 0;
       transform: translateY(20px);
       transition: opacity 0.6s ease, transform 0.6s ease;
     }
 
     #app.show {
-      display: block;
       opacity: 1;
       transform: translateY(0);
+    }
+
+    .hidden {
+      display: none;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- LANDING (ÚNICO LUGAR DONDE EXISTE EL BOTÓN) -->
+  <!-- LANDING -->
   <section id="landing" class="landing">
     <h1>ABNECH Basket</h1>
     <p>Liga Regional de Básquet</p>
@@ -65,7 +65,7 @@
   </section>
 
   <!-- APP -->
-  <div id="app">
+  <div id="app" class="hidden">
 
     <header class="site-header">
       <span class="logo-main">ABNECH Basket</span>
@@ -78,6 +78,28 @@
         <section id="fixture" class="section-block">
           <h2>FIXTURE</h2>
 
+          <!-- FILTROS (NECESARIOS PARA public.js) -->
+          <div class="filters-bar">
+            <input
+              type="number"
+              id="filter-round"
+              placeholder="Jornada"
+              min="1"
+            />
+
+            <select id="filter-status">
+              <option value="all">Todos</option>
+              <option value="scheduled">Programado</option>
+              <option value="live">En juego</option>
+              <option value="finished">Finalizado</option>
+            </select>
+
+            <select id="filter-club">
+              <option value="all">Todos los clubes</option>
+            </select>
+          </div>
+
+          <!-- Skeleton -->
           <div id="fixture-skeleton">
             <div class="skeleton skeleton-fixture"></div>
             <div class="skeleton skeleton-fixture"></div>
@@ -137,21 +159,23 @@
     const entered = localStorage.getItem("abnech_entered");
 
     if (entered === "true") {
-      landing.remove();            // 🔑 clave: elimina el landing
+      landing.classList.add("hidden");
+      app.classList.remove("hidden");
       app.classList.add("show");
       initPublicPage();
-    } else {
-      enterBtn.addEventListener("click", () => {
-        localStorage.setItem("abnech_entered", "true");
-        landing.classList.add("fade-out");
-
-        setTimeout(() => {
-          landing.remove();        // 🔑 nunca queda visible
-          app.classList.add("show");
-          initPublicPage();
-        }, 600);
-      });
     }
+
+    enterBtn.addEventListener("click", () => {
+      localStorage.setItem("abnech_entered", "true");
+      landing.classList.add("fade-out");
+
+      setTimeout(() => {
+        landing.classList.add("hidden");
+        app.classList.remove("hidden");
+        app.classList.add("show");
+        initPublicPage();
+      }, 600);
+    });
   </script>
 
 </body>
