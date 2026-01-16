@@ -25,7 +25,6 @@
   --bg-dark: #0d1117;
   --bg-light: #ffffff;
 
-  /* estados */
   --win: #22c55e;
   --lose: #ef4444;
 }
@@ -75,7 +74,7 @@ body {
 }
 
 /* =========================================================
-   FIXTURE (C1 + C2 + C3)
+   FIXTURE
 ========================================================= */
 .fixture-card {
   display: flex;
@@ -109,24 +108,16 @@ body {
 
 .fixture-center {
   text-align: center;
-}
-
-.fixture-score {
   font-family: 'Courier New', monospace;
   font-size: 1.4rem;
   font-weight: 700;
 }
 
-.win {
-  color: var(--win);
-}
-
-.lose {
-  color: var(--lose);
-}
+.win { color: var(--win); }
+.lose { color: var(--lose); }
 
 /* =========================================================
-   TABLA DE POSICIONES (C1 + C2 + C3)
+   TABLA DE POSICIONES
 ========================================================= */
 .standings-table-wrapper {
   background: #111827;
@@ -134,6 +125,7 @@ body {
   border: 1px solid rgba(255,255,255,0.08);
   overflow-x: auto;
   box-shadow: var(--shadow-strong);
+  contain: layout paint;
 }
 
 .standings-table {
@@ -154,15 +146,6 @@ body {
   font-weight: 600;
 }
 
-.standings-table tbody tr {
-  transition: background .2s ease, transform .2s ease;
-}
-
-.standings-table tbody tr:hover {
-  background: rgba(255,255,255,0.05);
-  transform: scale(1.01);
-}
-
 .club-cell {
   display: flex;
   align-items: center;
@@ -176,166 +159,49 @@ body {
   object-fit: contain;
 }
 
-/* líder */
-tr.leader {
+/* Estados */
+.standings-table td.dg-positive {
+  color: var(--win);
+  font-weight: 600;
+}
+
+.standings-table td.dg-negative {
+  color: var(--lose);
+  font-weight: 600;
+}
+
+.standings-table td.pts {
+  color: #f59e0b;
+  font-weight: bold;
+}
+
+/* Líder */
+.standings-table tbody tr.leader {
   background: linear-gradient(90deg, #1e293b, #020617);
   box-shadow: inset 0 0 0 1px #f59e0b;
+  animation: leader-pulse 2.5s ease-in-out infinite;
+}
+
+/* Hover */
+.standings-table tbody tr {
+  transition: background .2s ease, transform .2s ease;
+  will-change: transform, opacity;
+}
+
+.standings-table tbody tr:hover {
+  background: rgba(255,255,255,0.05);
   transform: scale(1.01);
 }
 
-
-/* diferencia */
-.dg-positive {
-  color: var(--win);
-}
-
-.dg-negative {
-  color: var(--lose);
+@keyframes leader-pulse {
+  0% { box-shadow: inset 0 0 0 1px #f59e0b; }
+  50% { box-shadow: inset 0 0 0 2px rgba(245,158,11,.9); }
+  100% { box-shadow: inset 0 0 0 1px #f59e0b; }
 }
 
 /* =========================================================
-   ANIMACIONES SUAVES GENERALES (C1)
-========================================================= */
-.match-card,
-.news-card,
-.club-card,
-.player-card,
-.result-card {
-  transition: transform .25s ease, box-shadow .25s ease;
-}
-
-.match-card:hover,
-.news-card:hover,
-.club-card:hover,
-.player-card:hover,
-.result-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 14px 30px rgba(0,0,0,0.6);
-}
-
-/* =========================================================
-   RESPONSIVE (C3)
-========================================================= */
-@media (max-width: 768px) {
-  .fixture-card {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .fixture-team {
-    justify-content: center;
-  }
-
-  .standings-table {
-    font-size: 0.85rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .section-block {
-    padding: 1.4rem 1rem;
-  }
-
-  .fixture-score {
-    font-size: 1.2rem;
-  }
-}
-/* =========================
-   SKELETON LOADERS
-========================= */
-.skeleton {
-  position: relative;
-  overflow: hidden;
-}
-
-.skeleton::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    110deg,
-    rgba(255,255,255,0.05) 25%,
-    rgba(255,255,255,0.15) 37%,
-    rgba(255,255,255,0.05) 63%
-  );
-  animation: shimmer 1.2s infinite;
-}
-
-@keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
-}
-
-.skeleton-line {
-  height: 14px;
-  border-radius: 6px;
-  background: rgba(255,255,255,0.08);
-}
-
-.skeleton-line.wide {
-  width: 60%;
-}
-
-.skeleton-circle {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.08);
-}
-
-.skeleton-row td {
-  padding: 0.6rem;
-}
-/* =========================
-   SKELETON LOADERS
-========================= */
-.skeleton {
-  position: relative;
-  overflow: hidden;
-}
-
-.skeleton::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    110deg,
-    rgba(255,255,255,0.05) 25%,
-    rgba(255,255,255,0.15) 37%,
-    rgba(255,255,255,0.05) 63%
-  );
-  animation: shimmer 1.3s infinite;
-}
-
-@keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
-}
-
-.skeleton-line {
-  height: 14px;
-  border-radius: 6px;
-  background: rgba(255,255,255,0.08);
-}
-
-.skeleton-line.wide {
-  width: 60%;
-}
-
-.skeleton-circle {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.08);
-}
-
-.skeleton-row td {
-  padding: 0.7rem;
-}
-
-/* =========================
    EMPTY STATES
-========================= */
+========================================================= */
 .empty-state {
   padding: 1rem;
   border-radius: 12px;
@@ -345,104 +211,10 @@ tr.leader {
   font-style: italic;
   text-align: center;
 }
-/* =========================
-   CAMBIO DE CATEGORÍA
-========================= */
-.content-area {
-  transition: opacity 0.25s ease, transform 0.25s ease;
-}
 
-.content-area.fade-out {
-  opacity: 0;
-  transform: translateY(8px);
-}
-
-.animate-in {
-  animation: fadeSlideIn 0.35s ease both;
-}
-
-@keyframes fadeSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-/* =========================
-   STICKY NAV ANIMADA
-========================= */
-.site-header {
-  transition: padding 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
-}
-
-.site-header.is-sticky {
-  padding: 0.4rem 1rem;
-  background: rgba(0,0,0,0.75);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-}
-
-/* =========================
-   CATEGORÍA TRANSITION
-========================= */
-.content-area {
-  transition: opacity 0.25s ease, transform 0.25s ease;
-}
-
-.content-area.fade-out {
-  opacity: 0;
-  transform: translateY(8px);
-}
-
-/* =========================
-   ANIMACIONES FLUIDAS
-========================= */
-.fixture-card,
-.standings-table tbody tr {
-  will-change: transform, opacity;
-}
-
-/* =========================
-   FLIP SUPPORT
-========================= */
-.standings-table tbody tr {
-  transition: transform 0.35s ease;
-}
-.content-area.fade-out {
-  pointer-events: none;
-}
-/* =========================
-   TABLA – ESTADOS VISUALES
-========================= */
-
-/* Líder */
-.standings-table tbody tr.leader {
-  background: linear-gradient(90deg, #1e293b, #020617);
-  box-shadow: inset 0 0 0 1px #f59e0b;
-}
-
-/* Diferencia de gol */
-.standings-table td.dg-positive {
-  color: #22c55e; /* verde */
-  font-weight: 600;
-}
-
-.standings-table td.dg-negative {
-  color: #ef4444; /* rojo */
-  font-weight: 600;
-}
-
-/* Puntos */
-.standings-table td.pts {
-  color: #f59e0b;
-  font-weight: bold;
-}
-/* =========================
-   SKELETON LOADERS
-========================= */
-
+/* =========================================================
+   SKELETON LOADERS (UNIFICADO)
+========================================================= */
 .skeleton {
   position: relative;
   overflow: hidden;
@@ -465,76 +237,60 @@ tr.leader {
 }
 
 @keyframes skeleton-shimmer {
-  100% {
-    transform: translateX(100%);
-  }
+  100% { transform: translateX(100%); }
 }
 
-/* Fixture skeleton */
 .skeleton-fixture {
   height: 64px;
   margin-bottom: 12px;
 }
 
-/* Table skeleton */
 .skeleton-row {
   height: 36px;
   margin-bottom: 8px;
 }
-/* =========================
-   MICRO-INTERACCIONES
-========================= */
 
-/* Hover en filas de tabla */
-.standings-table tbody tr {
-  transition: background 0.25s ease, transform 0.2s ease;
-}
-
-.standings-table tbody tr:hover {
-  background: rgba(255, 255, 255, 0.04);
-  transform: scale(1.005);
-}
-
-/* Pulse suave para el líder */
-.standings-table tbody tr.leader {
-  animation: leader-pulse 2.5s ease-in-out infinite;
-}
-
-@keyframes leader-pulse {
-  0% {
-    box-shadow: inset 0 0 0 1px #f59e0b;
-  }
-  50% {
-    box-shadow: inset 0 0 0 2px rgba(245, 158, 11, 0.9);
-  }
-  100% {
-    box-shadow: inset 0 0 0 1px #f59e0b;
-  }
-}
-
-/* Feedback visual al refrescar contenido */
+/* =========================================================
+   CAMBIO DE CATEGORÍA / FEEDBACK
+========================================================= */
 .content-area {
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition: opacity .25s ease, transform .25s ease;
+}
+
+.content-area.fade-out {
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
 }
 
 .content-area.updating {
-  opacity: 0.6;
+  opacity: .6;
   transform: translateY(2px);
 }
-/* =========================
-   PERFORMANCE POLISH
-========================= */
 
-/* Evitar repaints costosos */
+/* =========================================================
+   STICKY NAV
+========================================================= */
+.site-header {
+  transition: padding .25s ease, background .25s ease, box-shadow .25s ease;
+}
+
+.site-header.is-sticky {
+  padding: .4rem 1rem;
+  background: rgba(0,0,0,.75);
+  box-shadow: 0 8px 24px rgba(0,0,0,.6);
+}
+
+/* =========================================================
+   PERFORMANCE
+========================================================= */
 .match-card,
 .result-card,
 .club-card,
-.player-card,
-.standings-table tbody tr {
+.player-card {
   will-change: transform, opacity;
 }
 
-/* Desactivar animaciones innecesarias en users sensibles */
 @media (prefers-reduced-motion: reduce) {
   * {
     animation: none !important;
@@ -542,12 +298,30 @@ tr.leader {
   }
 }
 
-/* Scroll más estable */
-html {
-  scroll-behavior: smooth;
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+@media (max-width: 768px) {
+  .fixture-card {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .fixture-team {
+    justify-content: center;
+  }
+
+  .standings-table {
+    font-size: .85rem;
+  }
 }
 
-/* Evita micro saltos en tablas grandes */
-.standings-table-wrapper {
-  contain: layout paint;
+@media (max-width: 480px) {
+  .section-block {
+    padding: 1.4rem 1rem;
+  }
+
+  .fixture-center {
+    font-size: 1.2rem;
+  }
 }
