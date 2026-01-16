@@ -1,8 +1,5 @@
 import { getFixtures } from "./services/fixtures.service.js";
 
-/* =========================
-   CLUBES
-========================= */
 const CLUBS = {
   union: { name: "Unión", logo: "/img/clubs/union.png" },
   funebrero: { name: "Funebrero", logo: "/img/clubs/funebrero.png" },
@@ -14,129 +11,44 @@ const CLUBS = {
   zapallar: { name: "Zapallar", logo: "/img/clubs/zapallar.png" },
 };
 
-let currentCategory = "B1";
-let lastCategoryRendered = null;
 let allFixtures = [];
+let currentCategory = "B1";
 
-/* =========================
-   FIXTURE RENDER
-========================= */
-function renderFixtures(fixtures) {
-  const grid = document.getElementById("fixture-grid");
-  if (!grid) return;
+/* ================= INIT ================= */
+export async function initPublicPage() {
+  populateClubFilter();
+  bindFilters();
+  await loadCategory(currentCategory);
+}
 
-  grid.innerHTML = "";
+/* ================= FILTROS ================= */
+function populateClubFilter() {
+  const select = document.getElementById("filterClub");
+  if (!select) return;
 
-  if (fixtures.length === 0) {
-    grid.innerHTML = `<div class="empty-state">No hay partidos con estos filtros</div>`;
-    return;
-  }
-
-  fixtures.forEach(f => {
-    const h = CLUBS[f.homeClubId];
-    const a = CLUBS[f.awayClubId];
-    if (!h || !a) return;
-
-    grid.innerHTML += `
-      <div class="fixture-card animate-in">
-        <div class="fixture-team">
-          <img src="${h.logo}">
-          <span>${h.name}</span>
-        </div>
-        <div class="fixture-center">
-          ${f.scoreLocal} - ${f.scoreAway}
-        </div>
-        <div class="fixture-team">
-          <img src="${a.logo}">
-          <span>${a.name}</span>
-        </div>
-      </div>
-    `;
+  Object.entries(CLUBS).forEach(([id, club]) => {
+    const opt = document.createElement("option");
+    opt.value = id;
+    opt.textContent = club.name;
+    select.appendChild(opt);
   });
 }
 
-/* =========================
-   STANDINGS
-========================= */
-function baseTeam(id) {
-  return {
-    id,
-    name: CLUBS[id].name,
-    logo: CLUBS[id].logo,
-    PJ: 0, PG: 0, PP: 0, PF: 0, PC: 0, DG: 0, PTS: 0,
-  };
+function bindFilters() {
+  ["filterRound", "filterStatus", "filterClub"].forEach(id => {
+    document.getElementById(id)?.addEventListener("input", applyFilters);
+  });
 }
 
-function buildStandings(fixtures) {
-  const table = {};
-
-  fixtures
-    .filter(f => f.status === "finished")
-    .forEach(f => {
-      const h = f.homeClubId;
-      const a = f.awayClubId;
-
-      if (!table[h]) table[h] = baseTeam(h);
-      if (!table[a]) table[a] = baseTeam(a);
-
-      table[h].PJ++; table[a].PJ++;
-      table[h].PF += f.scoreLocal; table[h].PC += f.scoreAway;
-      table[a].PF += f.scoreAway; table[a].PC += f.scoreLocal;
-
-      if (f.scoreLocal > f.scoreAway) {
-        table[h].PG++; table[a].PP++;
-        table[h].PTS += 2; table[a].PTS += 1;
-      } else {
-        table[a].PG++; table[h].PP++;
-        table[a].PTS += 2; table[h].PTS += 1;
-      }
-    });
-
-  return Object.values(table)
-    .map(t => ({ ...t, DG: t.PF - t.PC }))
-    .sort((a, b) => b.PTS - a.PTS || b.DG - a.DG);
-}
-
-function renderStandings(standings) {
-  const tbody = document.getElementById("standingsBody");
-  if (!tbody) return;
-
-  tbody.innerHTML = standings.map((t, i) => `
-    <tr class="${i === 0 ? "leader" : ""}">
-      <td>${i + 1}</td>
-      <td class="club-cell">
-        <img src="${t.logo}">
-        <span>${t.name}</span>
-      </td>
-      <td>${t.PJ}</td>
-      <td>${t.PG}</td>
-      <td>${t.PP}</td>
-      <td>${t.PF}</td>
-      <td>${t.PC}</td>
-      <td class="${t.DG > 0 ? "dg-positive" : t.DG < 0 ? "dg-negative" : ""}">${t.DG}</td>
-      <td class="pts">${t.PTS}</td>
-    </tr>
-  `).join("");
-}
-
-/* =========================
-   FILTROS
-========================= */
 function applyFilters() {
-  const round = document.getElementById("filter-round").value;
-  const status = document.getElementById("filter-status").value;
-  const club = document.getElementById("filter-club").value;
-
   let filtered = [...allFixtures];
 
-  if (round) {
-    filtered = filtered.filter(f => Number(f.order) === Number(round));
-  }
+  const round = document.getElementById("filterRound").value;
+  const status = document.getElementById("filterStatus").value;
+  const club = document.getElementById("filterClub").value;
 
-  if (status !== "all") {
-    filtered = filtered.filter(f => f.status === status);
-  }
-
+  if (round) filtered = filtered.filter(f => f.round == round);
+  if (status !== "all") filtered = filtered.filter(f => f.status === status);
   if (club !== "all") {
     filtered = filtered.filter(
       f => f.homeClubId === club || f.awayClubId === club
@@ -146,55 +58,92 @@ function applyFilters() {
   renderFixtures(filtered);
 }
 
-/* =========================
-   CARGA CATEGORÍA
-========================= */
+/* ================= DATA ================= */
 async function loadCategory(category) {
-  if (category === lastCategoryRendered) return;
-  lastCategoryRendered = category;
-  currentCategory = category;
-
   showSkeleton("fixture-skeleton");
   showSkeleton("table-skeleton");
 
   allFixtures = await getFixtures(category);
 
-  hideSkeleton("fixture-skeleton");
-  hideSkeleton("table-skeleton");
-
   renderFixtures(allFixtures);
   renderStandings(buildStandings(allFixtures));
+
+  hideSkeleton("fixture-skeleton");
+  hideSkeleton("table-skeleton");
 }
 
-/* =========================
-   INIT
-========================= */
-export function initPublicPage() {
-  loadCategory(currentCategory);
+/* ================= FIXTURE ================= */
+function renderFixtures(fixtures) {
+  const grid = document.getElementById("fixture-grid");
+  if (!grid) return;
 
-  // llenar select de clubes
-  const clubSelect = document.getElementById("filter-club");
-  Object.entries(CLUBS).forEach(([id, club]) => {
-    const opt = document.createElement("option");
-    opt.value = id;
-    opt.textContent = club.name;
-    clubSelect.appendChild(opt);
+  grid.innerHTML = fixtures.length
+    ? fixtures.map(f => {
+        const h = CLUBS[f.homeClubId];
+        const a = CLUBS[f.awayClubId];
+        if (!h || !a) return "";
+        return `
+          <div class="fixture-card">
+            <div class="fixture-team"><img src="${h.logo}">${h.name}</div>
+            <div class="fixture-center">${f.scoreLocal ?? "-"} - ${f.scoreAway ?? "-"}</div>
+            <div class="fixture-team"><img src="${a.logo}">${a.name}</div>
+          </div>
+        `;
+      }).join("")
+    : `<div class="empty-state">Sin resultados</div>`;
+}
+
+/* ================= TABLA ================= */
+function buildStandings(fixtures) {
+  const table = {};
+  fixtures.filter(f => f.status === "finished").forEach(f => {
+    const h = f.homeClubId, a = f.awayClubId;
+    if (!table[h]) table[h] = baseTeam(h);
+    if (!table[a]) table[a] = baseTeam(a);
+
+    table[h].PJ++; table[a].PJ++;
+    table[h].PF += f.scoreLocal; table[h].PC += f.scoreAway;
+    table[a].PF += f.scoreAway; table[a].PC += f.scoreLocal;
+
+    if (f.scoreLocal > f.scoreAway) {
+      table[h].PG++; table[h].PTS += 2;
+      table[a].PP++; table[a].PTS += 1;
+    } else {
+      table[a].PG++; table[a].PTS += 2;
+      table[h].PP++; table[h].PTS += 1;
+    }
   });
 
-  document
-    .querySelectorAll("#filter-round, #filter-status, #filter-club")
-    .forEach(el => el.addEventListener("change", applyFilters));
+  return Object.values(table)
+    .map(t => ({ ...t, DG: t.PF - t.PC }))
+    .sort((a, b) => b.PTS - a.PTS || b.DG - a.DG);
 }
 
-/* =========================
-   HELPERS
-========================= */
-function showSkeleton(id) {
-  const el = document.getElementById(id);
-  if (el) el.style.display = "block";
+function baseTeam(id) {
+  return {
+    id,
+    name: CLUBS[id].name,
+    logo: CLUBS[id].logo,
+    PJ: 0, PG: 0, PP: 0, PF: 0, PC: 0, DG: 0, PTS: 0
+  };
 }
 
-function hideSkeleton(id) {
-  const el = document.getElementById(id);
-  if (el) el.style.display = "none";
+function renderStandings(standings) {
+  const tbody = document.getElementById("standingsBody");
+  if (!tbody) return;
+
+  tbody.innerHTML = standings.map((t, i) => `
+    <tr class="${i === 0 ? "leader" : ""}">
+      <td>${i + 1}</td>
+      <td class="club-cell"><img src="${t.logo}">${t.name}</td>
+      <td>${t.PJ}</td><td>${t.PG}</td><td>${t.PP}</td>
+      <td>${t.PF}</td><td>${t.PC}</td>
+      <td class="${t.DG > 0 ? "dg-positive" : "dg-negative"}">${t.DG}</td>
+      <td class="pts">${t.PTS}</td>
+    </tr>
+  `).join("");
 }
+
+/* ================= HELPERS ================= */
+function showSkeleton(id){ document.getElementById(id).style.display="block"; }
+function hideSkeleton(id){ document.getElementById(id).style.display="none"; }
