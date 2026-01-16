@@ -352,3 +352,37 @@ body {
 .filters-bar select option {
   background: #0b0f1f;
 }
+/* =========================
+   EXPAND INLINE – DETALLE PARTIDO
+========================= */
+
+.fixture-card {
+  cursor: pointer;
+}
+
+.fixture-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.fixture-details {
+  margin-top: 0.8rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  font-size: 0.85rem;
+  color: #cbd5f5;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.4rem;
+  animation: expandFade 0.25s ease;
+}
+
+@keyframes expandFade {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fixture-card.open {
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.12);
+}

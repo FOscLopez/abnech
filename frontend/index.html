@@ -20,6 +20,7 @@
       transition: opacity 0.6s ease;
     }
     .landing.fade-out { opacity: 0; pointer-events: none; }
+
     .enter-btn {
       padding: 1rem 2.8rem;
       font-size: 1.2rem;
@@ -30,8 +31,17 @@
       color: #fff;
       font-weight: bold;
     }
-    #app { opacity: 0; transform: translateY(20px); transition: .6s; }
-    #app.show { opacity: 1; transform: translateY(0); }
+
+    #app {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    #app.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     .hidden { display: none; }
   </style>
 </head>
@@ -59,9 +69,9 @@
         <section class="section-block">
           <h2>FIXTURE</h2>
 
-          <!-- 🔎 FILTROS -->
+          <!-- FILTROS -->
           <div class="filters-bar">
-            <input id="filterRound" type="number" placeholder="Jornada" min="1" />
+            <input id="filterRound" type="number" min="1" placeholder="Jornada" />
             <select id="filterStatus">
               <option value="all">Todos</option>
               <option value="scheduled">Programado</option>

@@ -12,6 +12,7 @@ const CLUBS = {
 };
 
 let allFixtures = [];
+let expandedMatchId = null;
 let currentCategory = "B1";
 
 /* ================= INIT ================= */
@@ -47,7 +48,7 @@ function applyFilters() {
   const status = document.getElementById("filterStatus").value;
   const club = document.getElementById("filterClub").value;
 
-  if (round) filtered = filtered.filter(f => f.round == round);
+  if (round) filtered = filtered.filter(f => Number(f.round ?? f.order) === Number(round));
   if (status !== "all") filtered = filtered.filter(f => f.status === status);
   if (club !== "all") {
     filtered = filtered.filter(
@@ -55,6 +56,7 @@ function applyFilters() {
     );
   }
 
+  expandedMatchId = null;
   renderFixtures(filtered);
 }
 
@@ -77,27 +79,64 @@ function renderFixtures(fixtures) {
   const grid = document.getElementById("fixture-grid");
   if (!grid) return;
 
-  grid.innerHTML = fixtures.length
-    ? fixtures.map(f => {
-        const h = CLUBS[f.homeClubId];
-        const a = CLUBS[f.awayClubId];
-        if (!h || !a) return "";
-        return `
-          <div class="fixture-card">
-            <div class="fixture-team"><img src="${h.logo}">${h.name}</div>
-            <div class="fixture-center">${f.scoreLocal ?? "-"} - ${f.scoreAway ?? "-"}</div>
-            <div class="fixture-team"><img src="${a.logo}">${a.name}</div>
-          </div>
-        `;
-      }).join("")
-    : `<div class="empty-state">Sin resultados</div>`;
+  if (!fixtures.length) {
+    grid.innerHTML = `<div class="empty-state">Sin resultados</div>`;
+    return;
+  }
+
+  grid.innerHTML = fixtures.map(f => {
+    const h = CLUBS[f.homeClubId];
+    const a = CLUBS[f.awayClubId];
+    if (!h || !a) return "";
+
+    const isOpen = expandedMatchId === f.id;
+
+    return `
+      <div class="fixture-card ${isOpen ? "open" : ""}" data-id="${f.id}">
+        <div class="fixture-main">
+          <div class="fixture-team"><img src="${h.logo}"><span>${h.name}</span></div>
+          <div class="fixture-center">${f.scoreLocal ?? "-"} - ${f.scoreAway ?? "-"}</div>
+          <div class="fixture-team"><img src="${a.logo}"><span>${a.name}</span></div>
+        </div>
+
+        ${isOpen ? renderDetails(f) : ""}
+      </div>
+    `;
+  }).join("");
+
+  bindExpandEvents();
+}
+
+function bindExpandEvents() {
+  document.querySelectorAll(".fixture-card").forEach(card => {
+    card.addEventListener("click", () => {
+      const id = card.dataset.id;
+      expandedMatchId = expandedMatchId === id ? null : id;
+      renderFixtures(allFixtures);
+    });
+  });
+}
+
+function renderDetails(f) {
+  return `
+    <div class="fixture-details">
+      <div><strong>Jornada:</strong> ${f.round ?? f.order ?? "-"}</div>
+      <div><strong>Estado:</strong> ${f.status}</div>
+      <div><strong>Fecha:</strong> ${f.date ?? "-"}</div>
+      <div><strong>Hora:</strong> ${f.time ?? "-"}</div>
+      <div><strong>Sede:</strong> ${f.venue ?? "-"}</div>
+    </div>
+  `;
 }
 
 /* ================= TABLA ================= */
 function buildStandings(fixtures) {
   const table = {};
+
   fixtures.filter(f => f.status === "finished").forEach(f => {
-    const h = f.homeClubId, a = f.awayClubId;
+    const h = f.homeClubId;
+    const a = f.awayClubId;
+
     if (!table[h]) table[h] = baseTeam(h);
     if (!table[a]) table[a] = baseTeam(a);
 
@@ -124,7 +163,7 @@ function baseTeam(id) {
     id,
     name: CLUBS[id].name,
     logo: CLUBS[id].logo,
-    PJ: 0, PG: 0, PP: 0, PF: 0, PC: 0, DG: 0, PTS: 0
+    PJ: 0, PG: 0, PP: 0, PF: 0, PC: 0, DG: 0, PTS: 0,
   };
 }
 
@@ -138,12 +177,18 @@ function renderStandings(standings) {
       <td class="club-cell"><img src="${t.logo}">${t.name}</td>
       <td>${t.PJ}</td><td>${t.PG}</td><td>${t.PP}</td>
       <td>${t.PF}</td><td>${t.PC}</td>
-      <td class="${t.DG > 0 ? "dg-positive" : "dg-negative"}">${t.DG}</td>
+      <td class="${t.DG >= 0 ? "dg-positive" : "dg-negative"}">${t.DG}</td>
       <td class="pts">${t.PTS}</td>
     </tr>
   `).join("");
 }
 
 /* ================= HELPERS ================= */
-function showSkeleton(id){ document.getElementById(id).style.display="block"; }
-function hideSkeleton(id){ document.getElementById(id).style.display="none"; }
+function showSkeleton(id) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = "block";
+}
+function hideSkeleton(id) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = "none";
+}
