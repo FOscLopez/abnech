@@ -1,5 +1,7 @@
 import { getFixtures } from "./services/fixtures.service.js";
 
+const STORAGE_KEY = "abnech_ui_state";
+
 const CLUBS = {
   union: { name: "Unión", logo: "/img/clubs/union.png" },
   funebrero: { name: "Funebrero", logo: "/img/clubs/funebrero.png" },
@@ -15,18 +17,52 @@ let allFixtures = [];
 let expandedMatchId = null;
 let currentCategory = "B1";
 
-/* ================= INIT ================= */
+/* ================== INIT ================== */
 export async function initPublicPage() {
+  restoreUIState();
   populateClubFilter();
   bindFilters();
   await loadCategory(currentCategory);
+  restoreScroll();
 }
 
-/* ================= FILTROS ================= */
+/* ================== PERSISTENCIA ================== */
+function saveUIState() {
+  const state = {
+    category: currentCategory,
+    round: document.getElementById("filterRound")?.value || "",
+    status: document.getElementById("filterStatus")?.value || "all",
+    club: document.getElementById("filterClub")?.value || "all",
+    expanded: expandedMatchId,
+    scroll: window.scrollY,
+  };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function restoreUIState() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (!raw) return;
+
+  const state = JSON.parse(raw);
+
+  currentCategory = state.category || currentCategory;
+  expandedMatchId = state.expanded || null;
+
+  if (state.round) document.getElementById("filterRound").value = state.round;
+  if (state.status) document.getElementById("filterStatus").value = state.status;
+  if (state.club) document.getElementById("filterClub").value = state.club;
+}
+
+function restoreScroll() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (!raw) return;
+  const { scroll } = JSON.parse(raw);
+  if (scroll) requestAnimationFrame(() => window.scrollTo(0, scroll));
+}
+
+/* ================== FILTROS ================== */
 function populateClubFilter() {
   const select = document.getElementById("filterClub");
-  if (!select) return;
-
   Object.entries(CLUBS).forEach(([id, club]) => {
     const opt = document.createElement("option");
     opt.value = id;
@@ -37,8 +73,14 @@ function populateClubFilter() {
 
 function bindFilters() {
   ["filterRound", "filterStatus", "filterClub"].forEach(id => {
-    document.getElementById(id)?.addEventListener("input", applyFilters);
+    document.getElementById(id).addEventListener("input", () => {
+      expandedMatchId = null;
+      applyFilters();
+      saveUIState();
+    });
   });
+
+  window.addEventListener("scroll", () => saveUIState(), { passive: true });
 }
 
 function applyFilters() {
@@ -56,63 +98,41 @@ function applyFilters() {
     );
   }
 
-  expandedMatchId = null;
   renderFixtures(filtered);
 }
 
-/* ================= DATA ================= */
+/* ================== DATA ================== */
 async function loadCategory(category) {
-  showSkeleton("fixture-skeleton");
-  showSkeleton("table-skeleton");
-
   allFixtures = await getFixtures(category);
-
   renderFixtures(allFixtures);
   renderStandings(buildStandings(allFixtures));
-
-  hideSkeleton("fixture-skeleton");
-  hideSkeleton("table-skeleton");
 }
 
-/* ================= FIXTURE ================= */
+/* ================== FIXTURE ================== */
 function renderFixtures(fixtures) {
   const grid = document.getElementById("fixture-grid");
-  if (!grid) return;
 
-  if (!fixtures.length) {
-    grid.innerHTML = `<div class="empty-state">Sin resultados</div>`;
-    return;
-  }
+  grid.innerHTML = fixtures.length
+    ? fixtures.map(f => {
+        const open = expandedMatchId === f.id;
+        return `
+          <div class="fixture-card ${open ? "open" : ""}" data-id="${f.id}">
+            <div class="fixture-main">
+              <div>${CLUBS[f.homeClubId].name}</div>
+              <div>${f.scoreLocal ?? "-"} - ${f.scoreAway ?? "-"}</div>
+              <div>${CLUBS[f.awayClubId].name}</div>
+            </div>
+            ${open ? renderDetails(f) : ""}
+          </div>
+        `;
+      }).join("")
+    : `<div class="empty-state">Sin resultados</div>`;
 
-  grid.innerHTML = fixtures.map(f => {
-    const h = CLUBS[f.homeClubId];
-    const a = CLUBS[f.awayClubId];
-    if (!h || !a) return "";
-
-    const isOpen = expandedMatchId === f.id;
-
-    return `
-      <div class="fixture-card ${isOpen ? "open" : ""}" data-id="${f.id}">
-        <div class="fixture-main">
-          <div class="fixture-team"><img src="${h.logo}"><span>${h.name}</span></div>
-          <div class="fixture-center">${f.scoreLocal ?? "-"} - ${f.scoreAway ?? "-"}</div>
-          <div class="fixture-team"><img src="${a.logo}"><span>${a.name}</span></div>
-        </div>
-
-        ${isOpen ? renderDetails(f) : ""}
-      </div>
-    `;
-  }).join("");
-
-  bindExpandEvents();
-}
-
-function bindExpandEvents() {
   document.querySelectorAll(".fixture-card").forEach(card => {
     card.addEventListener("click", () => {
-      const id = card.dataset.id;
-      expandedMatchId = expandedMatchId === id ? null : id;
+      expandedMatchId = expandedMatchId === card.dataset.id ? null : card.dataset.id;
       renderFixtures(allFixtures);
+      saveUIState();
     });
   });
 }
@@ -123,20 +143,16 @@ function renderDetails(f) {
       <div><strong>Jornada:</strong> ${f.round ?? f.order ?? "-"}</div>
       <div><strong>Estado:</strong> ${f.status}</div>
       <div><strong>Fecha:</strong> ${f.date ?? "-"}</div>
-      <div><strong>Hora:</strong> ${f.time ?? "-"}</div>
       <div><strong>Sede:</strong> ${f.venue ?? "-"}</div>
     </div>
   `;
 }
 
-/* ================= TABLA ================= */
+/* ================== TABLA ================== */
 function buildStandings(fixtures) {
   const table = {};
-
   fixtures.filter(f => f.status === "finished").forEach(f => {
-    const h = f.homeClubId;
-    const a = f.awayClubId;
-
+    const h = f.homeClubId, a = f.awayClubId;
     if (!table[h]) table[h] = baseTeam(h);
     if (!table[a]) table[a] = baseTeam(a);
 
@@ -159,36 +175,16 @@ function buildStandings(fixtures) {
 }
 
 function baseTeam(id) {
-  return {
-    id,
-    name: CLUBS[id].name,
-    logo: CLUBS[id].logo,
-    PJ: 0, PG: 0, PP: 0, PF: 0, PC: 0, DG: 0, PTS: 0,
-  };
+  return { id, name: CLUBS[id].name, logo: CLUBS[id].logo, PJ:0,PG:0,PP:0,PF:0,PC:0,DG:0,PTS:0 };
 }
 
 function renderStandings(standings) {
-  const tbody = document.getElementById("standingsBody");
-  if (!tbody) return;
-
-  tbody.innerHTML = standings.map((t, i) => `
-    <tr class="${i === 0 ? "leader" : ""}">
-      <td>${i + 1}</td>
-      <td class="club-cell"><img src="${t.logo}">${t.name}</td>
-      <td>${t.PJ}</td><td>${t.PG}</td><td>${t.PP}</td>
-      <td>${t.PF}</td><td>${t.PC}</td>
-      <td class="${t.DG >= 0 ? "dg-positive" : "dg-negative"}">${t.DG}</td>
-      <td class="pts">${t.PTS}</td>
-    </tr>
-  `).join("");
-}
-
-/* ================= HELPERS ================= */
-function showSkeleton(id) {
-  const el = document.getElementById(id);
-  if (el) el.style.display = "block";
-}
-function hideSkeleton(id) {
-  const el = document.getElementById(id);
-  if (el) el.style.display = "none";
+  document.getElementById("standingsBody").innerHTML =
+    standings.map((t,i)=>`
+      <tr class="${i===0?"leader":""}">
+        <td>${i+1}</td><td>${t.name}</td><td>${t.PJ}</td>
+        <td>${t.PG}</td><td>${t.PP}</td><td>${t.PF}</td>
+        <td>${t.PC}</td><td>${t.DG}</td><td>${t.PTS}</td>
+      </tr>
+    `).join("");
 }
