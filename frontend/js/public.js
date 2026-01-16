@@ -218,3 +218,13 @@ function hideSkeleton(id) {
   const el = document.getElementById(id);
   if (el) el.style.display = "none";
 }
+
+function startContentFeedback() {
+  const area = document.querySelector(".content-area");
+  if (area) area.classList.add("updating");
+}
+
+function stopContentFeedback() {
+  const area = document.querySelector(".content-area");
+  if (area) area.classList.remove("updating");
+}
