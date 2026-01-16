@@ -521,3 +521,33 @@ tr.leader {
   opacity: 0.6;
   transform: translateY(2px);
 }
+/* =========================
+   PERFORMANCE POLISH
+========================= */
+
+/* Evitar repaints costosos */
+.match-card,
+.result-card,
+.club-card,
+.player-card,
+.standings-table tbody tr {
+  will-change: transform, opacity;
+}
+
+/* Desactivar animaciones innecesarias en users sensibles */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Scroll más estable */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Evita micro saltos en tablas grandes */
+.standings-table-wrapper {
+  contain: layout paint;
+}

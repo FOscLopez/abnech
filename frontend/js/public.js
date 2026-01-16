@@ -15,20 +15,18 @@ const CLUBS = {
 };
 
 let currentCategory = "B1";
+let lastCategoryRendered = null;
 
 /* =========================
    STICKY NAV (PERFORMANCE)
 ========================= */
-let lastScroll = 0;
 window.addEventListener(
   "scroll",
   () => {
     requestAnimationFrame(() => {
       const header = document.querySelector(".site-header");
       if (!header) return;
-
-      const scrolled = window.scrollY > 20;
-      header.classList.toggle("is-sticky", scrolled);
+      header.classList.toggle("is-sticky", window.scrollY > 20);
     });
   },
   { passive: true }
@@ -37,9 +35,6 @@ window.addEventListener(
 /* =========================
    FIXTURE
 ========================= */
-showSkeleton("fixture-skeleton");
-showSkeleton("table-skeleton");
-
 function renderFixtures(fixtures) {
   const grid = document.getElementById("fixture-grid");
   if (!grid) return;
@@ -70,7 +65,7 @@ function renderFixtures(fixtures) {
 }
 
 /* =========================
-   STANDINGS (FLIP SORT)
+   STANDINGS
 ========================= */
 function baseTeam(id) {
   return {
@@ -83,33 +78,33 @@ function baseTeam(id) {
 
 function buildStandings(fixtures) {
   const table = {};
-  fixtures.filter(f => f.status === "finished").forEach(f => {
-    const h = f.homeClubId;
-    const a = f.awayClubId;
 
-    if (!table[h]) table[h] = baseTeam(h);
-    if (!table[a]) table[a] = baseTeam(a);
+  fixtures
+    .filter(f => f.status === "finished")
+    .forEach(f => {
+      const h = f.homeClubId;
+      const a = f.awayClubId;
 
-    table[h].PJ++; table[a].PJ++;
-    table[h].PF += f.scoreLocal; table[h].PC += f.scoreAway;
-    table[a].PF += f.scoreAway; table[a].PC += f.scoreLocal;
+      if (!table[h]) table[h] = baseTeam(h);
+      if (!table[a]) table[a] = baseTeam(a);
 
-    if (f.scoreLocal > f.scoreAway) {
-      table[h].PG++; table[a].PP++;
-      table[h].PTS += 2; table[a].PTS += 1;
-    } else {
-      table[a].PG++; table[h].PP++;
-      table[a].PTS += 2; table[h].PTS += 1;
-    }
-  });
+      table[h].PJ++; table[a].PJ++;
+      table[h].PF += f.scoreLocal; table[h].PC += f.scoreAway;
+      table[a].PF += f.scoreAway; table[a].PC += f.scoreLocal;
+
+      if (f.scoreLocal > f.scoreAway) {
+        table[h].PG++; table[a].PP++;
+        table[h].PTS += 2; table[a].PTS += 1;
+      } else {
+        table[a].PG++; table[h].PP++;
+        table[a].PTS += 2; table[h].PTS += 1;
+      }
+    });
 
   return Object.values(table)
     .map(t => ({ ...t, DG: t.PF - t.PC }))
     .sort((a, b) => b.PTS - a.PTS || b.DG - a.DG);
 }
-
-hideSkeleton("fixture-skeleton");
-hideSkeleton("table-skeleton");
 
 /* =========================
    FLIP ANIMATION
@@ -117,12 +112,9 @@ hideSkeleton("table-skeleton");
 function animateTable(tbody, newRowsHTML) {
   const oldOrder = [...tbody.children].map(tr => tr.dataset.id);
 
-  // Render nuevo
   tbody.innerHTML = newRowsHTML;
 
   const newOrder = [...tbody.children].map(tr => tr.dataset.id);
-
-  // 👉 Si el orden es igual, no animamos
   if (oldOrder.join() === newOrder.join()) return;
 
   const newRects = {};
@@ -181,17 +173,22 @@ function renderStandings(standings) {
    CATEGORÍA
 ========================= */
 async function loadCategory(category) {
+  if (category === lastCategoryRendered) return;
+  lastCategoryRendered = category;
   currentCategory = category;
 
-  const content = document.querySelector(".content-area");
-  content?.classList.add("fade-out");
+  showSkeleton("fixture-skeleton");
+  showSkeleton("table-skeleton");
+  startContentFeedback();
 
-  setTimeout(async () => {
-    const fixtures = await getFixtures(category);
-    renderFixtures(fixtures);
-    renderStandings(buildStandings(fixtures));
-    content?.classList.remove("fade-out");
-  }, 200);
+  const fixtures = await getFixtures(category);
+
+  renderFixtures(fixtures);
+  renderStandings(buildStandings(fixtures));
+
+  hideSkeleton("fixture-skeleton");
+  hideSkeleton("table-skeleton");
+  stopContentFeedback();
 }
 
 /* =========================
@@ -209,6 +206,9 @@ export function initPublicPage() {
   });
 }
 
+/* =========================
+   HELPERS
+========================= */
 function showSkeleton(id) {
   const el = document.getElementById(id);
   if (el) el.style.display = "block";
