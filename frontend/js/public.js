@@ -20,10 +20,12 @@ let currentCategory = "B1";
 
 /* ================== INIT ================== */
 export async function initPublicPage() {
-  restoreFromURL();
-  restoreUIState();
   populateClubFilter();
   bindFilters();
+
+  restoreFromURL();
+  restoreUIState();
+
   await loadCategory(currentCategory);
   restoreScroll();
 }
@@ -36,17 +38,25 @@ function restoreFromURL() {
   currentCategory = params.get("cat") || currentCategory;
   expandedMatchId = params.get("expand");
 
-  if (params.get("round")) document.getElementById("filterRound").value = params.get("round");
-  if (params.get("status")) document.getElementById("filterStatus").value = params.get("status");
-  if (params.get("club")) document.getElementById("filterClub").value = params.get("club");
+  const r = document.getElementById("filterRound");
+  const s = document.getElementById("filterStatus");
+  const c = document.getElementById("filterClub");
+
+  if (r && params.get("round")) r.value = params.get("round");
+  if (s && params.get("status")) s.value = params.get("status");
+  if (c && params.get("club")) c.value = params.get("club");
 }
 
 function syncURL() {
+  const r = document.getElementById("filterRound");
+  const s = document.getElementById("filterStatus");
+  const c = document.getElementById("filterClub");
+
   const params = new URLSearchParams({
     cat: currentCategory,
-    round: document.getElementById("filterRound")?.value || "",
-    status: document.getElementById("filterStatus")?.value || "all",
-    club: document.getElementById("filterClub")?.value || "all",
+    round: r?.value || "",
+    status: s?.value || "all",
+    club: c?.value || "all",
     expand: expandedMatchId || "",
   });
 
@@ -55,14 +65,19 @@ function syncURL() {
 
 /* ================== PERSISTENCIA ================== */
 function saveUIState() {
+  const r = document.getElementById("filterRound");
+  const s = document.getElementById("filterStatus");
+  const c = document.getElementById("filterClub");
+
   const state = {
     category: currentCategory,
-    round: document.getElementById("filterRound")?.value || "",
-    status: document.getElementById("filterStatus")?.value || "all",
-    club: document.getElementById("filterClub")?.value || "all",
+    round: r?.value || "",
+    status: s?.value || "all",
+    club: c?.value || "all",
     expanded: expandedMatchId,
     scroll: window.scrollY,
   };
+
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   syncURL();
 }
@@ -72,12 +87,17 @@ function restoreUIState() {
   if (!raw) return;
 
   const state = JSON.parse(raw);
+
   currentCategory = state.category || currentCategory;
   expandedMatchId = state.expanded || null;
 
-  if (state.round) document.getElementById("filterRound").value = state.round;
-  if (state.status) document.getElementById("filterStatus").value = state.status;
-  if (state.club) document.getElementById("filterClub").value = state.club;
+  const r = document.getElementById("filterRound");
+  const s = document.getElementById("filterStatus");
+  const c = document.getElementById("filterClub");
+
+  if (r && state.round) r.value = state.round;
+  if (s && state.status) s.value = state.status;
+  if (c && state.club) c.value = state.club;
 }
 
 function restoreScroll() {
@@ -91,6 +111,8 @@ function restoreScroll() {
 function populateClubFilter() {
   const select = document.getElementById("filterClub");
   if (!select) return;
+
+  select.innerHTML = `<option value="all">Todos los clubes</option>`;
 
   Object.entries(CLUBS).forEach(([id, club]) => {
     const opt = document.createElement("option");
@@ -118,16 +140,14 @@ function bindFilters() {
 function applyFilters() {
   let filtered = [...allFixtures];
 
-  const round = document.getElementById("filterRound").value;
-  const status = document.getElementById("filterStatus").value;
-  const club = document.getElementById("filterClub").value;
+  const r = document.getElementById("filterRound")?.value;
+  const s = document.getElementById("filterStatus")?.value;
+  const c = document.getElementById("filterClub")?.value;
 
-  if (round) filtered = filtered.filter(f => Number(f.round ?? f.order) === Number(round));
-  if (status !== "all") filtered = filtered.filter(f => f.status === status);
-  if (club !== "all") {
-    filtered = filtered.filter(
-      f => f.homeClubId === club || f.awayClubId === club
-    );
+  if (r) filtered = filtered.filter(f => Number(f.round ?? f.order) === Number(r));
+  if (s && s !== "all") filtered = filtered.filter(f => f.status === s);
+  if (c && c !== "all") {
+    filtered = filtered.filter(f => f.homeClubId === c || f.awayClubId === c);
   }
 
   visibleFixtures = filtered;
@@ -145,6 +165,7 @@ async function loadCategory(category) {
 /* ================== FIXTURE ================== */
 function renderFixtures(fixtures) {
   const grid = document.getElementById("fixture-grid");
+  if (!grid) return;
 
   grid.innerHTML = fixtures.length
     ? fixtures.map(f => {
@@ -209,27 +230,16 @@ function buildStandings(fixtures) {
 }
 
 function baseTeam(id) {
-  return {
-    id,
-    name: CLUBS[id].name,
-    logo: CLUBS[id].logo,
-    PJ:0,PG:0,PP:0,PF:0,PC:0,DG:0,PTS:0
-  };
+  return { id, name: CLUBS[id].name, logo: CLUBS[id].logo, PJ:0,PG:0,PP:0,PF:0,PC:0,DG:0,PTS:0 };
 }
 
 function renderStandings(standings) {
   document.getElementById("standingsBody").innerHTML =
     standings.map((t,i)=>`
       <tr class="${i===0?"leader":""}">
-        <td>${i+1}</td>
-        <td>${t.name}</td>
-        <td>${t.PJ}</td>
-        <td>${t.PG}</td>
-        <td>${t.PP}</td>
-        <td>${t.PF}</td>
-        <td>${t.PC}</td>
-        <td>${t.DG}</td>
-        <td>${t.PTS}</td>
+        <td>${i+1}</td><td>${t.name}</td><td>${t.PJ}</td>
+        <td>${t.PG}</td><td>${t.PP}</td><td>${t.PF}</td>
+        <td>${t.PC}</td><td>${t.DG}</td><td>${t.PTS}</td>
       </tr>
     `).join("");
 }
