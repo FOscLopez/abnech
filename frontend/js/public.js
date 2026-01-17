@@ -230,16 +230,71 @@ function buildStandings(fixtures) {
 }
 
 function baseTeam(id) {
-  return { id, name: CLUBS[id].name, logo: CLUBS[id].logo, PJ:0,PG:0,PP:0,PF:0,PC:0,DG:0,PTS:0 };
+  return {
+    id,
+    name: CLUBS[id].name,
+    logo: CLUBS[id].logo,
+    PJ:0, PG:0, PP:0, PF:0, PC:0, DG:0, PTS:0
+  };
+}
+
+/* ================== STATS ================== */
+function renderStatsSummary(standings) {
+  if (!standings.length) return;
+
+  const games = standings.reduce((a, t) => a + t.PJ, 0) / 2;
+  const leader = standings[0];
+
+  let bestAttack = standings[0];
+  let bestDefense = standings[0];
+
+  standings.forEach(t => {
+    if (!t.PJ) return;
+    if (t.PF / t.PJ > bestAttack.PF / bestAttack.PJ) bestAttack = t;
+    if (t.PC / t.PJ < bestDefense.PC / bestDefense.PJ) bestDefense = t;
+  });
+
+  setText("stat-games", games);
+  setText("stat-leader", leader.name);
+  setText("stat-attack", `${bestAttack.name} (${(bestAttack.PF / bestAttack.PJ).toFixed(1)})`);
+  setText("stat-defense", `${bestDefense.name} (${(bestDefense.PC / bestDefense.PJ).toFixed(1)})`);
+}
+
+function teamBadges(team) {
+  if (!team.PJ) return "";
+  const winPct = Math.round((team.PG / team.PJ) * 100);
+  const pfAvg = (team.PF / team.PJ).toFixed(1);
+  const pcAvg = (team.PC / team.PJ).toFixed(1);
+
+  return `
+    <div class="team-badges">
+      <span title="% Victorias">🏆 ${winPct}%</span>
+      <span title="PF / PJ">⚔ ${pfAvg}</span>
+      <span title="PC / PJ">🛡 ${pcAvg}</span>
+    </div>
+  `;
+}
+
+function setText(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = value;
 }
 
 function renderStandings(standings) {
+  renderStatsSummary(standings);
+
   document.getElementById("standingsBody").innerHTML =
     standings.map((t,i)=>`
       <tr class="${i===0?"leader":""}">
-        <td>${i+1}</td><td>${t.name}</td><td>${t.PJ}</td>
-        <td>${t.PG}</td><td>${t.PP}</td><td>${t.PF}</td>
-        <td>${t.PC}</td><td>${t.DG}</td><td>${t.PTS}</td>
+        <td>${i+1}</td>
+        <td>${t.name}${teamBadges(t)}</td>
+        <td>${t.PJ}</td>
+        <td>${t.PG}</td>
+        <td>${t.PP}</td>
+        <td>${t.PF}</td>
+        <td>${t.PC}</td>
+        <td>${t.DG}</td>
+        <td>${t.PTS}</td>
       </tr>
     `).join("");
 }
