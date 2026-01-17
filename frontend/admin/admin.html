@@ -7,33 +7,34 @@
 </head>
 <body>
 
-  <h1>ABNECH – Panel Administrador</h1>
+<h1>ABNECH – Panel Administrador</h1>
 
-  <div class="controls">
-    <label>
-      Categoría:
-      <select id="categorySelect">
-        <option value="B1">B1</option>
-      </select>
-    </label>
-    <button id="loadBtn">Cargar fixtures</button>
-  </div>
+<div class="controls">
+  <label>
+    Categoría:
+    <select id="categorySelect">
+      <option value="B1">B1</option>
+    </select>
+  </label>
+  <button id="loadBtn">Cargar fixtures</button>
+  <button id="logoutBtn">Salir</button>
+</div>
 
-  <table id="fixturesTable">
-    <thead>
-      <tr>
-        <th>Fecha</th>
-        <th>Local</th>
-        <th>Visitante</th>
-        <th>Local</th>
-        <th>Visitante</th>
-        <th>Estado</th>
-        <th>Acción</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+<table id="fixturesTable">
+  <thead>
+    <tr>
+      <th>Fecha</th>
+      <th>Local</th>
+      <th>Visitante</th>
+      <th>Local</th>
+      <th>Visitante</th>
+      <th>Estado</th>
+      <th>Acción</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
 
-  <script src="./admin.js"></script>
+<script type="module" src="./admin.js"></script>
 </body>
 </html>

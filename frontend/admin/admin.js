@@ -1,8 +1,46 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "TU_API_KEY",
+  authDomain: "TU_AUTH_DOMAIN",
+  projectId: "TU_PROJECT_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
 const API_BASE = "https://abnech.onrender.com";
 
 const loadBtn = document.getElementById("loadBtn");
+const logoutBtn = document.getElementById("logoutBtn");
 const categorySelect = document.getElementById("categorySelect");
 const tableBody = document.querySelector("#fixturesTable tbody");
+
+let currentRole = null;
+
+// 🔐 AUTH GUARD
+onAuthStateChanged(auth, user => {
+  if (!user) {
+    window.location.href = "../login.html";
+    return;
+  }
+
+  if (user.email === "admin@abnech.com") {
+    currentRole = "admin";
+  } else if (user.email === "editor@abnech.com") {
+    currentRole = "editor";
+  } else {
+    alert("Acceso no autorizado");
+    signOut(auth);
+  }
+});
+
+logoutBtn.addEventListener("click", () => {
+  signOut(auth).then(() => {
+    window.location.href = "../login.html";
+  });
+});
 
 loadBtn.addEventListener("click", loadFixtures);
 
@@ -24,7 +62,7 @@ async function loadFixtures() {
       <td><input type="number" value="${f.scoreLocal ?? ""}" /></td>
       <td><input type="number" value="${f.scoreAway ?? ""}" /></td>
       <td>
-        <select>
+        <select ${currentRole === "editor" ? "disabled" : ""}>
           <option value="scheduled" ${f.status === "scheduled" ? "selected" : ""}>Programado</option>
           <option value="finished" ${f.status === "finished" ? "selected" : ""}>Finalizado</option>
         </select>
@@ -36,6 +74,9 @@ async function loadFixtures() {
 
     const saveBtn = tr.querySelector("button");
     saveBtn.addEventListener("click", async () => {
+      saveBtn.disabled = true;
+      saveBtn.textContent = "Guardando...";
+
       const inputs = tr.querySelectorAll("input, select");
 
       const payload = {
@@ -50,7 +91,11 @@ async function loadFixtures() {
         body: JSON.stringify(payload)
       });
 
-      alert("Fixture actualizado");
+      saveBtn.textContent = "Guardado";
+      setTimeout(() => {
+        saveBtn.textContent = "Guardar";
+        saveBtn.disabled = false;
+      }, 800);
     });
 
     tableBody.appendChild(tr);
