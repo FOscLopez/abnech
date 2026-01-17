@@ -18,6 +18,36 @@ let visibleFixtures = [];
 let expandedMatchId = null;
 let currentCategory = "B1";
 
+/* ================== ADMIN LINK (VISIBLE SOLO LOGUEADO) ================== */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+// 🔴 MISMA CONFIG QUE LOGIN / ADMIN
+const firebaseConfig = {
+  apiKey: "TU_API_KEY",
+  authDomain: "TU_AUTH_DOMAIN",
+  projectId: "TU_PROJECT_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+const adminLink = document.getElementById("adminLink");
+
+onAuthStateChanged(auth, user => {
+  if (!adminLink) return;
+
+  if (
+    user &&
+    (user.email === "admin@abnech.com" || user.email === "editor@abnech.com")
+  ) {
+    adminLink.style.display = "inline-block";
+  } else {
+    adminLink.style.display = "none";
+  }
+});
+
+
 /* ================== INIT ================== */
 export async function initPublicPage() {
   populateClubFilter();
