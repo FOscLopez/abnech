@@ -7,6 +7,40 @@
 
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="./css/style.css" />
+
+  <style>
+    .landing {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 1.5rem;
+      text-align: center;
+    }
+
+    .enter-btn {
+      padding: 1rem 2.8rem;
+      font-size: 1.2rem;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      background: #ff6b00;
+      color: #fff;
+      font-weight: bold;
+    }
+
+    #app {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    #app.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
 </head>
 
 <body>
@@ -19,8 +53,7 @@
   </section>
 
   <!-- APP -->
-  <div id="app" class="hidden" data-category="B1">
-
+  <div id="app" style="display:none">
     <header class="site-header">
       <span class="logo-main">ABNECH Basket</span>
     </header>
@@ -32,15 +65,14 @@
         <section class="section-block">
           <h2>FIXTURE</h2>
 
-          <div class="filters-bar">
-            <input id="filterRound" type="number" min="1" placeholder="Jornada" />
-            <select id="filterStatus">
+          <div class="fixture-filters">
+            <input id="filter-round" type="number" min="1" placeholder="Jornada">
+            <select id="filter-status">
               <option value="all">Todos</option>
-              <option value="scheduled">Programado</option>
-              <option value="live">En juego</option>
-              <option value="finished">Finalizado</option>
+              <option value="finished">Jugados</option>
+              <option value="pending">Pendientes</option>
             </select>
-            <select id="filterClub">
+            <select id="filter-club">
               <option value="all">Todos los clubes</option>
             </select>
           </div>
@@ -66,8 +98,15 @@
             <table class="standings-table">
               <thead>
                 <tr>
-                  <th>#</th><th>Club</th><th>PJ</th><th>PG</th><th>PP</th>
-                  <th>PF</th><th>PC</th><th>DG</th><th>PTS</th>
+                  <th>#</th>
+                  <th>Club</th>
+                  <th>PJ</th>
+                  <th>PG</th>
+                  <th>PP</th>
+                  <th>PF</th>
+                  <th>PC</th>
+                  <th>DG</th>
+                  <th>PTS</th>
                 </tr>
               </thead>
               <tbody id="standingsBody"></tbody>
@@ -79,30 +118,31 @@
     </main>
 
     <footer class="site-footer">
-      <p>© 2025 ABNECH Basket (MecInfoTec)</p>
+      <p>© 2025 ABNECH Basket</p>
     </footer>
   </div>
 
   <script type="module">
     import { initPublicPage } from "./js/public.js";
 
+    const entered =
+      localStorage.getItem("abnech_entered") === "true" ||
+      new URLSearchParams(location.search).has("cat");
+
     const landing = document.getElementById("landing");
     const app = document.getElementById("app");
 
-    if (localStorage.getItem("abnech_entered") === "true") {
-      landing.classList.add("hidden");
-      app.classList.remove("hidden");
-      app.classList.add("show");
+    if (entered) {
+      landing.remove();
+      app.style.display = "block";
+      requestAnimationFrame(() => app.classList.add("show"));
       initPublicPage();
+    } else {
+      document.getElementById("enterBtn").onclick = () => {
+        localStorage.setItem("abnech_entered", "true");
+        location.reload();
+      };
     }
-
-    document.getElementById("enterBtn").addEventListener("click", () => {
-      localStorage.setItem("abnech_entered", "true");
-      landing.classList.add("hidden");
-      app.classList.remove("hidden");
-      app.classList.add("show");
-      initPublicPage();
-    });
   </script>
 
 </body>
