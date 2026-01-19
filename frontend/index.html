@@ -56,16 +56,17 @@
   <div id="app" style="display:none">
     <header class="site-header">
       <span class="logo-main">ABNECH Basket</span>
-    
-      <!-- 🔐 LINK ADMIN (oculto por defecto) -->
+
+      <!-- ⚙️ ADMIN (oculto por defecto, visible solo si hay sesión válida) -->
       <a
         id="adminLink"
         href="/frontend/admin/admin.html"
-        style="display:none; margin-left:auto; font-size:0.9rem; opacity:0.8;"
+        title="Panel Administrador"
+        style="display:none; margin-left:auto; font-size:1.2rem; opacity:0.8;"
       >
-        Admin
+        ⚙️
       </a>
-    </header>  
+    </header>
 
     <main>
       <div class="content-area">
@@ -94,11 +95,11 @@
           <div id="fixture-grid" class="fixture-grid"></div>
         </section>
 
-                <!-- TABLA -->
+        <!-- TABLA -->
         <section class="section-block">
           <h2>TABLA DE POSICIONES</h2>
 
-          <!-- 🔹 PANEL RESUMEN STATS -->
+          <!-- STATS -->
           <div id="stats-summary" class="stats-summary">
             <div class="stat-item">
               <span class="stat-label">Partidos</span>
@@ -116,32 +117,6 @@
               <span class="stat-label">Mejor defensa</span>
               <span id="stat-defense" class="stat-value">–</span>
             </div>
-          </div>
-
-          <div class="standings-table-wrapper">
-            <table class="standings-table">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Club</th>
-                  <th>PJ</th>
-                  <th>PG</th>
-                  <th>PP</th>
-                  <th>PF</th>
-                  <th>PC</th>
-                  <th>DG</th>
-                  <th>PTS</th>
-                </tr>
-              </thead>
-              <tbody id="standingsBody"></tbody>
-            </table>
-          </div>
-        </section>
-
-
-          <div id="table-skeleton">
-            <div class="skeleton skeleton-row"></div>
-            <div class="skeleton skeleton-row"></div>
           </div>
 
           <div class="standings-table-wrapper">
