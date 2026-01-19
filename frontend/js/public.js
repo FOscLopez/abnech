@@ -7,7 +7,7 @@ import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/
 const firebaseConfig = {
   apiKey: "TU_API_KEY",
   authDomain: "TU_AUTH_DOMAIN",
-  projectId: "TU_PROJECT_ID"
+  projectId: "TU_PROJECT_ID",
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
@@ -47,7 +47,7 @@ let visibleFixtures = [];
 let expandedMatchId = null;
 let currentCategory = "B1";
 
-/* ================== INIT (EXPORT CORRECTO) ================== */
+/* ================== INIT ================== */
 export async function initPublicPage() {
   populateClubFilter();
   bindFilters();
@@ -164,5 +164,138 @@ async function loadCategory(category) {
   renderStandings(buildStandings(allFixtures));
 }
 
-/* ================== FIXTURE / TABLA ================== */
-/* (resto de tu código exactamente igual, sin tocar) */
+/* ================== FIXTURE ================== */
+function renderFixtures(fixtures) {
+  const grid = document.getElementById("fixture-grid");
+  if (!grid) return;
+
+  grid.innerHTML = fixtures.length
+    ? fixtures.map(f => {
+        const open = expandedMatchId === f.id;
+        return `
+          <div class="fixture-card ${open ? "open" : ""}" data-id="${f.id}">
+            <div class="fixture-main">
+              <div>${CLUBS[f.homeClubId].name}</div>
+              <div>${f.scoreLocal ?? "-"} - ${f.scoreAway ?? "-"}</div>
+              <div>${CLUBS[f.awayClubId].name}</div>
+            </div>
+            ${open ? renderDetails(f) : ""}
+          </div>
+        `;
+      }).join("")
+    : `<div class="empty-state">Sin resultados</div>`;
+
+  document.querySelectorAll(".fixture-card").forEach(card => {
+    card.addEventListener("click", () => {
+      expandedMatchId = expandedMatchId === card.dataset.id ? null : card.dataset.id;
+      renderFixtures(visibleFixtures);
+      saveUIState();
+    });
+  });
+}
+
+function renderDetails(f) {
+  return `
+    <div class="fixture-details">
+      <div><strong>Jornada:</strong> ${f.round ?? f.order ?? "-"}</div>
+      <div><strong>Estado:</strong> ${f.status}</div>
+      <div><strong>Fecha:</strong> ${f.date ?? "-"}</div>
+      <div><strong>Sede:</strong> ${f.venue ?? "-"}</div>
+    </div>
+  `;
+}
+
+/* ================== TABLA + STATS ================== */
+function buildStandings(fixtures) {
+  const table = {};
+  fixtures.filter(f => f.status === "finished").forEach(f => {
+    const h = f.homeClubId, a = f.awayClubId;
+    if (!table[h]) table[h] = baseTeam(h);
+    if (!table[a]) table[a] = baseTeam(a);
+
+    table[h].PJ++; table[a].PJ++;
+    table[h].PF += f.scoreLocal; table[h].PC += f.scoreAway;
+    table[a].PF += f.scoreAway; table[a].PC += f.scoreLocal;
+
+    if (f.scoreLocal > f.scoreAway) {
+      table[h].PG++; table[h].PTS += 2;
+      table[a].PP++; table[a].PTS += 1;
+    } else {
+      table[a].PG++; table[a].PTS += 2;
+      table[h].PP++; table[h].PTS += 1;
+    }
+  });
+
+  return Object.values(table)
+    .map(t => ({ ...t, DG: t.PF - t.PC }))
+    .sort((a, b) => b.PTS - a.PTS || b.DG - a.DG);
+}
+
+function baseTeam(id) {
+  return {
+    id,
+    name: CLUBS[id].name,
+    logo: CLUBS[id].logo,
+    PJ:0, PG:0, PP:0, PF:0, PC:0, DG:0, PTS:0
+  };
+}
+
+function renderStatsSummary(standings) {
+  if (!standings.length) return;
+
+  const games = standings.reduce((a, t) => a + t.PJ, 0) / 2;
+  const leader = standings[0];
+
+  let bestAttack = standings[0];
+  let bestDefense = standings[0];
+
+  standings.forEach(t => {
+    if (!t.PJ) return;
+    if (t.PF / t.PJ > bestAttack.PF / bestAttack.PJ) bestAttack = t;
+    if (t.PC / t.PJ < bestDefense.PC / bestDefense.PJ) bestDefense = t;
+  });
+
+  setText("stat-games", games);
+  setText("stat-leader", leader.name);
+  setText("stat-attack", `${bestAttack.name} (${(bestAttack.PF / bestAttack.PJ).toFixed(1)})`);
+  setText("stat-defense", `${bestDefense.name} (${(bestDefense.PC / bestDefense.PJ).toFixed(1)})`);
+}
+
+function teamBadges(team) {
+  if (!team.PJ) return "";
+  const winPct = Math.round((team.PG / team.PJ) * 100);
+  const pfAvg = (team.PF / team.PJ).toFixed(1);
+  const pcAvg = (team.PC / team.PJ).toFixed(1);
+
+  return `
+    <div class="team-badges">
+      <span>🏆 ${winPct}%</span>
+      <span>⚔ ${pfAvg}</span>
+      <span>🛡 ${pcAvg}</span>
+    </div>
+  `;
+}
+
+function setText(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = value;
+}
+
+function renderStandings(standings) {
+  renderStatsSummary(standings);
+
+  document.getElementById("standingsBody").innerHTML =
+    standings.map((t,i)=>`
+      <tr class="${i===0?"leader":""}">
+        <td>${i+1}</td>
+        <td>${t.name}${teamBadges(t)}</td>
+        <td>${t.PJ}</td>
+        <td>${t.PG}</td>
+        <td>${t.PP}</td>
+        <td>${t.PF}</td>
+        <td>${t.PC}</td>
+        <td>${t.DG}</td>
+        <td>${t.PTS}</td>
+      </tr>
+    `).join("");
+}
