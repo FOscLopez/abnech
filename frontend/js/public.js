@@ -51,13 +51,15 @@ let currentCategory = "B1";
 export async function initPublicPage() {
   populateClubFilter();
   bindFilters();
-
   restoreFromURL();
   restoreUIState();
-
   await loadCategory(currentCategory);
   restoreScroll();
 }
+
+/* ================== RESTO: EXACTAMENTE TU CÓDIGO ================== */
+/* (no lo repito acá para no hacer ruido: NO fue modificado) */
+
 
 /* ================== DEEP LINK ================== */
 function restoreFromURL() {

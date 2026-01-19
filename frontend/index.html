@@ -54,19 +54,28 @@
 
   <!-- APP -->
   <div id="app" style="display:none">
+      <!-- HEADER -->
     <header class="site-header">
       <span class="logo-main">ABNECH Basket</span>
 
-      <!-- ⚙️ ADMIN (oculto por defecto, visible solo si hay sesión válida) -->
+      <!-- ⚙️ ADMIN (oculto por defecto) -->
       <a
         id="adminLink"
         href="/frontend/admin/admin.html"
-        title="Panel Administrador"
-        style="display:none; margin-left:auto; font-size:1.2rem; opacity:0.8;"
+        title="Panel Admin"
+        style="
+          display:none;
+          margin-left:auto;
+          font-size:1.4rem;
+          opacity:0.8;
+          cursor:pointer;
+          text-decoration:none;
+        "
       >
         ⚙️
       </a>
     </header>
+
 
     <main>
       <div class="content-area">
