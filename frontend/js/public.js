@@ -5,9 +5,13 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "TU_API_KEY",
-  authDomain: "TU_AUTH_DOMAIN",
-  projectId: "TU_PROJECT_ID",
+  apiKey: "AIzaSyC0ypWFEhPWu2jiyTZoW3fd9SPes3wcBdc",
+  authDomain: "abnech-basket.firebaseapp.com",
+  projectId: "abnech-basket",
+  storageBucket: "abnech-basket.firebasestorage.app",
+  messagingSenderId: "1020692623846",
+  appId: "1:1020692623846:web:a1b37421b2e891b52b6627",
+  measurementId: "G-S3KXDNB58S"
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
@@ -57,8 +61,9 @@ export async function initPublicPage() {
   restoreScroll();
 }
 
-/* ================== RESTO: EXACTAMENTE TU CÓDIGO ================== */
-/* (no lo repito acá para no hacer ruido: NO fue modificado) */
+/* ================== (EL RESTO DE TU ARCHIVO SIGUE IGUAL) ================== */
+/* filtros, fixtures, tabla, stats — NO MODIFICADOS */
+
 
 
 /* ================== DEEP LINK ================== */
