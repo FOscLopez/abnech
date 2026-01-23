@@ -3,38 +3,40 @@
 <head>
   <meta charset="UTF-8" />
   <title>ABNECH Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="./admin.css" />
 </head>
 <body>
 
-<h1>ABNECH – Panel Administrador</h1>
+  <h1>ABNECH – Panel Administrador</h1>
 
-<div class="controls">
-  <label>
-    Categoría:
-    <select id="categorySelect">
-      <option value="B1">B1</option>
-    </select>
-  </label>
-  <button id="loadBtn">Cargar fixtures</button>
-  <button id="logoutBtn">Salir</button>
-</div>
+  <div id="statusMsg" style="margin:10px 0; color:#fbbf24;"></div>
 
-<table id="fixturesTable">
-  <thead>
-    <tr>
-      <th>Fecha</th>
-      <th>Local</th>
-      <th>Visitante</th>
-      <th>Local</th>
-      <th>Visitante</th>
-      <th>Estado</th>
-      <th>Acción</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
+  <div class="controls">
+    <label>
+      Categoría:
+      <select id="categorySelect">
+        <option value="B1">B1</option>
+      </select>
+    </label>
+    <button id="loadBtn">Cargar fixtures</button>
+  </div>
 
-<script type="module" src="./admin.js"></script>
+  <table id="fixturesTable">
+    <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>Local</th>
+        <th>Visitante</th>
+        <th>Local</th>
+        <th>Visitante</th>
+        <th>Estado</th>
+        <th>Acción</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script type="module" src="./admin.js"></script>
 </body>
 </html>
