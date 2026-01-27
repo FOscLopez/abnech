@@ -53,7 +53,7 @@ onAuthStateChanged(auth, user => {
 
 async function createFixture() {
 
-  const category = categorySelect.value;
+  const category = "B1";
 
   if (
     !newDate.value ||
