@@ -12,6 +12,27 @@
 
   <div id="statusMsg" style="margin:10px 0; color:#fbbf24;"></div>
 
+  <!-- ================= CREAR FIXTURE ================= -->
+  <h3>Crear nuevo partido</h3>
+
+  <div class="controls">
+
+    <input id="newDate" type="date" />
+    <input id="newTime" type="time" />
+
+    <input id="newHome" placeholder="Local (ej: union)" />
+    <input id="newAway" placeholder="Visitante (ej: funebrero)" />
+
+    <input id="newVenue" placeholder="Sede" />
+
+    <button id="createBtn">Crear</button>
+
+  </div>
+
+  <hr />
+
+  <!-- ================= CARGAR FIXTURES ================= -->
+
   <div class="controls">
     <label>
       Categoría:
@@ -19,6 +40,7 @@
         <option value="B1">B1</option>
       </select>
     </label>
+
     <button id="loadBtn">Cargar fixtures</button>
   </div>
 
@@ -34,9 +56,11 @@
         <th>Acción</th>
       </tr>
     </thead>
+
     <tbody></tbody>
   </table>
 
   <script type="module" src="./admin.js"></script>
+
 </body>
 </html>
