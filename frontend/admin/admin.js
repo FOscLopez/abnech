@@ -15,11 +15,9 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
 
-
 /* ================== CONFIG ================== */
 
 const API_BASE = "https://abnech.onrender.com";
-
 
 /* ================== ELEMENTOS ================== */
 
@@ -30,13 +28,11 @@ const categorySelect = document.getElementById("categorySelect");
 const tableBody = document.querySelector("#fixturesTable tbody");
 const statusMsg = document.getElementById("statusMsg");
 
-/* Crear */
 const newDate = document.getElementById("newDate");
 const newTime = document.getElementById("newTime");
 const newHome = document.getElementById("newHome");
 const newAway = document.getElementById("newAway");
 const newVenue = document.getElementById("newVenue");
-
 
 /* ================== AUTH ================== */
 
@@ -51,27 +47,27 @@ onAuthStateChanged(auth, user => {
 
   loadBtn.addEventListener("click", loadFixtures);
   createBtn.addEventListener("click", createFixture);
-
 });
-
 
 /* ================== CREAR FIXTURE ================== */
 
 async function createFixture() {
 
-  const categoryId = categorySelect.value;
+  const category = categorySelect.value;
 
   if (
     !newDate.value ||
+    !newTime.value ||
     !newHome.value ||
-    !newAway.value
+    !newAway.value ||
+    !newVenue.value
   ) {
-    alert("Completá fecha, local y visitante");
+    alert("Completá todos los campos");
     return;
   }
 
   const payload = {
-    categoryId,
+    categoryId: category,
     date: newDate.value,
     time: newTime.value,
     homeClubId: newHome.value.trim(),
@@ -79,7 +75,7 @@ async function createFixture() {
     venue: newVenue.value.trim()
   };
 
-  statusMsg.textContent = "Creando fixture…";
+  statusMsg.textContent = "Creando fixture...";
 
   try {
 
@@ -91,33 +87,34 @@ async function createFixture() {
       body: JSON.stringify(payload)
     });
 
-    if (!res.ok) throw new Error();
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}`);
+    }
 
-    statusMsg.textContent = "Fixture creado ✅";
+    alert("Fixture creado");
 
-    clearCreateForm();
+    limpiarFormulario();
 
     loadFixtures();
 
-  } catch {
+  } catch (err) {
 
-    statusMsg.style.color = "#f87171";
-    statusMsg.textContent = "Error creando fixture";
+    console.error(err);
 
+    alert("Error al crear fixture");
+
+    statusMsg.textContent = "Error al crear fixture";
   }
-
 }
 
-function clearCreateForm() {
+function limpiarFormulario() {
 
   newDate.value = "";
   newTime.value = "";
   newHome.value = "";
   newAway.value = "";
   newVenue.value = "";
-
 }
-
 
 /* ================== CARGAR FIXTURES ================== */
 
@@ -125,61 +122,81 @@ async function loadFixtures() {
 
   const category = categorySelect.value;
 
-  statusMsg.textContent = "Cargando fixtures…";
+  statusMsg.textContent = "Cargando fixtures...";
 
   try {
 
-    const res = await fetch(`${API_BASE}/api/admin/fixtures/${category}`);
+    const res = await fetch(
+      `${API_BASE}/api/admin/fixtures/${category}`
+    );
 
-    if (!res.ok) throw new Error();
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}`);
+    }
 
     const fixtures = await res.json();
 
     tableBody.innerHTML = "";
-
     statusMsg.textContent = "";
 
-    fixtures.forEach(f => {
-
-      const tr = document.createElement("tr");
-
-      tr.innerHTML = `
-        <td>${f.date} ${f.time ?? ""}</td>
-        <td>${f.homeClubId}</td>
-        <td>${f.awayClubId}</td>
-
-        <td><input type="number" value="${f.scoreLocal ?? ""}" /></td>
-        <td><input type="number" value="${f.scoreAway ?? ""}" /></td>
-
-        <td>
-          <select>
-            <option value="scheduled" ${f.status === "scheduled" ? "selected" : ""}>Programado</option>
-            <option value="finished" ${f.status === "finished" ? "selected" : ""}>Finalizado</option>
-          </select>
-        </td>
-
-        <td><button>Guardar</button></td>
-      `;
-
-      const saveBtn = tr.querySelector("button");
-
-      saveBtn.addEventListener("click", () => saveFixture(f.id, tr));
-
-      tableBody.appendChild(tr);
-
-    });
+    fixtures.forEach(f => renderRow(f));
 
   } catch (err) {
 
     console.error(err);
 
     statusMsg.style.color = "#f87171";
-    statusMsg.textContent = "Error cargando fixtures";
-
+    statusMsg.textContent =
+      "Error de servidor o red.";
   }
-
 }
 
+/* ================== FILA ================== */
+
+function renderRow(f) {
+
+  const tr = document.createElement("tr");
+
+  tr.innerHTML = `
+    <td>${f.date} ${f.time ?? ""}</td>
+
+    <td>${f.homeClubId}</td>
+
+    <td>${f.awayClubId}</td>
+
+    <td>
+      <input type="number" value="${f.scoreLocal ?? ""}">
+    </td>
+
+    <td>
+      <input type="number" value="${f.scoreAway ?? ""}">
+    </td>
+
+    <td>
+      <select>
+        <option value="scheduled" ${f.status === "scheduled" ? "selected" : ""}>
+          Programado
+        </option>
+
+        <option value="finished" ${f.status === "finished" ? "selected" : ""}>
+          Finalizado
+        </option>
+      </select>
+    </td>
+
+    <td>
+      <button>Guardar</button>
+    </td>
+  `;
+
+  const saveBtn = tr.querySelector("button");
+
+  saveBtn.addEventListener("click", () => {
+    saveFixture(f.id, tr);
+  });
+
+  tableBody.appendChild(tr);
+}
 
 /* ================== GUARDAR ================== */
 
@@ -195,20 +212,29 @@ async function saveFixture(id, tr) {
 
   try {
 
-    const res = await fetch(`${API_BASE}/api/admin/fixtures/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
+    const res = await fetch(
+      `${API_BASE}/api/admin/fixtures/${id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      }
+    );
 
-    if (!res.ok) throw new Error();
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}`);
+    }
 
-    alert("Fixture actualizado ✅");
+    alert("Fixture actualizado");
 
-  } catch {
+    loadFixtures();
+
+  } catch (err) {
+
+    console.error(err);
 
     alert("Error al guardar");
-
   }
-
 }

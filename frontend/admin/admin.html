@@ -12,27 +12,38 @@
 
   <div id="statusMsg" style="margin:10px 0; color:#fbbf24;"></div>
 
-  <!-- ================= CREAR FIXTURE ================= -->
+  <!-- CREAR FIXTURE -->
   <h3>Crear nuevo partido</h3>
 
   <div class="controls">
 
-    <input id="newDate" type="date" />
-    <input id="newTime" type="time" />
+    <input type="date" id="newDate" />
+    <input type="time" id="newTime" />
 
-    <input id="newHome" placeholder="Local (ej: union)" />
-    <input id="newAway" placeholder="Visitante (ej: funebrero)" />
+    <input
+      type="text"
+      id="newHome"
+      placeholder="Local (ej: union)"
+    />
 
-    <input id="newVenue" placeholder="Sede" />
+    <input
+      type="text"
+      id="newAway"
+      placeholder="Visitante (ej: funebrero)"
+    />
+
+    <input
+      type="text"
+      id="newVenue"
+      placeholder="Sede"
+    />
 
     <button id="createBtn">Crear</button>
-
   </div>
 
   <hr />
 
-  <!-- ================= CARGAR FIXTURES ================= -->
-
+  <!-- FILTRO -->
   <div class="controls">
     <label>
       Categoría:
@@ -44,6 +55,7 @@
     <button id="loadBtn">Cargar fixtures</button>
   </div>
 
+  <!-- TABLA -->
   <table id="fixturesTable">
     <thead>
       <tr>
