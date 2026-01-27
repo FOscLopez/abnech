@@ -7,8 +7,10 @@ const {
 
 const {
   updateFixture,
+  createFixture,
 } = require("../services/admin.service");
 
+/* ================== GET FIXTURES POR CATEGORIA ================== */
 router.get("/fixtures/:categoryId", async (req, res) => {
   try {
     const data = await getFixturesByCategory(req.params.categoryId);
@@ -19,6 +21,18 @@ router.get("/fixtures/:categoryId", async (req, res) => {
   }
 });
 
+/* ================== CREAR NUEVO FIXTURE ================== */
+router.post("/fixtures", async (req, res) => {
+  try {
+    const data = await createFixture(req.body);
+    res.status(201).json(data);
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ error: err.message });
+  }
+});
+
+/* ================== ACTUALIZAR FIXTURE ================== */
 router.put("/fixtures/:id", async (req, res) => {
   try {
     await updateFixture(req.params.id, req.body);

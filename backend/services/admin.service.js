@@ -1,5 +1,6 @@
 const db = require("../firebase");
 
+/* ================== ACTUALIZAR FIXTURE ================== */
 async function updateFixture(fixtureId, body) {
   const fixtureRef = db.collection("fixtures").doc(fixtureId);
 
@@ -9,7 +10,7 @@ async function updateFixture(fixtureId, body) {
 
     const fixture = snap.data();
 
-    // 🔒 1️⃣ OBJETO LIMPIO (SOLO CAMPOS PERMITIDOS)
+    // SOLO CAMPOS PERMITIDOS
     const updateData = {
       scoreLocal: Number(body.scoreLocal),
       scoreAway: Number(body.scoreAway),
@@ -18,7 +19,7 @@ async function updateFixture(fixtureId, body) {
 
     tx.update(fixtureRef, updateData);
 
-    // 🔒 2️⃣ SI YA ESTABA FINALIZADO → NO RECALCULAR
+    // Si ya estaba finalizado → no recalcular
     if (fixture.status === "finished") return;
     if (body.status !== "finished") return;
 
@@ -63,6 +64,44 @@ async function updateFixture(fixtureId, body) {
   });
 }
 
+/* ================== CREAR FIXTURE ================== */
+async function createFixture(data) {
+  const {
+    categoryId,
+    date,
+    time,
+    homeClubId,
+    awayClubId,
+    venue,
+  } = data;
+
+  if (!categoryId || !date || !homeClubId || !awayClubId) {
+    throw new Error("Datos incompletos");
+  }
+
+  const fixture = {
+    categoryId,
+    date,
+    time: time || "",
+    homeClubId,
+    awayClubId,
+    venue: venue || "",
+    status: "scheduled",
+    active: true,
+    scoreLocal: null,
+    scoreAway: null,
+    createdAt: new Date(),
+  };
+
+  const ref = await db.collection("fixtures").add(fixture);
+
+  return {
+    id: ref.id,
+    ...fixture,
+  };
+}
+
 module.exports = {
   updateFixture,
+  createFixture,
 };
