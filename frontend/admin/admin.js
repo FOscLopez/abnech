@@ -120,7 +120,7 @@ function limpiarFormulario() {
 
 async function loadFixtures() {
 
-  const category = categorySelect.value;
+  const category = "B1"
 
   statusMsg.textContent = "Cargando fixtures...";
 
