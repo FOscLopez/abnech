@@ -64,7 +64,7 @@ async function updateFixture(fixtureId, body) {
       PG: away.PG + (awayWin ? 1 : 0),
       PP: away.PP + (awayWin ? 0 : 1),
       PF: away.PF + awayScore,
-      PC: away.PF + local,
+      PC: away.PC + local,      // ✅ CORRECTO
       DG: away.DG + (awayScore - local),
       PTS: away.PTS + (awayWin ? 2 : 1),
     });
