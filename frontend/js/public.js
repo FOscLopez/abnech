@@ -182,17 +182,17 @@ function renderFixtures(fixtures) {
         const home = CLUBS[f.homeClubId];
         const away = CLUBS[f.awayClubId];
 
-        const homeName = home ? home.name : f.homeClubId;
-        const awayName = away ? away.name : f.awayClubId;
+        // Evita romper si el club no existe
+        if (!home || !away) return "";
 
         const open = expandedMatchId === f.id;
 
         return `
           <div class="fixture-card ${open ? "open" : ""}" data-id="${f.id}">
             <div class="fixture-main">
-              <div>${homeName}</div>
+              <div>${home.name}</div>
               <div>${f.scoreLocal ?? "-"} - ${f.scoreAway ?? "-"}</div>
-              <div>${awayName}</div>
+              <div>${away.name}</div>
             </div>
             ${open ? renderDetails(f) : ""}
           </div>
@@ -213,7 +213,6 @@ function renderFixtures(fixtures) {
   });
 }
 
-
 function renderDetails(f) {
   return `
     <div class="fixture-details">
@@ -227,24 +226,48 @@ function renderDetails(f) {
 
 /* ================== TABLA + STATS ================== */
 function buildStandings(fixtures) {
+
   const table = {};
-  fixtures.filter(f => f.status === "finished").forEach(f => {
-    const h = f.homeClubId, a = f.awayClubId;
-    if (!table[h]) table[h] = baseTeam(h);
-    if (!table[a]) table[a] = baseTeam(a);
 
-    table[h].PJ++; table[a].PJ++;
-    table[h].PF += f.scoreLocal; table[h].PC += f.scoreAway;
-    table[a].PF += f.scoreAway; table[a].PC += f.scoreLocal;
+  fixtures
+    .filter(f => f.status === "finished" || f.status === "Finalizado")
+    .forEach(f => {
 
-    if (f.scoreLocal > f.scoreAway) {
-      table[h].PG++; table[h].PTS += 2;
-      table[a].PP++; table[a].PTS += 1;
-    } else {
-      table[a].PG++; table[a].PTS += 2;
-      table[h].PP++; table[h].PTS += 1;
-    }
-  });
+      const h = f.homeClubId;
+      const a = f.awayClubId;
+
+      // Evita romper si club no existe
+      if (!CLUBS[h] || !CLUBS[a]) return;
+
+      if (!table[h]) table[h] = baseTeam(h);
+      if (!table[a]) table[a] = baseTeam(a);
+
+      table[h].PJ++;
+      table[a].PJ++;
+
+      table[h].PF += f.scoreLocal;
+      table[h].PC += f.scoreAway;
+
+      table[a].PF += f.scoreAway;
+      table[a].PC += f.scoreLocal;
+
+      if (f.scoreLocal > f.scoreAway) {
+
+        table[h].PG++;
+        table[h].PTS += 2;
+
+        table[a].PP++;
+        table[a].PTS += 1;
+
+      } else {
+
+        table[a].PG++;
+        table[a].PTS += 2;
+
+        table[h].PP++;
+        table[h].PTS += 1;
+      }
+    });
 
   return Object.values(table)
     .map(t => ({ ...t, DG: t.PF - t.PC }))
