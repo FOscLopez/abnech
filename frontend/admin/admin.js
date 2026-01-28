@@ -171,10 +171,7 @@ function renderRow(f) {
 
     <td>
       <select>
-        <option value="scheduled" ${f.status==="scheduled"?"selected":""}>
-          Programado
-        </option>
-        <option value="finished" ${f.status==="finished"?"selected":""}>
+        <option value="scheduled" selected>
           Finalizado
         </option>
       </select>
@@ -204,7 +201,7 @@ async function saveFixture(id, tr) {
   const payload = {
     scoreLocal: Number(inputs[0].value),
     scoreAway: Number(inputs[1].value),
-    status: inputs[2].value
+    status: "scheduled"
   };
 
   try {
