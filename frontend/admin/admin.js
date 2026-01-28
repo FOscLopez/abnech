@@ -9,11 +9,10 @@ const firebaseConfig = {
   storageBucket: "abnech-basket.firebasestorage.app",
   messagingSenderId: "1020692623846",
   appId: "1:1020692623846:web:a1b37421b2e891b52b6627",
-  measurementId: "G-S3KXDNB58S"
 };
 
-const firebaseApp = initializeApp(firebaseConfig);
-const auth = getAuth(firebaseApp);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
 /* ================== CONFIG ================== */
 
@@ -24,7 +23,6 @@ const API_BASE = "https://abnech.onrender.com";
 const loadBtn = document.getElementById("loadBtn");
 const createBtn = document.getElementById("createBtn");
 
-const categorySelect = document.getElementById("categorySelect");
 const tableBody = document.querySelector("#fixturesTable tbody");
 const statusMsg = document.getElementById("statusMsg");
 
@@ -33,6 +31,11 @@ const newTime = document.getElementById("newTime");
 const newHome = document.getElementById("newHome");
 const newAway = document.getElementById("newAway");
 const newVenue = document.getElementById("newVenue");
+
+/* ================== FLAGS ================== */
+
+let initialized = false;
+let creating = false;
 
 /* ================== AUTH ================== */
 
@@ -43,71 +46,72 @@ onAuthStateChanged(auth, user => {
     return;
   }
 
-  statusMsg.textContent = "Sesión activa.";
+  if (initialized) return;
 
-  loadBtn.addEventListener("click", loadFixtures);
-  createBtn.addEventListener("click", createFixture);
+  initialized = true;
+
+  statusMsg.textContent = "Sesión activa";
+
+  loadBtn.onclick = loadFixtures;
+  createBtn.onclick = createFixture;
+
+  loadFixtures();
 });
 
-/* ================== CREAR FIXTURE ================== */
+/* ================== CREAR ================== */
 
 async function createFixture() {
 
-  const category = "B1";
+  if (creating) return;
 
   if (
     !newDate.value ||
     !newTime.value ||
     !newHome.value ||
-    !newAway.value ||
-    !newVenue.value
+    !newAway.value
   ) {
     alert("Completá todos los campos");
     return;
   }
 
+  creating = true;
+  createBtn.disabled = true;
+
   const payload = {
-    categoryId: category,
+    categoryId: "B1",
     date: newDate.value,
     time: newTime.value,
-    homeClubId: newHome.value.trim(),
-    awayClubId: newAway.value.trim(),
+    homeClubId: newHome.value.trim().toLowerCase(),
+    awayClubId: newAway.value.trim().toLowerCase(),
     venue: newVenue.value.trim()
   };
-
-  statusMsg.textContent = "Creando fixture...";
 
   try {
 
     const res = await fetch(`${API_BASE}/api/admin/fixtures`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
     });
 
-    if (!res.ok) {
-      throw new Error(`HTTP ${res.status}`);
-    }
+    if (!res.ok) throw new Error();
 
-    alert("Fixture creado");
-
-    limpiarFormulario();
+    limpiar();
 
     loadFixtures();
 
-  } catch (err) {
+  } catch {
 
-    console.error(err);
+    alert("Error al crear");
 
-    alert("Error al crear fixture");
+  } finally {
 
-    statusMsg.textContent = "Error al crear fixture";
+    creating = false;
+    createBtn.disabled = false;
   }
 }
 
-function limpiarFormulario() {
+function limpiar() {
 
   newDate.value = "";
   newTime.value = "";
@@ -116,23 +120,19 @@ function limpiarFormulario() {
   newVenue.value = "";
 }
 
-/* ================== CARGAR FIXTURES ================== */
+/* ================== CARGAR ================== */
 
 async function loadFixtures() {
 
-  const category = "B1"
-
-  statusMsg.textContent = "Cargando fixtures...";
+  statusMsg.textContent = "Cargando...";
 
   try {
 
     const res = await fetch(
-      `${API_BASE}/api/admin/fixtures/${category}`
+      `${API_BASE}/api/admin/fixtures/B1`
     );
 
-    if (!res.ok) {
-      throw new Error(`HTTP ${res.status}`);
-    }
+    if (!res.ok) throw new Error();
 
     const fixtures = await res.json();
 
@@ -141,13 +141,9 @@ async function loadFixtures() {
 
     fixtures.forEach(f => renderRow(f));
 
-  } catch (err) {
+  } catch {
 
-    console.error(err);
-
-    statusMsg.style.color = "#f87171";
-    statusMsg.textContent =
-      "Error de servidor o red.";
+    statusMsg.textContent = "Error servidor";
   }
 }
 
@@ -164,36 +160,32 @@ function renderRow(f) {
 
     <td>${f.awayClubId}</td>
 
-    <td>
-      <input type="number" value="${f.scoreLocal ?? ""}">
-    </td>
+    <td><input type="number" value="${f.scoreLocal ?? ""}"></td>
 
-    <td>
-      <input type="number" value="${f.scoreAway ?? ""}">
-    </td>
+    <td><input type="number" value="${f.scoreAway ?? ""}"></td>
 
     <td>
       <select>
-        <option value="scheduled" ${f.status === "scheduled" ? "selected" : ""}>
+        <option value="scheduled" ${f.status==="scheduled"?"selected":""}>
           Programado
         </option>
-
-        <option value="finished" ${f.status === "finished" ? "selected" : ""}>
+        <option value="finished" ${f.status==="finished"?"selected":""}>
           Finalizado
         </option>
       </select>
     </td>
 
     <td>
-      <button>Guardar</button>
+      <button class="save">Guardar</button>
+      <button class="delete">Borrar</button>
     </td>
   `;
 
-  const saveBtn = tr.querySelector("button");
+  tr.querySelector(".save")
+    .onclick = () => saveFixture(f.id, tr);
 
-  saveBtn.addEventListener("click", () => {
-    saveFixture(f.id, tr);
-  });
+  tr.querySelector(".delete")
+    .onclick = () => deleteFixture(f.id);
 
   tableBody.appendChild(tr);
 }
@@ -216,25 +208,40 @@ async function saveFixture(id, tr) {
       `${API_BASE}/api/admin/fixtures/${id}`,
       {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       }
     );
 
-    if (!res.ok) {
-      throw new Error(`HTTP ${res.status}`);
-    }
-
-    alert("Fixture actualizado");
+    if (!res.ok) throw new Error();
 
     loadFixtures();
 
-  } catch (err) {
+  } catch {
 
-    console.error(err);
+    alert("Error guardar");
+  }
+}
 
-    alert("Error al guardar");
+/* ================== BORRAR ================== */
+
+async function deleteFixture(id) {
+
+  if (!confirm("Eliminar partido?")) return;
+
+  try {
+
+    const res = await fetch(
+      `${API_BASE}/api/admin/fixtures/${id}`,
+      { method: "DELETE" }
+    );
+
+    if (!res.ok) throw new Error();
+
+    loadFixtures();
+
+  } catch {
+
+    alert("Error al borrar");
   }
 }

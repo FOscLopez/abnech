@@ -178,13 +178,21 @@ function renderFixtures(fixtures) {
 
   grid.innerHTML = fixtures.length
     ? fixtures.map(f => {
+
+        const home = CLUBS[f.homeClubId];
+        const away = CLUBS[f.awayClubId];
+
+        const homeName = home ? home.name : f.homeClubId;
+        const awayName = away ? away.name : f.awayClubId;
+
         const open = expandedMatchId === f.id;
+
         return `
           <div class="fixture-card ${open ? "open" : ""}" data-id="${f.id}">
             <div class="fixture-main">
-              <div>${CLUBS[f.homeClubId].name}</div>
+              <div>${homeName}</div>
               <div>${f.scoreLocal ?? "-"} - ${f.scoreAway ?? "-"}</div>
-              <div>${CLUBS[f.awayClubId].name}</div>
+              <div>${awayName}</div>
             </div>
             ${open ? renderDetails(f) : ""}
           </div>
@@ -194,12 +202,17 @@ function renderFixtures(fixtures) {
 
   document.querySelectorAll(".fixture-card").forEach(card => {
     card.addEventListener("click", () => {
-      expandedMatchId = expandedMatchId === card.dataset.id ? null : card.dataset.id;
+      expandedMatchId =
+        expandedMatchId === card.dataset.id
+          ? null
+          : card.dataset.id;
+
       renderFixtures(visibleFixtures);
       saveUIState();
     });
   });
 }
+
 
 function renderDetails(f) {
   return `
@@ -239,13 +252,17 @@ function buildStandings(fixtures) {
 }
 
 function baseTeam(id) {
+
+  const club = CLUBS[id];
+
   return {
     id,
-    name: CLUBS[id].name,
-    logo: CLUBS[id].logo,
+    name: club ? club.name : id,
+    logo: club ? club.logo : "",
     PJ:0, PG:0, PP:0, PF:0, PC:0, DG:0, PTS:0
   };
 }
+
 
 function renderStatsSummary(standings) {
   if (!standings.length) return;

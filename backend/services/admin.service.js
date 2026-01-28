@@ -118,3 +118,14 @@ module.exports = {
   updateFixture,
   createFixture,
 };
+
+async function deleteFixture(id) {
+
+  await db.collection("fixtures").doc(id).delete();
+}
+
+module.exports = {
+  updateFixture,
+  createFixture,
+  deleteFixture
+};
