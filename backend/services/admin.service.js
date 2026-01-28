@@ -13,6 +13,11 @@ async function updateFixture(fixtureId, body) {
 
     const fixture = snap.data();
 
+    // No permitir modificar borrados
+    if (fixture.deleted) {
+      throw new Error("Fixture eliminado");
+    }
+
     const updateData = {
       scoreLocal: Number(body.scoreLocal),
       scoreAway: Number(body.scoreAway),
@@ -59,13 +64,13 @@ async function updateFixture(fixtureId, body) {
       PG: away.PG + (awayWin ? 1 : 0),
       PP: away.PP + (awayWin ? 0 : 1),
       PF: away.PF + awayScore,
-      PC: away.PC + local,
+      PC: away.PF + local,
       DG: away.DG + (awayScore - local),
       PTS: away.PTS + (awayWin ? 2 : 1),
     });
+
   });
 }
-
 
 /* ================== CREAR FIXTURE ================== */
 async function createFixture(data) {
@@ -83,29 +88,30 @@ async function createFixture(data) {
     throw new Error("Datos incompletos");
   }
 
-  // Forzar categoría si viene mal
   const finalCategory = categoryId || "B1";
 
   const fixture = {
     categoryId: finalCategory,
     date,
     time: time || "",
+
     homeClubId,
     awayClubId,
     venue: venue || "",
 
-    // 👇 IMPORTANTE: arranca como FINALIZADO
-    status: "finished",
+    // Arranca programado
+    status: "scheduled",
 
     active: true,
 
-    scoreLocal: 0,
-    scoreAway: 0,
+    deleted: false, // 👈 IMPORTANTE
+
+    scoreLocal: null,
+    scoreAway: null,
 
     createdAt: new Date(),
   };
 
-  // CREA DOCUMENTO NUEVO
   const ref = await db.collection("fixtures").add(fixture);
 
   return {
@@ -114,14 +120,15 @@ async function createFixture(data) {
   };
 }
 
-module.exports = {
-  updateFixture,
-  createFixture,
-};
-
+/* ================== BORRADO SEGURO (SOFT DELETE) ================== */
 async function deleteFixture(id) {
 
-  await db.collection("fixtures").doc(id).delete();
+  const ref = db.collection("fixtures").doc(id);
+
+  await ref.update({
+    deleted: true,
+    deletedAt: new Date(),
+  });
 }
 
 module.exports = {
