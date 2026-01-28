@@ -74,6 +74,11 @@ async function createFixture() {
     return;
   }
 
+  if (newHome.value === newAway.value) {
+    alert("Local y visitante no pueden ser iguales");
+    return;
+  }
+
   creating = true;
   createBtn.disabled = true;
 
@@ -81,8 +86,8 @@ async function createFixture() {
     categoryId: "B1",
     date: newDate.value,
     time: newTime.value,
-    homeClubId: newHome.value.trim().toLowerCase(),
-    awayClubId: newAway.value.trim().toLowerCase(),
+    homeClubId: newHome.value,
+    awayClubId: newAway.value,
     venue: newVenue.value.trim()
   };
 
