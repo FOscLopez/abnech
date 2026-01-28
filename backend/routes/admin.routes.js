@@ -8,50 +8,50 @@ const {
 const {
   updateFixture,
   createFixture,
-  deleteFixture
+  deleteFixture,
 } = require("../services/admin.service");
 
 /* ================== GET ================== */
-
 router.get("/fixtures/:categoryId", async (req, res) => {
   try {
     const data = await getFixturesByCategory(req.params.categoryId);
     res.json(data);
-  } catch {
-    res.status(500).json({ error: "Error obteniendo" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error obteniendo fixtures" });
   }
 });
 
-/* ================== CREATE ================== */
-
+/* ================== POST ================== */
 router.post("/fixtures", async (req, res) => {
   try {
     const data = await createFixture(req.body);
     res.status(201).json(data);
-  } catch (e) {
-    res.status(400).json({ error: e.message });
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ error: err.message });
   }
 });
 
-/* ================== UPDATE ================== */
-
+/* ================== PUT ================== */
 router.put("/fixtures/:id", async (req, res) => {
   try {
     await updateFixture(req.params.id, req.body);
     res.json({ ok: true });
-  } catch {
-    res.status(500).json({ error: "Error update" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error actualizando fixture" });
   }
 });
 
-/* ================== DELETE ================== */
-
+/* ================== DELETE (SOFT) ================== */
 router.delete("/fixtures/:id", async (req, res) => {
   try {
     await deleteFixture(req.params.id);
     res.json({ ok: true });
-  } catch {
-    res.status(500).json({ error: "Error delete" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error borrando fixture" });
   }
 });
 
