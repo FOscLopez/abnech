@@ -2,15 +2,17 @@ const db = require("../firebase");
 
 /* ================== ACTUALIZAR FIXTURE ================== */
 async function updateFixture(fixtureId, body) {
+
   const fixtureRef = db.collection("fixtures").doc(fixtureId);
 
   await db.runTransaction(async (tx) => {
+
     const snap = await tx.get(fixtureRef);
+
     if (!snap.exists) throw new Error("Fixture no existe");
 
     const fixture = snap.data();
 
-    // SOLO CAMPOS PERMITIDOS
     const updateData = {
       scoreLocal: Number(body.scoreLocal),
       scoreAway: Number(body.scoreAway),
@@ -19,7 +21,7 @@ async function updateFixture(fixtureId, body) {
 
     tx.update(fixtureRef, updateData);
 
-    // Si ya estaba finalizado → no recalcular
+    // No recalcular si ya estaba finalizado
     if (fixture.status === "finished") return;
     if (body.status !== "finished") return;
 
@@ -64,8 +66,10 @@ async function updateFixture(fixtureId, body) {
   });
 }
 
+
 /* ================== CREAR FIXTURE ================== */
 async function createFixture(data) {
+
   const {
     categoryId,
     date,
@@ -75,24 +79,33 @@ async function createFixture(data) {
     venue,
   } = data;
 
-  if (!categoryId || !date || !homeClubId || !awayClubId) {
+  if (!date || !homeClubId || !awayClubId) {
     throw new Error("Datos incompletos");
   }
 
+  // Forzar categoría si viene mal
+  const finalCategory = categoryId || "B1";
+
   const fixture = {
-    categoryId,
+    categoryId: finalCategory,
     date,
     time: time || "",
     homeClubId,
     awayClubId,
     venue: venue || "",
-    status: "scheduled",
+
+    // 👇 IMPORTANTE: arranca como FINALIZADO
+    status: "finished",
+
     active: true,
-    scoreLocal: null,
-    scoreAway: null,
+
+    scoreLocal: 0,
+    scoreAway: 0,
+
     createdAt: new Date(),
   };
 
+  // CREA DOCUMENTO NUEVO
   const ref = await db.collection("fixtures").add(fixture);
 
   return {
