@@ -7,38 +7,47 @@ async function updateFixture(fixtureId, body) {
 
   await db.runTransaction(async (tx) => {
 
+    /* ================== READS PRIMERO ================== */
+
     const snap = await tx.get(fixtureRef);
 
     if (!snap.exists) throw new Error("Fixture no existe");
 
     const fixture = snap.data();
 
-    // No permitir modificar borrados
     if (fixture.deleted) {
       throw new Error("Fixture eliminado");
     }
 
-    const updateData = {
+    let homeSnap = null;
+    let awaySnap = null;
+
+    // Si va a finalizar → leemos standings ANTES
+    if (fixture.status !== "finished" && body.status === "finished") {
+
+      const homeRef = db.collection("standings").doc(fixture.homeClubId);
+      const awayRef = db.collection("standings").doc(fixture.awayClubId);
+
+      homeSnap = await tx.get(homeRef);
+      awaySnap = await tx.get(awayRef);
+
+      if (!homeSnap.exists || !awaySnap.exists) {
+        throw new Error("Club no encontrado en standings");
+      }
+    }
+
+    /* ================== WRITES DESPUÉS ================== */
+
+    // Actualizar fixture
+    tx.update(fixtureRef, {
       scoreLocal: Number(body.scoreLocal),
       scoreAway: Number(body.scoreAway),
       status: body.status,
-    };
+    });
 
-    tx.update(fixtureRef, updateData);
-
-    // No recalcular si ya estaba finalizado
+    // Si no finaliza → listo
     if (fixture.status === "finished") return;
     if (body.status !== "finished") return;
-
-    const homeRef = db.collection("standings").doc(fixture.homeClubId);
-    const awayRef = db.collection("standings").doc(fixture.awayClubId);
-
-    const homeSnap = await tx.get(homeRef);
-    const awaySnap = await tx.get(awayRef);
-
-    if (!homeSnap.exists || !awaySnap.exists) {
-      throw new Error("Club no encontrado en standings");
-    }
 
     const home = homeSnap.data();
     const away = awaySnap.data();
@@ -49,6 +58,10 @@ async function updateFixture(fixtureId, body) {
     const homeWin = local > awayScore;
     const awayWin = awayScore > local;
 
+    const homeRef = db.collection("standings").doc(fixture.homeClubId);
+    const awayRef = db.collection("standings").doc(fixture.awayClubId);
+
+    // Update local
     tx.update(homeRef, {
       PJ: home.PJ + 1,
       PG: home.PG + (homeWin ? 1 : 0),
@@ -59,12 +72,13 @@ async function updateFixture(fixtureId, body) {
       PTS: home.PTS + (homeWin ? 2 : 1),
     });
 
+    // Update visitante
     tx.update(awayRef, {
       PJ: away.PJ + 1,
       PG: away.PG + (awayWin ? 1 : 0),
       PP: away.PP + (awayWin ? 0 : 1),
       PF: away.PF + awayScore,
-      PC: away.PC + local,      // ✅ CORRECTO
+      PC: away.PC + local,
       DG: away.DG + (awayScore - local),
       PTS: away.PTS + (awayWin ? 2 : 1),
     });
