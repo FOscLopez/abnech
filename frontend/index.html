@@ -283,8 +283,11 @@
     easing: "ease-out"
   });
 
+  const params = new URLSearchParams(location.search);
+
   const entered =
-    localStorage.getItem("abnech_entered") === "true";
+    localStorage.getItem("abnech_entered") === "true" &&
+    !params.has("home");
 
   const landing = document.getElementById("landing");
   const app = document.getElementById("app");
