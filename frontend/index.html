@@ -269,6 +269,9 @@
 
   import { initPublicPage } from "./js/public.js";
 
+  // LIMPIA DATOS VIEJOS
+  localStorage.removeItem("abnech_entered");
+
   AOS.init({
     duration: 800,
     once: true,
