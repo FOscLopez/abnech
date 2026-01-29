@@ -16,10 +16,10 @@
     /* HERO */
 
     .hero {
-  min-height: 100vh;
-  background:
-      linear-gradient(to bottom, rgba(0,0,0,.7), rgba(0,0,0,.9)),
-      url("./img/hero-bg.jpg") center/cover no-repeat;
+      min-height: 100vh;
+      background:
+        linear-gradient(to bottom, rgba(0,0,0,.7), rgba(0,0,0,.9)),
+        url("./img/hero-bg.jpg") center/cover no-repeat;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -124,7 +124,6 @@
 
 </section>
 
-
 <!-- APP -->
 <div id="app" style="display:none">
 
@@ -143,7 +142,6 @@
     </a>
 
   </header>
-
 
   <main>
 
@@ -170,7 +168,6 @@
 
       </section>
 
-
       <!-- FIXTURE -->
 
       <section class="section-block" data-aos="fade-up">
@@ -196,7 +193,6 @@
         <div id="fixture-grid" class="fixture-grid"></div>
 
       </section>
-
 
       <!-- TABLA -->
 
@@ -228,7 +224,6 @@
 
         </div>
 
-
         <div class="standings-table-wrapper">
 
           <table class="standings-table">
@@ -259,7 +254,6 @@
 
   </main>
 
-
   <footer class="site-footer">
 
     <p>© 2026 ABNECH Basket</p>
@@ -268,10 +262,8 @@
 
 </div>
 
-
 <!-- AOS -->
 <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-
 
 <script type="module">
 
@@ -283,16 +275,13 @@
     easing: "ease-out"
   });
 
-  const params = new URLSearchParams(location.search);
-
-  const entered =
-    localStorage.getItem("abnech_entered") === "true" &&
-    !params.has("home");
-
   const landing = document.getElementById("landing");
   const app = document.getElementById("app");
 
-  if (entered) {
+  // Siempre empieza en landing
+  app.style.display = "none";
+
+  document.getElementById("enterBtn").onclick = () => {
 
     landing.remove();
 
@@ -301,17 +290,7 @@
     requestAnimationFrame(() => app.classList.add("show"));
 
     initPublicPage();
-
-  } else {
-
-    document.getElementById("enterBtn").onclick = () => {
-
-      localStorage.setItem("abnech_entered", "true");
-
-      location.reload();
-    };
-
-  }
+  };
 
 </script>
 
