@@ -16,6 +16,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
+/* ================== ADMIN LINK ================== */
+
 const adminLink = document.getElementById("adminLink");
 
 onAuthStateChanged(auth, user => {
@@ -23,8 +25,7 @@ onAuthStateChanged(auth, user => {
 
   if (
     user &&
-    (user.email === "admin@abnech.com" ||
-     user.email === "editor@abnech.com")
+    (user.email === "admin@abnech.com" || user.email === "editor@abnech.com")
   ) {
     adminLink.style.display = "inline-block";
   } else {
@@ -47,8 +48,6 @@ const CLUBS = {
 
 /* ================== ESTADO ================== */
 
-const STORAGE_KEY = "abnech_ui_state";
-
 let allFixtures = [];
 let visibleFixtures = [];
 let expandedMatchId = null;
@@ -59,49 +58,7 @@ let currentCategory = "B1";
 export async function initPublicPage() {
   populateClubFilter();
   bindFilters();
-  restoreUIState();
   await loadCategory(currentCategory);
-  restoreScroll();
-}
-
-/* ================== STORAGE ================== */
-
-function saveUIState() {
-  const r = document.getElementById("filter-round");
-  const s = document.getElementById("filter-status");
-  const c = document.getElementById("filter-club");
-
-  const state = {
-    category: currentCategory,
-    round: r?.value || "",
-    status: s?.value || "all",
-    club: c?.value || "all",
-    expanded: expandedMatchId,
-    scroll: window.scrollY,
-  };
-
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-}
-
-function restoreUIState() {
-  const raw = localStorage.getItem(STORAGE_KEY);
-  if (!raw) return;
-
-  const state = JSON.parse(raw);
-
-  currentCategory = state.category || currentCategory;
-  expandedMatchId = state.expanded || null;
-}
-
-function restoreScroll() {
-  const raw = localStorage.getItem(STORAGE_KEY);
-  if (!raw) return;
-
-  const { scroll } = JSON.parse(raw);
-
-  if (scroll) {
-    requestAnimationFrame(() => window.scrollTo(0, scroll));
-  }
 }
 
 /* ================== FILTROS ================== */
@@ -123,16 +80,14 @@ function populateClubFilter() {
 function bindFilters() {
   ["filter-round", "filter-status", "filter-club"].forEach(id => {
     const el = document.getElementById(id);
+
     if (!el) return;
 
     el.addEventListener("input", () => {
       expandedMatchId = null;
       applyFilters();
-      saveUIState();
     });
   });
-
-  window.addEventListener("scroll", () => saveUIState(), { passive: true });
 }
 
 function applyFilters() {
@@ -143,13 +98,17 @@ function applyFilters() {
   const c = document.getElementById("filter-club")?.value;
 
   if (r) {
-    filtered = filtered.filter(
-      f => Number(f.round ?? f.order) === Number(r)
-    );
+    filtered = filtered.filter(f => Number(f.round ?? f.order) === Number(r));
   }
 
   if (s && s !== "all") {
-    filtered = filtered.filter(f => normalizeStatus(f.status) === s);
+    if (s === "finished") {
+      filtered = filtered.filter(f => isFinished(f));
+    }
+
+    if (s === "pending") {
+      filtered = filtered.filter(f => !isFinished(f));
+    }
   }
 
   if (c && c !== "all") {
@@ -159,7 +118,6 @@ function applyFilters() {
   }
 
   visibleFixtures = filtered;
-
   renderFixtures(visibleFixtures);
 }
 
@@ -167,24 +125,21 @@ function applyFilters() {
 
 async function loadCategory(category) {
   allFixtures = await getFixtures(category);
-
   visibleFixtures = [...allFixtures];
 
   applyFilters();
-
   renderStandings(buildStandings(allFixtures));
 }
 
-/* ================== STATUS ================== */
+/* ================== HELPERS ================== */
 
-function normalizeStatus(status) {
-  if (!status) return "pending";
-
-  const s = status.toLowerCase();
-
-  if (s === "finished" || s === "finalizado") return "finished";
-
-  return "pending";
+function isFinished(f) {
+  return (
+    f.scoreLocal !== null &&
+    f.scoreAway !== null &&
+    !isNaN(f.scoreLocal) &&
+    !isNaN(f.scoreAway)
+  );
 }
 
 /* ================== FIXTURE ================== */
@@ -193,71 +148,62 @@ function renderFixtures(fixtures) {
   const grid = document.getElementById("fixture-grid");
   if (!grid) return;
 
-  grid.innerHTML = fixtures.length
-    ? fixtures.map(f => {
+  if (!fixtures.length) {
+    grid.innerHTML = `<div class="empty-state">Sin resultados</div>`;
+    return;
+  }
 
-        const home = CLUBS[f.homeClubId];
-        const away = CLUBS[f.awayClubId];
+  grid.innerHTML = fixtures.map(f => {
 
-        if (!home || !away) return "";
+    const home = CLUBS[f.homeClubId];
+    const away = CLUBS[f.awayClubId];
 
-        const open = expandedMatchId === f.id;
+    if (!home || !away) return "";
 
-        return `
-          <div class="fixture-card ${open ? "open" : ""}" data-id="${f.id}">
+    const open = expandedMatchId === f.id;
 
-            <div class="fixture-main">
+    return `
+      <div class="fixture-card ${open ? "open" : ""}" data-id="${f.id}">
+        
+        <div class="fixture-main">
 
-              <div class="team-box">
-
-                <img src="${home.logo}" alt="${home.name}"
-                  onerror="this.style.display='none'">
-
-                <span>${home.name}</span>
-
-              </div>
-
-              <div class="score">
-                ${f.scoreLocal ?? "-"} - ${f.scoreAway ?? "-"}
-              </div>
-
-              <div class="team-box">
-
-                <img src="${away.logo}" alt="${away.name}"
-                  onerror="this.style.display='none'">
-
-                <span>${away.name}</span>
-
-              </div>
-
-            </div>
-
-            ${open ? renderDetails(f) : ""}
-
+          <div class="fixture-team">
+            <img src="${home.logo}" alt="${home.name}">
+            <span>${home.name}</span>
           </div>
-        `;
-      }).join("")
-    : `<div class="empty-state">Sin resultados</div>`;
+
+          <div class="fixture-center">
+            ${f.scoreLocal ?? "-"} : ${f.scoreAway ?? "-"}
+          </div>
+
+          <div class="fixture-team">
+            <img src="${away.logo}" alt="${away.name}">
+            <span>${away.name}</span>
+          </div>
+
+        </div>
+
+        ${open ? renderDetails(f) : ""}
+
+      </div>
+    `;
+
+  }).join("");
 
   document.querySelectorAll(".fixture-card").forEach(card => {
-    card.addEventListener("click", () => {
-
+    card.onclick = () => {
       expandedMatchId =
-        expandedMatchId === card.dataset.id
-          ? null
-          : card.dataset.id;
+        expandedMatchId === card.dataset.id ? null : card.dataset.id;
 
       renderFixtures(visibleFixtures);
-
-      saveUIState();
-    });
+    };
   });
 }
 
 function renderDetails(f) {
   return `
     <div class="fixture-details">
-      <div><strong>Jornada:</strong> ${f.round ?? "-"}</div>
+      <div><strong>Jornada:</strong> ${f.round ?? f.order ?? "-"}</div>
       <div><strong>Estado:</strong> ${f.status}</div>
       <div><strong>Fecha:</strong> ${f.date ?? "-"}</div>
       <div><strong>Sede:</strong> ${f.venue ?? "-"}</div>
@@ -272,7 +218,7 @@ function buildStandings(fixtures) {
   const table = {};
 
   fixtures
-    .filter(f => normalizeStatus(f.status) === "finished")
+    .filter(f => isFinished(f))
     .forEach(f => {
 
       const h = f.homeClubId;
@@ -321,47 +267,39 @@ function baseTeam(id) {
 
   return {
     id,
-    name: club ? club.name : id,
-    logo: club ? club.logo : "",
-    PJ:0, PG:0, PP:0, PF:0, PC:0, DG:0, PTS:0
+    name: club.name,
+    logo: club.logo,
+    PJ: 0,
+    PG: 0,
+    PP: 0,
+    PF: 0,
+    PC: 0,
+    DG: 0,
+    PTS: 0,
   };
 }
 
-/* ================== STATS ================== */
-
-function renderStatsSummary(standings) {
-
-  if (!standings.length) return;
-
-  const games = standings.reduce((a, t) => a + t.PJ, 0) / 2;
-
-  const leader = standings[0];
-
-  setText("stat-games", games);
-  setText("stat-leader", leader.name);
-}
-
-function setText(id, value) {
-  const el = document.getElementById(id);
-  if (el) el.textContent = value;
-}
+/* ================== RENDER TABLA ================== */
 
 function renderStandings(standings) {
 
-  renderStatsSummary(standings);
-
   document.getElementById("standingsBody").innerHTML =
-    standings.map((t,i)=>`
-      <tr class="${i===0?"leader":""}">
-        <td>${i+1}</td>
-        <td>${t.name}</td>
+    standings.map((t, i) => `
+      <tr class="${i === 0 ? "leader" : ""}">
+        <td>${i + 1}</td>
+
+        <td class="club-cell">
+          <img src="${t.logo}">
+          ${t.name}
+        </td>
+
         <td>${t.PJ}</td>
         <td>${t.PG}</td>
         <td>${t.PP}</td>
         <td>${t.PF}</td>
         <td>${t.PC}</td>
         <td>${t.DG}</td>
-        <td>${t.PTS}</td>
+        <td class="pts">${t.PTS}</td>
       </tr>
     `).join("");
 }
