@@ -11,7 +11,6 @@ const firebaseConfig = {
   storageBucket: "abnech-basket.firebasestorage.app",
   messagingSenderId: "1020692623846",
   appId: "1:1020692623846:web:a1b37421b2e891b52b6627",
-  measurementId: "G-S3KXDNB58S"
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
@@ -32,8 +31,7 @@ onAuthStateChanged(auth, user => {
   }
 });
 
-/* ================== ESTADO ================== */
-const STORAGE_KEY = "abnech_ui_state";
+/* ================== CLUBES ================== */
 
 const CLUBS = {
   union: { name: "Unión", logo: "/img/clubs/union.png" },
@@ -46,12 +44,17 @@ const CLUBS = {
   zapallar: { name: "Zapallar", logo: "/img/clubs/zapallar.png" },
 };
 
+/* ================== ESTADO ================== */
+
+const STORAGE_KEY = "abnech_ui_state";
+
 let allFixtures = [];
 let visibleFixtures = [];
 let expandedMatchId = null;
 let currentCategory = "B1";
 
 /* ================== INIT ================== */
+
 export async function initPublicPage() {
   populateClubFilter();
   bindFilters();
@@ -61,29 +64,18 @@ export async function initPublicPage() {
   restoreScroll();
 }
 
-/* ================== (EL RESTO DE TU ARCHIVO SIGUE IGUAL) ================== */
-/* filtros, fixtures, tabla, stats — NO MODIFICADOS */
+/* ================== URL ================== */
 
-
-
-/* ================== DEEP LINK ================== */
 function restoreFromURL() {
   const params = new URLSearchParams(location.search);
   if (!params.size) return;
 
   currentCategory = params.get("cat") || currentCategory;
   expandedMatchId = params.get("expand");
-
-  const r = document.getElementById("filter-round");
-  const s = document.getElementById("filter-status");
-  const c = document.getElementById("filter-club");
-
-  if (r && params.get("round")) r.value = params.get("round");
-  if (s && params.get("status")) s.value = params.get("status");
-  if (c && params.get("club")) c.value = params.get("club");
 }
 
 /* ================== PERSISTENCIA ================== */
+
 function saveUIState() {
   const r = document.getElementById("filter-round");
   const s = document.getElementById("filter-status");
@@ -106,6 +98,7 @@ function restoreUIState() {
   if (!raw) return;
 
   const state = JSON.parse(raw);
+
   currentCategory = state.category || currentCategory;
   expandedMatchId = state.expanded || null;
 }
@@ -113,16 +106,22 @@ function restoreUIState() {
 function restoreScroll() {
   const raw = localStorage.getItem(STORAGE_KEY);
   if (!raw) return;
+
   const { scroll } = JSON.parse(raw);
-  if (scroll) requestAnimationFrame(() => window.scrollTo(0, scroll));
+
+  if (scroll) {
+    requestAnimationFrame(() => window.scrollTo(0, scroll));
+  }
 }
 
 /* ================== FILTROS ================== */
+
 function populateClubFilter() {
   const select = document.getElementById("filter-club");
   if (!select) return;
 
-  select.innerHTML = `<option value="all">Todos los clubes</option>`;
+  select.innerHTML = `<option value="all">Todos</option>`;
+
   Object.entries(CLUBS).forEach(([id, club]) => {
     const opt = document.createElement("option");
     opt.value = id;
@@ -153,25 +152,41 @@ function applyFilters() {
   const s = document.getElementById("filter-status")?.value;
   const c = document.getElementById("filter-club")?.value;
 
-  if (r) filtered = filtered.filter(f => Number(f.round ?? f.order) === Number(r));
-  if (s && s !== "all") filtered = filtered.filter(f => f.status === s);
+  if (r) {
+    filtered = filtered.filter(
+      f => Number(f.round ?? f.order) === Number(r)
+    );
+  }
+
+  if (s && s !== "all") {
+    filtered = filtered.filter(f => f.status === s);
+  }
+
   if (c && c !== "all") {
-    filtered = filtered.filter(f => f.homeClubId === c || f.awayClubId === c);
+    filtered = filtered.filter(
+      f => f.homeClubId === c || f.awayClubId === c
+    );
   }
 
   visibleFixtures = filtered;
+
   renderFixtures(visibleFixtures);
 }
 
 /* ================== DATA ================== */
+
 async function loadCategory(category) {
   allFixtures = await getFixtures(category);
+
   visibleFixtures = [...allFixtures];
+
   applyFilters();
+
   renderStandings(buildStandings(allFixtures));
 }
 
 /* ================== FIXTURE ================== */
+
 function renderFixtures(fixtures) {
   const grid = document.getElementById("fixture-grid");
   if (!grid) return;
@@ -182,19 +197,43 @@ function renderFixtures(fixtures) {
         const home = CLUBS[f.homeClubId];
         const away = CLUBS[f.awayClubId];
 
-        // Evita romper si el club no existe
         if (!home || !away) return "";
 
         const open = expandedMatchId === f.id;
 
         return `
           <div class="fixture-card ${open ? "open" : ""}" data-id="${f.id}">
+
             <div class="fixture-main">
-              <div>${home.name}</div>
-              <div>${f.scoreLocal ?? "-"} - ${f.scoreAway ?? "-"}</div>
-              <div>${away.name}</div>
+
+              <div class="team">
+
+                <img src="${home.logo}"
+                     alt="${home.name}"
+                     onerror="this.style.display='none'">
+
+                <span>${home.name}</span>
+
+              </div>
+
+              <div class="score">
+                ${f.scoreLocal ?? "-"} - ${f.scoreAway ?? "-"}
+              </div>
+
+              <div class="team">
+
+                <img src="${away.logo}"
+                     alt="${away.name}"
+                     onerror="this.style.display='none'">
+
+                <span>${away.name}</span>
+
+              </div>
+
             </div>
+
             ${open ? renderDetails(f) : ""}
+
           </div>
         `;
       }).join("")
@@ -202,12 +241,14 @@ function renderFixtures(fixtures) {
 
   document.querySelectorAll(".fixture-card").forEach(card => {
     card.addEventListener("click", () => {
+
       expandedMatchId =
         expandedMatchId === card.dataset.id
           ? null
           : card.dataset.id;
 
       renderFixtures(visibleFixtures);
+
       saveUIState();
     });
   });
@@ -216,15 +257,18 @@ function renderFixtures(fixtures) {
 function renderDetails(f) {
   return `
     <div class="fixture-details">
+
       <div><strong>Jornada:</strong> ${f.round ?? f.order ?? "-"}</div>
       <div><strong>Estado:</strong> ${f.status}</div>
       <div><strong>Fecha:</strong> ${f.date ?? "-"}</div>
       <div><strong>Sede:</strong> ${f.venue ?? "-"}</div>
+
     </div>
   `;
 }
 
-/* ================== TABLA + STATS ================== */
+/* ================== TABLA ================== */
+
 function buildStandings(fixtures) {
 
   const table = {};
@@ -236,7 +280,6 @@ function buildStandings(fixtures) {
       const h = f.homeClubId;
       const a = f.awayClubId;
 
-      // Evita romper si club no existe
       if (!CLUBS[h] || !CLUBS[a]) return;
 
       if (!table[h]) table[h] = baseTeam(h);
@@ -286,20 +329,29 @@ function baseTeam(id) {
   };
 }
 
+/* ================== STATS ================== */
 
 function renderStatsSummary(standings) {
   if (!standings.length) return;
 
   const games = standings.reduce((a, t) => a + t.PJ, 0) / 2;
+
   const leader = standings[0];
 
   let bestAttack = standings[0];
   let bestDefense = standings[0];
 
   standings.forEach(t => {
+
     if (!t.PJ) return;
-    if (t.PF / t.PJ > bestAttack.PF / bestAttack.PJ) bestAttack = t;
-    if (t.PC / t.PJ < bestDefense.PC / bestDefense.PJ) bestDefense = t;
+
+    if (t.PF / t.PJ > bestAttack.PF / bestAttack.PJ) {
+      bestAttack = t;
+    }
+
+    if (t.PC / t.PJ < bestDefense.PC / bestDefense.PJ) {
+      bestDefense = t;
+    }
   });
 
   setText("stat-games", games);
@@ -308,34 +360,21 @@ function renderStatsSummary(standings) {
   setText("stat-defense", `${bestDefense.name} (${(bestDefense.PC / bestDefense.PJ).toFixed(1)})`);
 }
 
-function teamBadges(team) {
-  if (!team.PJ) return "";
-  const winPct = Math.round((team.PG / team.PJ) * 100);
-  const pfAvg = (team.PF / team.PJ).toFixed(1);
-  const pcAvg = (team.PC / team.PJ).toFixed(1);
-
-  return `
-    <div class="team-badges">
-      <span>🏆 ${winPct}%</span>
-      <span>⚔ ${pfAvg}</span>
-      <span>🛡 ${pcAvg}</span>
-    </div>
-  `;
-}
-
 function setText(id, value) {
   const el = document.getElementById(id);
   if (el) el.textContent = value;
 }
 
 function renderStandings(standings) {
+
   renderStatsSummary(standings);
 
   document.getElementById("standingsBody").innerHTML =
     standings.map((t,i)=>`
       <tr class="${i===0?"leader":""}">
+
         <td>${i+1}</td>
-        <td>${t.name}${teamBadges(t)}</td>
+        <td>${t.name}</td>
         <td>${t.PJ}</td>
         <td>${t.PG}</td>
         <td>${t.PP}</td>
@@ -343,6 +382,7 @@ function renderStandings(standings) {
         <td>${t.PC}</td>
         <td>${t.DG}</td>
         <td>${t.PTS}</td>
+
       </tr>
     `).join("");
 }
