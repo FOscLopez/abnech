@@ -58,6 +58,56 @@
       box-shadow: 0 10px 30px rgba(255,107,0,.4);
     }
 
+    /* ================= LOGOS LANDING ================= */
+
+    .clubs-row {
+      margin-top: 2.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 18px;
+      max-width: 900px;
+    }
+
+    .club-logo {
+      width: 64px;
+      height: 64px;
+      padding: 6px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,255,255,0.15);
+      box-shadow: 0 0 0 rgba(255,165,0,0.4);
+      animation: pulseGlow 3s infinite ease-in-out;
+      transition: transform .3s ease;
+    }
+
+    .club-logo:hover {
+      transform: scale(1.15);
+    }
+
+    .club-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 0 6px rgba(255,165,0,.6));
+    }
+
+    @keyframes pulseGlow {
+      0% {
+        box-shadow: 0 0 0 rgba(255,165,0,0.2);
+      }
+      50% {
+        box-shadow: 0 0 15px rgba(255,165,0,0.6);
+      }
+      100% {
+        box-shadow: 0 0 0 rgba(255,165,0,0.2);
+      }
+    }
+
     /* TRANSICIÓN APP */
 
     #app {
@@ -122,12 +172,49 @@
     Ver Fixture
   </button>
 
+
+  <!-- FILA LOGOS CLUBES -->
+  <div class="clubs-row" data-aos="fade-up" data-aos-delay="600">
+
+    <div class="club-logo">
+      <img src="./img/clubs/union.png" alt="Unión">
+    </div>
+
+    <div class="club-logo">
+      <img src="./img/clubs/funebrero.png" alt="Funebrero">
+    </div>
+
+    <div class="club-logo">
+      <img src="./img/clubs/cfa.png" alt="CFA">
+    </div>
+
+    <div class="club-logo">
+      <img src="./img/clubs/general-vedia.png" alt="General Vedia">
+    </div>
+
+    <div class="club-logo">
+      <img src="./img/clubs/la-leonesa.png" alt="La Leonesa">
+    </div>
+
+    <div class="club-logo">
+      <img src="./img/clubs/palermo-cap.png" alt="Palermo CAP">
+    </div>
+
+    <div class="club-logo">
+      <img src="./img/clubs/puerto-bermejo.png" alt="Puerto Bermejo">
+    </div>
+
+    <div class="club-logo">
+      <img src="./img/clubs/zapallar.png" alt="Zapallar">
+    </div>
+
+  </div>
+
 </section>
 
 <!-- APP -->
 <div id="app" style="display:none">
 
-  <!-- HEADER -->
   <header class="site-header" data-aos="fade-down">
 
     <span class="logo-main">ABNECH Basket</span>
@@ -144,120 +231,11 @@
   </header>
 
   <main>
-
-    <div class="content-area">
-
-      <!-- INFO -->
-
-      <section class="info-section">
-
-        <div class="info-card" data-aos="fade-up">
-          <h3>🏀 Competencia</h3>
-          <p>Liga organizada con clubes regionales.</p>
-        </div>
-
-        <div class="info-card" data-aos="fade-up" data-aos-delay="100">
-          <h3>📊 Estadísticas</h3>
-          <p>Resultados y tabla en tiempo real.</p>
-        </div>
-
-        <div class="info-card" data-aos="fade-up" data-aos-delay="200">
-          <h3>👥 Comunidad</h3>
-          <p>Jugadores, dirigentes y fanáticos.</p>
-        </div>
-
-      </section>
-
-      <!-- FIXTURE -->
-
-      <section class="section-block" data-aos="fade-up">
-
-        <h2>FIXTURE</h2>
-
-        <div class="fixture-filters">
-
-          <input id="filter-round" type="number" min="1" placeholder="Jornada">
-
-          <select id="filter-status">
-            <option value="all">Todos</option>
-            <option value="finished">Jugados</option>
-            <option value="pending">Pendientes</option>
-          </select>
-
-          <select id="filter-club">
-            <option value="all">Todos los clubes</option>
-          </select>
-
-        </div>
-
-        <div id="fixture-grid" class="fixture-grid"></div>
-
-      </section>
-
-      <!-- TABLA -->
-
-      <section class="section-block" data-aos="fade-up">
-
-        <h2>TABLA DE POSICIONES</h2>
-
-        <div id="stats-summary" class="stats-summary">
-
-          <div class="stat-item">
-            <span class="stat-label">Partidos</span>
-            <span id="stat-games">–</span>
-          </div>
-
-          <div class="stat-item">
-            <span class="stat-label">Líder</span>
-            <span id="stat-leader">–</span>
-          </div>
-
-          <div class="stat-item">
-            <span class="stat-label">Mejor ataque</span>
-            <span id="stat-attack">–</span>
-          </div>
-
-          <div class="stat-item">
-            <span class="stat-label">Mejor defensa</span>
-            <span id="stat-defense">–</span>
-          </div>
-
-        </div>
-
-        <div class="standings-table-wrapper">
-
-          <table class="standings-table">
-
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Club</th>
-                <th>PJ</th>
-                <th>PG</th>
-                <th>PP</th>
-                <th>PF</th>
-                <th>PC</th>
-                <th>DG</th>
-                <th>PTS</th>
-              </tr>
-            </thead>
-
-            <tbody id="standingsBody"></tbody>
-
-          </table>
-
-        </div>
-
-      </section>
-
-    </div>
-
+    <div class="content-area"></div>
   </main>
 
   <footer class="site-footer">
-
     <p>© 2026 ABNECH Basket</p>
-
   </footer>
 
 </div>
@@ -269,9 +247,6 @@
 
   import { initPublicPage } from "./js/public.js";
 
-  // LIMPIA DATOS VIEJOS
-  localStorage.removeItem("abnech_entered");
-
   AOS.init({
     duration: 800,
     once: true,
@@ -281,7 +256,6 @@
   const landing = document.getElementById("landing");
   const app = document.getElementById("app");
 
-  // Siempre empieza en landing
   app.style.display = "none";
 
   document.getElementById("enterBtn").onclick = () => {
