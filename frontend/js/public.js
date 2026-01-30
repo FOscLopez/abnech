@@ -1,6 +1,6 @@
 import { getFixtures } from "./services/fixtures.service.js";
 
-/* ================== FIREBASE / ADMIN LINK ================== */
+/* ================== FIREBASE ================== */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
@@ -13,8 +13,8 @@ const firebaseConfig = {
   appId: "1:1020692623846:web:a1b37421b2e891b52b6627",
 };
 
-const firebaseApp = initializeApp(firebaseConfig);
-const auth = getAuth(firebaseApp);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
 const adminLink = document.getElementById("adminLink");
 
@@ -23,7 +23,8 @@ onAuthStateChanged(auth, user => {
 
   if (
     user &&
-    (user.email === "admin@abnech.com" || user.email === "editor@abnech.com")
+    (user.email === "admin@abnech.com" ||
+     user.email === "editor@abnech.com")
   ) {
     adminLink.style.display = "inline-block";
   } else {
@@ -58,23 +59,12 @@ let currentCategory = "B1";
 export async function initPublicPage() {
   populateClubFilter();
   bindFilters();
-  restoreFromURL();
   restoreUIState();
   await loadCategory(currentCategory);
   restoreScroll();
 }
 
-/* ================== URL ================== */
-
-function restoreFromURL() {
-  const params = new URLSearchParams(location.search);
-  if (!params.size) return;
-
-  currentCategory = params.get("cat") || currentCategory;
-  expandedMatchId = params.get("expand");
-}
-
-/* ================== PERSISTENCIA ================== */
+/* ================== STORAGE ================== */
 
 function saveUIState() {
   const r = document.getElementById("filter-round");
@@ -159,7 +149,7 @@ function applyFilters() {
   }
 
   if (s && s !== "all") {
-    filtered = filtered.filter(f => f.status === s);
+    filtered = filtered.filter(f => normalizeStatus(f.status) === s);
   }
 
   if (c && c !== "all") {
@@ -185,6 +175,18 @@ async function loadCategory(category) {
   renderStandings(buildStandings(allFixtures));
 }
 
+/* ================== STATUS ================== */
+
+function normalizeStatus(status) {
+  if (!status) return "pending";
+
+  const s = status.toLowerCase();
+
+  if (s === "finished" || s === "finalizado") return "finished";
+
+  return "pending";
+}
+
 /* ================== FIXTURE ================== */
 
 function renderFixtures(fixtures) {
@@ -206,11 +208,10 @@ function renderFixtures(fixtures) {
 
             <div class="fixture-main">
 
-              <div class="team">
+              <div class="team-box">
 
-                <img src="${home.logo}"
-                     alt="${home.name}"
-                     onerror="this.style.display='none'">
+                <img src="${home.logo}" alt="${home.name}"
+                  onerror="this.style.display='none'">
 
                 <span>${home.name}</span>
 
@@ -220,11 +221,10 @@ function renderFixtures(fixtures) {
                 ${f.scoreLocal ?? "-"} - ${f.scoreAway ?? "-"}
               </div>
 
-              <div class="team">
+              <div class="team-box">
 
-                <img src="${away.logo}"
-                     alt="${away.name}"
-                     onerror="this.style.display='none'">
+                <img src="${away.logo}" alt="${away.name}"
+                  onerror="this.style.display='none'">
 
                 <span>${away.name}</span>
 
@@ -257,12 +257,10 @@ function renderFixtures(fixtures) {
 function renderDetails(f) {
   return `
     <div class="fixture-details">
-
-      <div><strong>Jornada:</strong> ${f.round ?? f.order ?? "-"}</div>
+      <div><strong>Jornada:</strong> ${f.round ?? "-"}</div>
       <div><strong>Estado:</strong> ${f.status}</div>
       <div><strong>Fecha:</strong> ${f.date ?? "-"}</div>
       <div><strong>Sede:</strong> ${f.venue ?? "-"}</div>
-
     </div>
   `;
 }
@@ -274,7 +272,7 @@ function buildStandings(fixtures) {
   const table = {};
 
   fixtures
-    .filter(f => f.status === "finished" || f.status === "Finalizado")
+    .filter(f => normalizeStatus(f.status) === "finished")
     .forEach(f => {
 
       const h = f.homeClubId;
@@ -332,32 +330,15 @@ function baseTeam(id) {
 /* ================== STATS ================== */
 
 function renderStatsSummary(standings) {
+
   if (!standings.length) return;
 
   const games = standings.reduce((a, t) => a + t.PJ, 0) / 2;
 
   const leader = standings[0];
 
-  let bestAttack = standings[0];
-  let bestDefense = standings[0];
-
-  standings.forEach(t => {
-
-    if (!t.PJ) return;
-
-    if (t.PF / t.PJ > bestAttack.PF / bestAttack.PJ) {
-      bestAttack = t;
-    }
-
-    if (t.PC / t.PJ < bestDefense.PC / bestDefense.PJ) {
-      bestDefense = t;
-    }
-  });
-
   setText("stat-games", games);
   setText("stat-leader", leader.name);
-  setText("stat-attack", `${bestAttack.name} (${(bestAttack.PF / bestAttack.PJ).toFixed(1)})`);
-  setText("stat-defense", `${bestDefense.name} (${(bestDefense.PC / bestDefense.PJ).toFixed(1)})`);
 }
 
 function setText(id, value) {
@@ -372,7 +353,6 @@ function renderStandings(standings) {
   document.getElementById("standingsBody").innerHTML =
     standings.map((t,i)=>`
       <tr class="${i===0?"leader":""}">
-
         <td>${i+1}</td>
         <td>${t.name}</td>
         <td>${t.PJ}</td>
@@ -382,7 +362,6 @@ function renderStandings(standings) {
         <td>${t.PC}</td>
         <td>${t.DG}</td>
         <td>${t.PTS}</td>
-
       </tr>
     `).join("");
 }
