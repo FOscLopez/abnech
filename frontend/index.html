@@ -20,32 +20,13 @@
       background:
         linear-gradient(to bottom, rgba(0,0,0,.7), rgba(0,0,0,.9)),
         url("./img/hero-bg.jpg") center/cover no-repeat;
-
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
-
-      gap: 1.4rem;
+      gap: 1.5rem;
       padding: 2rem;
-    }
-
-    /* SLIDER */
-
-    .hero-slider {
-      width: 100%;
-      max-width: 320px;
-      margin-bottom: .8rem;
-    }
-
-    .hero-slider img {
-      width: 100%;
-      height: auto;
-      max-height: 220px;
-      object-fit: contain;
-      display: block;
-      margin: auto;
     }
 
     .hero h1 {
@@ -54,46 +35,20 @@
     }
 
     .hero p {
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       opacity: .9;
       max-width: 600px;
     }
 
-    /* BANNER */
-
-    .match-banner {
-      background: rgba(0,0,0,.55);
-      border: 1px solid rgba(255,255,255,.15);
-      border-radius: 14px;
-
-      padding: .5rem 1rem;
-
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      justify-content: center;
-
-      font-size: .85rem;
-    }
-
-    .match-banner span {
-      color: #ff9c42;
-      font-weight: 600;
-    }
-
-    /* BOTÓN */
-
     .enter-btn {
-      padding: .9rem 2.6rem;
-      font-size: 1.05rem;
+      padding: 1rem 2.8rem;
+      font-size: 1.1rem;
       border-radius: 50px;
       border: none;
       cursor: pointer;
-
       background: linear-gradient(135deg,#ff6b00,#ff9c42);
       color: #fff;
       font-weight: bold;
-
       transition: .3s;
     }
 
@@ -102,30 +57,26 @@
       box-shadow: 0 10px 30px rgba(255,107,0,.4);
     }
 
-    /* LOGOS */
+    /* LOGOS LANDING */
 
     .club-logos {
-      margin-top: 1.2rem;
-
+      margin-top: 1.5rem;
       display: flex;
       gap: 1.2rem;
       flex-wrap: wrap;
       justify-content: center;
       align-items: center;
-
       max-width: 900px;
     }
 
     .club-logos img {
-      max-height: 46px;
+      max-height: 45px;
       width: auto;
-
       object-fit: contain;
-
       filter: drop-shadow(0 2px 6px rgba(0,0,0,.6));
     }
 
-    /* APP */
+    /* TRANSICIÓN APP */
 
     #app {
       opacity: 0;
@@ -143,13 +94,8 @@
 
 <body>
 
-<!-- HERO -->
+<!-- LANDING -->
 <section id="landing" class="hero">
-
-  <!-- SLIDER -->
-  <div class="hero-slider">
-    <img src="./img/anima.gif" alt="Animación ABNECH">
-  </div>
 
   <h1 data-aos="fade-down">ABNECH Basket</h1>
 
@@ -157,10 +103,8 @@
     Liga Regional del Nordeste Chaqueño
   </p>
 
-  <!-- BANNER -->
-  <div class="match-banner" data-aos="fade-up" data-aos-delay="300">
-    <div>⏰ Próxima: <span>A confirmar</span></div>
-    <div>🏀 Última: <span>A confirmar</span></div>
+  <div class="banner-info">
+    ⏰ Próxima: <b>A confirmar</b> &nbsp; | &nbsp; 🏀 Última: <b>A confirmar</b>
   </div>
 
   <button
@@ -172,7 +116,6 @@
     Ver Fixture
   </button>
 
-  <!-- LOGOS -->
   <div class="club-logos">
 
     <img src="./img/clubs/union.png">
@@ -188,9 +131,40 @@
 
 </section>
 
+
 <!-- APP -->
 <div id="app" style="display:none">
 
+  <!-- MARQUESINA LOGOS -->
+  <div class="logos-marquee">
+
+    <div class="logos-track">
+
+      <img src="./img/clubs/union.png">
+      <img src="./img/clubs/funebrero.png">
+      <img src="./img/clubs/cfa.png">
+      <img src="./img/clubs/general-vedia.png">
+      <img src="./img/clubs/la-leonesa.png">
+      <img src="./img/clubs/palermo-cap.png">
+      <img src="./img/clubs/puerto-bermejo.png">
+      <img src="./img/clubs/zapallar.png">
+
+      <!-- duplicado para loop -->
+      <img src="./img/clubs/union.png">
+      <img src="./img/clubs/funebrero.png">
+      <img src="./img/clubs/cfa.png">
+      <img src="./img/clubs/general-vedia.png">
+      <img src="./img/clubs/la-leonesa.png">
+      <img src="./img/clubs/palermo-cap.png">
+      <img src="./img/clubs/puerto-bermejo.png">
+      <img src="./img/clubs/zapallar.png">
+
+    </div>
+
+  </div>
+
+
+  <!-- HEADER -->
   <header class="site-header">
 
     <span class="logo-main">ABNECH Basket</span>
@@ -205,10 +179,15 @@
 
   </header>
 
+
   <main>
+
     <div class="content-area">
 
+      <!-- FIXTURE -->
+
       <section class="section-block">
+
         <h2>FIXTURE</h2>
 
         <div class="fixture-filters">
@@ -227,12 +206,18 @@
 
         </div>
 
-        <div id="fixture-grid"></div>
+        <div id="fixture-grid" class="fixture-grid"></div>
+
       </section>
+
+
+      <!-- TABLA -->
 
       <section class="section-block">
 
         <h2>TABLA DE POSICIONES</h2>
+
+        <div id="stats-summary" class="stats-summary"></div>
 
         <div class="standings-table-wrapper">
 
@@ -261,13 +246,16 @@
       </section>
 
     </div>
+
   </main>
+
 
   <footer class="site-footer">
     <p>© 2026 ABNECH Basket</p>
   </footer>
 
 </div>
+
 
 <!-- AOS -->
 <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
@@ -278,7 +266,7 @@
 
   AOS.init({
     duration: 800,
-    once: true,
+    once: true
   });
 
   const landing = document.getElementById("landing");

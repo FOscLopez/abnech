@@ -474,3 +474,61 @@ body {
   transform: scale(1.08);
   box-shadow: 0 0 12px rgba(255,153,0,0.6);
 }
+/* =========================
+   MARQUESINA LOGOS
+========================= */
+
+.logos-marquee {
+  width: 100%;
+  overflow: hidden;
+  background: #05070f;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.logos-track {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+  padding: 12px 0;
+
+  width: max-content;
+
+  animation: marquee 25s linear infinite;
+}
+
+/* Pausa al tocar (móvil) o hover */
+.logos-marquee:hover .logos-track {
+  animation-play-state: paused;
+}
+
+.logos-track img {
+  height: 42px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,.6));
+}
+
+/* Animación */
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+
+/* =========================
+   BANNER INFO LANDING
+========================= */
+
+.banner-info {
+  background: rgba(0,0,0,.6);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  border: 1px solid rgba(255,255,255,0.15);
+}
