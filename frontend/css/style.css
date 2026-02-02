@@ -532,3 +532,55 @@ body {
   font-size: 0.9rem;
   border: 1px solid rgba(255,255,255,0.15);
 }
+/* =========================
+   LANDING LOGOS
+========================= */
+
+.club-logos {
+  margin-top: 20px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.club-logos img {
+  max-height: 45px;
+  object-fit: contain;
+}
+
+
+/* =========================
+   MARQUEE (BANNER)
+========================= */
+
+.clubs-marquee {
+  width: 100%;
+  overflow: hidden;
+  background: #05070f;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.marquee-track {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+  width: max-content;
+
+  animation: marquee 25s linear infinite;
+}
+
+.marquee-track img {
+  height: 42px;
+  object-fit: contain;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
