@@ -283,9 +283,14 @@ function baseTeam(id) {
 
 function renderStandings(standings) {
 
-  document.getElementById("standingsBody").innerHTML =
+  const body = document.getElementById("standingsBody");
+
+  if (!body) return; // <-- evita error
+
+  body.innerHTML =
     standings.map((t, i) => `
       <tr class="${i === 0 ? "leader" : ""}">
+
         <td>${i + 1}</td>
 
         <td class="club-cell">
@@ -300,6 +305,8 @@ function renderStandings(standings) {
         <td>${t.PC}</td>
         <td>${t.DG}</td>
         <td class="pts">${t.PTS}</td>
+
       </tr>
     `).join("");
+
 }
