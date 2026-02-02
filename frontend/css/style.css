@@ -474,52 +474,6 @@ body {
   transform: scale(1.08);
   box-shadow: 0 0 12px rgba(255,153,0,0.6);
 }
-/* =========================
-   MARQUESINA LOGOS
-========================= */
-
-.logos-marquee {
-  width: 100%;
-  overflow: hidden;
-  background: #05070f;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-}
-
-.logos-track {
-  display: flex;
-  gap: 40px;
-  align-items: center;
-  padding: 12px 0;
-
-  width: max-content;
-
-  animation: marquee 25s linear infinite;
-}
-
-/* Pausa al tocar (móvil) o hover */
-.logos-marquee:hover .logos-track {
-  animation-play-state: paused;
-}
-
-.logos-track img {
-  height: 42px;
-  width: auto;
-  object-fit: contain;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,.6));
-}
-
-/* Animación */
-
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-
-  to {
-    transform: translateX(-50%);
-  }
-}
-
 
 /* =========================
    BANNER INFO LANDING
@@ -551,75 +505,41 @@ body {
 
 
 /* =========================
-   MARQUEE (BANNER)
+   BARRA CLUBES SUPERIOR
 ========================= */
 
-.clubs-marquee {
+.clubs-bar {
   width: 100%;
-  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 22px;
+
+  padding: 12px 10px;
+
   background: #05070f;
   border-bottom: 1px solid rgba(255,255,255,0.1);
+
+  position: sticky;
+  top: 0;
+  z-index: 50;
 }
 
-.marquee-track {
+.clubs-bar a {
   display: flex;
-  gap: 40px;
   align-items: center;
-  width: max-content;
-
-  animation: marquee 25s linear infinite;
+  justify-content: center;
 }
 
-.marquee-track img {
+.clubs-bar img {
   height: 42px;
+  width: auto;
   object-fit: contain;
+
+  transition: 0.2s ease;
 }
 
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-
-  to {
-    transform: translateX(-50%);
-  }
-}
-/* =========================
-   MARQUEE INTERNO APP
-========================= */
-
-.logos-marquee{
-  width:100%;
-  overflow:hidden;
-  background:#05070f;
-  border-bottom:1px solid rgba(255,255,255,0.1);
-}
-
-.logos-track{
-  display:flex;
-  gap:40px;
-  align-items:center;
-  padding:12px 0;
-
-  width:max-content;
-
-  animation: marquee 25s linear infinite;
-}
-
-.logos-track img{
-  height:42px;
-  object-fit:contain;
-}
-
-.logos-marquee:hover .logos-track{
-  animation-play-state:paused;
-}
-
-@keyframes marquee{
-  from{
-    transform:translateX(0);
-  }
-  to{
-    transform:translateX(-50%);
-  }
+.clubs-bar img:hover {
+  transform: scale(1.15);
+  filter: drop-shadow(0 0 6px rgba(255,153,0,0.6));
 }
