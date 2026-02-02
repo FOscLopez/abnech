@@ -25,61 +25,72 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-
       text-align: center;
-      gap: 1.4rem;
+      gap: 1.5rem;
       padding: 2rem;
     }
-
-    /* SLIDER */
-
-    .hero-slider {
-      width: 100%;
-      max-width: 900px;
-      height: 180px;
-
-      overflow: hidden;
-      border-radius: 16px;
-
-      box-shadow: 0 12px 30px rgba(0,0,0,.6);
-    }
-
-    .hero-slider img {
-      width: 100%;
-      height: 100%;
-
-      object-fit: contain;
-      background: rgba(0,0,0,.4);
-
-      animation: fade 12s infinite;
-    }
-
-    @keyframes fade {
-      0% { opacity: 1; }
-      25% { opacity: 0; }
-      50% { opacity: 1; }
-      75% { opacity: 0; }
-      100% { opacity: 1; }
-    }
-
-    /* TITULOS */
 
     .hero h1 {
       font-size: clamp(2.5rem, 6vw, 4rem);
       font-weight: 800;
-      letter-spacing: 1px;
     }
 
     .hero p {
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       opacity: .9;
       max-width: 600px;
     }
 
-    /* BOTON */
+    /* ================= SLIDER ================= */
+
+    .hero-slider {
+      width: 100%;
+      max-width: 720px;
+      overflow: hidden;
+      border-radius: 16px;
+      margin-bottom: 1rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,.6);
+    }
+
+    .hero-slider-track {
+      display: flex;
+      transition: transform .5s ease;
+      touch-action: pan-y;
+    }
+
+    .hero-slide {
+      min-width: 100%;
+      user-select: none;
+    }
+
+    .hero-slide img {
+      width: 100%;
+      display: block;
+    }
+
+    /* ================= BANNER ================= */
+
+    .date-banner {
+      background: rgba(0,0,0,.6);
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 12px;
+      padding: .6rem 1rem;
+      font-size: .9rem;
+      display: flex;
+      gap: 1.2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .date-banner span {
+      color: #ff9c42;
+      font-weight: 600;
+    }
+
+    /* ================= BOTON ================= */
 
     .enter-btn {
-      padding: 1rem 2.6rem;
+      padding: 1rem 2.8rem;
       font-size: 1.1rem;
       border-radius: 50px;
       border: none;
@@ -87,7 +98,6 @@
 
       background: linear-gradient(135deg,#ff6b00,#ff9c42);
       color: #fff;
-
       font-weight: bold;
       transition: .3s;
     }
@@ -97,57 +107,7 @@
       box-shadow: 0 10px 30px rgba(255,107,0,.4);
     }
 
-    /* BANNER FECHAS */
-
-    .match-banner {
-      margin-top: 1rem;
-
-      background: rgba(0,0,0,.6);
-      border: 1px solid rgba(255,255,255,.15);
-
-      padding: .7rem 1.2rem;
-      border-radius: 10px;
-
-      font-size: .9rem;
-
-      display: flex;
-      flex-direction: column;
-      gap: .3rem;
-
-      max-width: 600px;
-      width: 100%;
-    }
-
-    .match-banner span {
-      color: #ffb74d;
-      font-weight: 500;
-    }
-
-    /* LOGOS */
-
-    .club-logos {
-      margin-top: 1.5rem;
-
-      display: flex;
-      gap: 1.2rem;
-      flex-wrap: wrap;
-
-      justify-content: center;
-      align-items: center;
-
-      max-width: 900px;
-    }
-
-    .club-logos img {
-      max-height: 48px;
-      width: auto;
-
-      object-fit: contain;
-
-      filter: drop-shadow(0 2px 6px rgba(0,0,0,.6));
-    }
-
-    /* APP */
+    /* ================= APP ================= */
 
     #app {
       opacity: 0;
@@ -165,65 +125,44 @@
 
 <body>
 
-<!-- LANDING -->
+<!-- ================= LANDING ================= -->
+
 <section id="landing" class="hero">
 
   <!-- SLIDER -->
-  <div class="hero-slider">
+  <div class="hero-slider" id="slider">
+    <div class="hero-slider-track" id="sliderTrack">
 
-    <img src="./img/anima.gif" id="slideImg">
+      <div class="hero-slide">
+        <img src="./img/anima.gif" alt="ABNECH">
+      </div>
 
+    </div>
   </div>
 
   <h1 data-aos="fade-down">ABNECH Basket</h1>
 
   <p data-aos="fade-up">
-    Liga Regional de Básquet del Chaco
+    Liga Regional del Nordeste Chaqueño
   </p>
 
   <!-- BANNER -->
-  <div class="match-banner" id="matchBanner">
-
-    <div>
-      🟠 Próxima:
-      <span id="nextMatch">Cargando...</span>
-    </div>
-
-    <div>
-      🔵 Último:
-      <span id="lastMatch">Cargando...</span>
-    </div>
-
+  <div class="date-banner">
+    <div>🕒 Próxima: <span id="nextMatch">A confirmar</span></div>
+    <div>🏀 Última: <span id="lastMatch">A confirmar</span></div>
   </div>
 
-  <button
-    class="enter-btn"
-    id="enterBtn"
-  >
+  <button class="enter-btn" id="enterBtn">
     Ver Fixture
   </button>
 
-  <!-- LOGOS -->
-  <div class="club-logos">
-
-    <img src="./img/clubs/union.png">
-    <img src="./img/clubs/funebrero.png">
-    <img src="./img/clubs/cfa.png">
-    <img src="./img/clubs/general-vedia.png">
-    <img src="./img/clubs/la-leonesa.png">
-    <img src="./img/clubs/palermo-cap.png">
-    <img src="./img/clubs/puerto-bermejo.png">
-    <img src="./img/clubs/zapallar.png">
-
-  </div>
-
 </section>
 
-<!-- APP -->
+<!-- ================= APP ================= -->
+
 <div id="app" style="display:none">
 
   <header class="site-header">
-
     <span class="logo-main">ABNECH Basket</span>
 
     <a
@@ -233,20 +172,19 @@
     >
       ⚙️
     </a>
-
   </header>
 
   <main>
-
     <div class="content-area">
 
+      <!-- FIXTURE -->
       <section class="section-block">
 
         <h2>FIXTURE</h2>
 
         <div class="fixture-filters">
 
-          <input id="filter-round" type="number" min="1" placeholder="Jornada">
+          <input id="filter-round" type="number" placeholder="Jornada">
 
           <select id="filter-status">
             <option value="all">Todos</option>
@@ -264,6 +202,7 @@
 
       </section>
 
+      <!-- TABLA -->
       <section class="section-block">
 
         <h2>TABLA</h2>
@@ -295,12 +234,16 @@
       </section>
 
     </div>
-
   </main>
+
+  <footer class="site-footer">
+    <p>© 2026 ABNECH Basket (MecInfoTec)</p>
+  </footer>
 
 </div>
 
-<!-- AOS -->
+<!-- ================= SCRIPTS ================= -->
+
 <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
 
 <script type="module">
@@ -309,30 +252,8 @@
 
   AOS.init();
 
-  /* SLIDER */
-
-  const slides = [
-    "./img/anima.gif",
-    "./img/anima-1.gif",
-    "./img/anima-2.gif",
-    "./img/S2Bc.gif"
-  ];
-
-  let index = 0;
-  const img = document.getElementById("slideImg");
-
-  setInterval(() => {
-    index = (index + 1) % slides.length;
-    img.src = slides[index];
-  }, 4000);
-
-
-  /* LANDING */
-
   const landing = document.getElementById("landing");
   const app = document.getElementById("app");
-
-  app.style.display = "none";
 
   document.getElementById("enterBtn").onclick = () => {
 
@@ -340,49 +261,54 @@
 
     app.style.display = "block";
 
-    requestAnimationFrame(() => app.classList.add("show"));
+    requestAnimationFrame(() => {
+      app.classList.add("show");
+    });
 
     initPublicPage();
   };
 
+  /* =============== SLIDER TACTIL =============== */
 
-  /* BANNER DATA */
+  const track = document.getElementById("sliderTrack");
 
-  async function loadBanner() {
+  let startX = 0;
+  let currentX = 0;
+  let dragging = false;
 
-    try {
+  track.addEventListener("touchstart", e => {
+    startX = e.touches[0].clientX;
+    dragging = true;
+  });
 
-      const res = await fetch("https://abnech.onrender.com/api/fixtures/B1");
+  track.addEventListener("touchmove", e => {
 
-      const data = await res.json();
+    if (!dragging) return;
 
-      const finished = data.filter(f =>
-        f.scoreLocal !== null && f.scoreAway !== null
-      );
+    currentX = e.touches[0].clientX;
 
-      const pending = data.filter(f =>
-        f.scoreLocal === null || f.scoreAway === null
-      );
+    const diff = currentX - startX;
 
-      const last = finished.at(-1);
-      const next = pending[0];
+    track.style.transform = `translateX(${diff}px)`;
+  });
 
-      if (last) {
-        document.getElementById("lastMatch").textContent =
-          `${last.homeClubId} ${last.scoreLocal} - ${last.scoreAway} ${last.awayClubId}`;
-      }
+  track.addEventListener("touchend", () => {
 
-      if (next) {
-        document.getElementById("nextMatch").textContent =
-          `${next.homeClubId} vs ${next.awayClubId} (${next.date})`;
-      }
+    dragging = false;
 
-    } catch {
-      console.log("Error banner");
-    }
-  }
+    track.style.transform = "translateX(0)";
+  });
 
-  loadBanner();
+  /* =============== AUTO SLIDE =============== */
+
+  setInterval(() => {
+    track.style.opacity = ".85";
+
+    setTimeout(() => {
+      track.style.opacity = "1";
+    }, 400);
+
+  }, 5000);
 
 </script>
 
