@@ -584,3 +584,42 @@ body {
     transform: translateX(-50%);
   }
 }
+/* =========================
+   MARQUEE INTERNO APP
+========================= */
+
+.logos-marquee{
+  width:100%;
+  overflow:hidden;
+  background:#05070f;
+  border-bottom:1px solid rgba(255,255,255,0.1);
+}
+
+.logos-track{
+  display:flex;
+  gap:40px;
+  align-items:center;
+  padding:12px 0;
+
+  width:max-content;
+
+  animation: marquee 25s linear infinite;
+}
+
+.logos-track img{
+  height:42px;
+  object-fit:contain;
+}
+
+.logos-marquee:hover .logos-track{
+  animation-play-state:paused;
+}
+
+@keyframes marquee{
+  from{
+    transform:translateX(0);
+  }
+  to{
+    transform:translateX(-50%);
+  }
+}
