@@ -121,3 +121,82 @@
 .funebrero-theme h3 {
   color: var(--club-main);
 }
+
+/* LOGO CLUB */
+
+.club-logo-main {
+  max-width: 220px;
+  width: 100%;
+  height: auto;
+
+  margin: 20px auto;
+
+  display: block;
+
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,.6));
+}
+/* ================= CLUB SECTIONS ================= */
+
+.club-section {
+  margin: 3rem 1.4rem;
+}
+
+.club-section h2 {
+  font-family: 'Bebas Neue';
+  font-size: 1.9rem;
+  margin-bottom: 1rem;
+
+  color: #ff3b3b; /* rojo Funebrero */
+  letter-spacing: 0.08em;
+}
+
+/* CARD CONTENEDORA */
+
+.club-card {
+  background: linear-gradient(180deg, #0b0f1f, #060914);
+  border-radius: 16px;
+
+  padding: 1.5rem;
+
+  border: 1px solid rgba(255,255,255,0.08);
+
+  box-shadow: 0 12px 30px rgba(0,0,0,.6);
+}
+
+
+/* ================= NOTICIAS ================= */
+
+.news-item {
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.news-item:last-child {
+  border-bottom: none;
+}
+
+.news-item h3 {
+  color: #fff;
+  font-size: 1.05rem;
+  margin-bottom: 4px;
+}
+
+.news-item p {
+  font-size: 0.9rem;
+  color: #cbd5f5;
+  line-height: 1.5;
+}
+
+.news-date {
+  font-size: 0.75rem;
+  color: #ff9c42;
+}
+
+
+/* ================= HISTORIA ================= */
+
+.club-history p {
+  color: #e5e7eb;
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
