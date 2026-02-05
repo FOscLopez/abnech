@@ -1,202 +1,223 @@
-/* ===============================
-   ESTILO PÁGINAS DE CLUB
-================================ */
+/* ================= CLUB HEADER ================= */
 
-.club-page {
-  max-width: 1100px;
-  margin: auto;
-  padding: 2rem 1rem;
-}
-
-
-/* ================= HERO ================= */
-
-.club-hero {
+.club-header {
   text-align: center;
-  margin-bottom: 2.5rem;
+  padding: 40px 20px;
+
+  background: linear-gradient(135deg, #111, #000);
 }
 
-.club-logo-main {
-  width: 130px;
-  margin-bottom: 1rem;
+.club-header img {
+  width: 160px;
+  max-width: 80%;
+  margin-bottom: 15px;
 }
 
-.club-colors {
-  color: #ff9c42;
-  font-weight: 500;
+.club-header h1 {
+  font-size: 2.2rem;
+  margin-bottom: 5px;
 }
 
-
-/* ================= SECCIONES ================= */
-
-.club-section {
-  margin-bottom: 3rem;
-}
-
-.club-section h3 {
-  font-family: 'Bebas Neue';
-  font-size: 1.6rem;
-  margin-bottom: 1rem;
-  letter-spacing: 1px;
+.club-header p {
+  opacity: .8;
 }
 
 
-/* ================= TABLA ================= */
+/* ================= NAV ================= */
 
-.table-wrapper {
-  overflow-x: auto;
+.club-nav {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+
+  padding: 15px;
+
+  background: #05070f;
 }
 
-.club-table {
+.club-nav button {
+  background: none;
+  border: 1px solid #444;
+
+  color: white;
+  padding: 6px 16px;
+
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.club-nav button.active {
+  background: crimson;
+  border-color: crimson;
+}
+
+
+/* ================= CONTENT ================= */
+
+.club-content {
+  max-width: 1000px;
+  margin: auto;
+  padding: 25px;
+}
+
+.tab {
+  display: none;
+}
+
+.tab.active {
+  display: block;
+}
+
+
+/* ================= NEWS ================= */
+
+.news-card {
+  background: #0b0f1f;
+  padding: 15px;
+  border-radius: 12px;
+
+  border-left: 4px solid crimson;
+  margin-bottom: 15px;
+}
+
+
+/* ================= PLANTEL ================= */
+
+.squad-table {
   width: 100%;
   border-collapse: collapse;
-  background: #0b0f1f;
-  border-radius: 12px;
-  overflow: hidden;
 }
 
-.club-table th,
-.club-table td {
-  padding: 0.6rem;
+.squad-table th,
+.squad-table td {
+  padding: 8px;
   text-align: center;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+
+  border-bottom: 1px solid #333;
 }
 
-.club-table th {
-  background: #111827;
+.squad-table th {
   color: #ffb74d;
 }
 
 
-/* ================= NOTICIAS ================= */
-
-.news-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
-  gap: 1rem;
-}
-
-.news-card {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 12px;
-  padding: 1rem;
-}
-
-.news-card h4 {
-  margin-bottom: 0.3rem;
-  color: #ff9c42;
-}
-
-.news-date {
-  font-size: 0.75rem;
-  color: #aaa;
-}
-
-.news-card p {
-  margin-top: 0.5rem;
-  font-size: 0.9rem;
-}
-
-
-/* ================= HISTORIA ================= */
+/* ================= HISTORY ================= */
 
 .history-box {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: #0b0f1f;
+  padding: 20px;
   border-radius: 12px;
-  padding: 1.2rem;
+
   line-height: 1.6;
-  color: #ddd;
+}/* ================= CLUB HEADER ================= */
+
+.club-header {
+  text-align: center;
+  padding: 40px 20px;
+
+  background: linear-gradient(135deg, #111, #000);
+}
+
+.club-header img {
+  width: 160px;
+  max-width: 80%;
+  margin-bottom: 15px;
+}
+
+.club-header h1 {
+  font-size: 2.2rem;
+  margin-bottom: 5px;
+}
+
+.club-header p {
+  opacity: .8;
 }
 
 
-/* ================= TEMA FUNEBRERO ================= */
+/* ================= NAV ================= */
 
-.funebrero-theme {
-  --club-main: #c8102e;
+.club-nav {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+
+  padding: 15px;
+
+  background: #05070f;
 }
 
-.funebrero-theme h2,
-.funebrero-theme h3 {
-  color: var(--club-main);
+.club-nav button {
+  background: none;
+  border: 1px solid #444;
+
+  color: white;
+  padding: 6px 16px;
+
+  border-radius: 20px;
+  cursor: pointer;
 }
 
-/* LOGO CLUB */
+.club-nav button.active {
+  background: crimson;
+  border-color: crimson;
+}
 
-.club-logo-main {
-  max-width: 220px;
-  width: 100%;
-  height: auto;
 
-  margin: 20px auto;
+/* ================= CONTENT ================= */
 
+.club-content {
+  max-width: 1000px;
+  margin: auto;
+  padding: 25px;
+}
+
+.tab {
+  display: none;
+}
+
+.tab.active {
   display: block;
-
-  filter: drop-shadow(0 4px 12px rgba(0,0,0,.6));
-}
-/* ================= CLUB SECTIONS ================= */
-
-.club-section {
-  margin: 3rem 1.4rem;
-}
-
-.club-section h2 {
-  font-family: 'Bebas Neue';
-  font-size: 1.9rem;
-  margin-bottom: 1rem;
-
-  color: #ff3b3b; /* rojo Funebrero */
-  letter-spacing: 0.08em;
-}
-
-/* CARD CONTENEDORA */
-
-.club-card {
-  background: linear-gradient(180deg, #0b0f1f, #060914);
-  border-radius: 16px;
-
-  padding: 1.5rem;
-
-  border: 1px solid rgba(255,255,255,0.08);
-
-  box-shadow: 0 12px 30px rgba(0,0,0,.6);
 }
 
 
-/* ================= NOTICIAS ================= */
+/* ================= NEWS ================= */
 
-.news-item {
-  padding: 12px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-}
+.news-card {
+  background: #0b0f1f;
+  padding: 15px;
+  border-radius: 12px;
 
-.news-item:last-child {
-  border-bottom: none;
-}
-
-.news-item h3 {
-  color: #fff;
-  font-size: 1.05rem;
-  margin-bottom: 4px;
-}
-
-.news-item p {
-  font-size: 0.9rem;
-  color: #cbd5f5;
-  line-height: 1.5;
-}
-
-.news-date {
-  font-size: 0.75rem;
-  color: #ff9c42;
+  border-left: 4px solid crimson;
+  margin-bottom: 15px;
 }
 
 
-/* ================= HISTORIA ================= */
+/* ================= PLANTEL ================= */
 
-.club-history p {
-  color: #e5e7eb;
-  line-height: 1.7;
-  margin-bottom: 12px;
+.squad-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.squad-table th,
+.squad-table td {
+  padding: 8px;
+  text-align: center;
+
+  border-bottom: 1px solid #333;
+}
+
+.squad-table th {
+  color: #ffb74d;
+}
+
+
+/* ================= HISTORY ================= */
+
+.history-box {
+  background: #0b0f1f;
+  padding: 20px;
+  border-radius: 12px;
+
+  line-height: 1.6;
 }

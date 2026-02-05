@@ -1,273 +1,61 @@
 <!DOCTYPE html>
 <html lang="es" data-theme="dark">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Club Funebrero</title>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Club</title>
 
   <link rel="stylesheet" href="./css/style.css">
-
-  <style>
-
-    body{
-      background:#0b0f1f;
-      color:#fff;
-      font-family:Poppins, sans-serif;
-    }
-
-    /* ================= HEADER ================= */
-
-    .club-header{
-      text-align:center;
-      padding:3rem 1rem 2rem;
-    }
-
-    .club-logo{
-      max-width:220px;
-      width:100%;
-      margin-bottom:1rem;
-    }
-
-    .club-name{
-      font-size:2.2rem;
-      font-weight:700;
-      color:#ff2a2a;
-    }
-
-    .club-info{
-      color:#ccc;
-      margin-top:6px;
-      font-size:.95rem;
-    }
-
-    /* ================= SECCIONES ================= */
-
-    .club-section{
-      max-width:1100px;
-      margin:3rem auto;
-      padding:0 1rem;
-    }
-
-    .club-section h2{
-      font-family:'Bebas Neue';
-      font-size:2rem;
-      letter-spacing:.08em;
-      margin-bottom:1rem;
-      color:#ff9800;
-      border-bottom:2px solid rgba(255,255,255,.1);
-      padding-bottom:6px;
-    }
-
-    /* ================= PLANTEL ================= */
-
-    .plantel-table{
-      width:100%;
-      border-collapse:collapse;
-      background:#111827;
-      border-radius:14px;
-      overflow:hidden;
-      box-shadow:0 10px 25px rgba(0,0,0,.6);
-    }
-
-    .plantel-table th,
-    .plantel-table td{
-      padding:10px 12px;
-      text-align:center;
-      border-bottom:1px solid rgba(255,255,255,.1);
-      font-size:.9rem;
-    }
-
-    .plantel-table th{
-      background:#0f172a;
-      color:#ffb74d;
-      font-weight:600;
-    }
-
-    .plantel-table tr:hover{
-      background:rgba(255,255,255,.04);
-    }
-
-    /* ================= NOTICIAS ================= */
-
-    .news-card{
-      background:#111827;
-      padding:1rem 1.2rem;
-      border-radius:12px;
-      margin-bottom:12px;
-      border:1px solid rgba(255,255,255,.08);
-    }
-
-    .news-card h4{
-      margin-bottom:6px;
-      color:#ff5555;
-    }
-
-    .news-card p{
-      color:#ccc;
-      font-size:.9rem;
-    }
-
-    /* ================= HISTORIA ================= */
-
-    .history-box{
-      background:#111827;
-      padding:1.4rem;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.08);
-      line-height:1.6;
-      color:#ddd;
-      font-size:.95rem;
-    }
-
-    /* ================= FOOTER ================= */
-
-    .club-footer{
-      text-align:center;
-      padding:2rem 1rem;
-      color:#999;
-      font-size:.85rem;
-    }
-
-  </style>
+  <link rel="stylesheet" href="./css/club.css">
 
 </head>
 
 <body>
 
-<!-- ================= HEADER ================= -->
+  <!-- HEADER CLUB -->
 
-<header class="club-header">
+  <section id="club-header" class="club-header">
 
-  <img 
-    src="./img/clubs/funebrero.png" 
-    alt="Funebrero"
-    class="club-logo"
-  >
+    <img id="club-logo" src="" alt="Logo">
 
-  <div class="club-name">Club Funebrero</div>
+    <h1 id="club-name"></h1>
 
-  <div class="club-info">
-    Colores: Blanco · Rojo · Negro <br>
-    Liga Regional del Nordeste Chaqueño
-  </div>
+    <p id="club-colors"></p>
 
-</header>
+  </section>
 
 
-<!-- ================= PLANTEL ================= -->
+  <!-- MENU -->
 
-<section class="club-section">
+  <nav class="club-nav">
 
-  <h2>🏀 PLANTEL</h2>
+    <button data-tab="news" class="active">Noticias</button>
+    <button data-tab="squad">Plantel</button>
+    <button data-tab="history">Historia</button>
 
-  <table class="plantel-table">
-
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Jugador</th>
-        <th>DNI</th>
-        <th>Nacimiento</th>
-        <th>Categoría</th>
-      </tr>
-    </thead>
-
-    <tbody>
-
-      <tr>
-        <td>1</td>
-        <td>Antonio Ariel Amarilla</td>
-        <td>39.617.934</td>
-        <td>13/06/1996</td>
-        <td>Primera</td>
-      </tr>
-
-      <tr>
-        <td>2</td>
-        <td>Daniel Alfredo Amarilla</td>
-        <td>36.482.157</td>
-        <td>08/02/1992</td>
-        <td>Primera / Maxi35</td>
-      </tr>
-
-      <tr>
-        <td>3</td>
-        <td>Cristian Martín Batalla</td>
-        <td>40.175.204</td>
-        <td>16/06/1997</td>
-        <td>U21</td>
-      </tr>
-
-      <tr>
-        <td>4</td>
-        <td>Aníbal Vicente Gallozo</td>
-        <td>45.558.582</td>
-        <td>18/05/2004</td>
-        <td>U21</td>
-      </tr>
-
-    </tbody>
-
-  </table>
-
-</section>
+  </nav>
 
 
-<!-- ================= NOTICIAS ================= -->
+  <!-- CONTENIDO -->
 
-<section class="club-section">
+  <main class="club-content">
 
-  <h2>📰 NOTICIAS</h2>
+    <!-- NOTICIAS -->
+    <section id="news" class="tab active"></section>
 
-  <div class="news-card">
-    <h4>Victoria en el debut</h4>
-    <p>Funebrero arrancó el torneo con una gran victoria como local.</p>
-  </div>
+    <!-- PLANTEL -->
+    <section id="squad" class="tab"></section>
 
-  <div class="news-card">
-    <h4>Nuevo refuerzo</h4>
-    <p>Se suma un nuevo jugador para reforzar el plantel principal.</p>
-  </div>
+    <!-- HISTORIA -->
+    <section id="history" class="tab"></section>
 
-</section>
+  </main>
 
 
-<!-- ================= HISTORIA ================= -->
-
-<section class="club-section">
-
-  <h2>📖 HISTORIA</h2>
-
-  <div class="history-box">
-
-    El Club Funebrero es una institución histórica del básquet regional.
-    Fundado por vecinos del barrio, ha sido protagonista en distintas
-    categorías a lo largo de los años.
-
-    <br><br>
-
-    Con sus colores blanco, rojo y negro, representa pasión, esfuerzo
-    y compromiso con la formación deportiva y social.
-
-    <br><br>
-
-    Actualmente participa en la Liga Regional del Nordeste Chaqueño,
-    consolidándose como uno de los clubes más competitivos.
-
-  </div>
-
-</section>
-
-
-<!-- ================= FOOTER ================= -->
-
-<footer class="club-footer">
-
-  © 2026 Club Funebrero · ABNECH Basket
-
-</footer>
-
+  <script type="module" src="./js/club.js"></script>
 
 </body>
+
 </html>
