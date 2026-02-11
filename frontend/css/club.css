@@ -1,223 +1,142 @@
-/* ================= CLUB HEADER ================= */
+/* =========================
+   CLUB HEADER
+========================= */
 
 .club-header {
-  text-align: center;
-  padding: 40px 20px;
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
-  background: linear-gradient(135deg, #111, #000);
+  text-align: center;
+
+  background: radial-gradient(circle at top, #111827, #020617);
+  padding: 40px 20px 30px;
 }
+
+/* LOGO */
 
 .club-header img {
-  width: 160px;
-  max-width: 80%;
-  margin-bottom: 15px;
+  width: 140px;
+  max-width: 90%;
+  height: auto;
+
+  object-fit: contain;
+
+  margin-bottom: 14px;
+
+  filter: drop-shadow(0 6px 12px rgba(0,0,0,.7));
 }
+
+/* TITULO */
 
 .club-header h1 {
   font-size: 2.2rem;
-  margin-bottom: 5px;
+  margin-bottom: 6px;
+  color: #fff;
 }
 
-.club-header p {
-  opacity: .8;
+/* COLORES */
+
+.club-colors {
+  font-size: 0.95rem;
+  opacity: 0.85;
+  color: #cbd5f5;
 }
 
+/* =========================
+   BOTONES
+========================= */
 
-/* ================= NAV ================= */
-
-.club-nav {
+.club-tabs {
   display: flex;
-  justify-content: center;
   gap: 12px;
-
-  padding: 15px;
-
-  background: #05070f;
+  justify-content: center;
+  margin: 25px 0 15px;
 }
 
-.club-nav button {
-  background: none;
-  border: 1px solid #444;
+.club-tabs button {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
 
-  color: white;
   padding: 6px 16px;
-
   border-radius: 20px;
+
+  font-size: 0.85rem;
   cursor: pointer;
+
+  transition: .25s;
 }
 
-.club-nav button.active {
-  background: crimson;
-  border-color: crimson;
+.club-tabs button.active,
+.club-tabs button:hover {
+  background: #dc2626;
+  border-color: #dc2626;
 }
 
+/* =========================
+   SECCIONES
+========================= */
 
-/* ================= CONTENT ================= */
-
-.club-content {
-  max-width: 1000px;
+.club-section {
+  max-width: 1100px;
   margin: auto;
-  padding: 25px;
+  padding: 20px 16px 35px;
 }
 
-.tab {
-  display: none;
+.club-section h2 {
+  margin-bottom: 12px;
+  color: #f87171;
 }
 
-.tab.active {
-  display: block;
-}
+/* =========================
+   PLANTEL
+========================= */
 
-
-/* ================= NEWS ================= */
-
-.news-card {
-  background: #0b0f1f;
-  padding: 15px;
-  border-radius: 12px;
-
-  border-left: 4px solid crimson;
-  margin-bottom: 15px;
-}
-
-
-/* ================= PLANTEL ================= */
-
-.squad-table {
+.club-table {
   width: 100%;
   border-collapse: collapse;
+  font-size: 0.9rem;
 }
 
-.squad-table th,
-.squad-table td {
-  padding: 8px;
+.club-table th,
+.club-table td {
+  padding: 8px 6px;
+  border-bottom: 1px solid rgba(255,255,255,.1);
   text-align: center;
-
-  border-bottom: 1px solid #333;
 }
 
-.squad-table th {
-  color: #ffb74d;
+.club-table th {
+  color: #fca5a5;
 }
 
+/* =========================
+   NOTICIAS
+========================= */
 
-/* ================= HISTORY ================= */
+.club-news {
+  display: grid;
+  gap: 14px;
+}
 
-.history-box {
-  background: #0b0f1f;
-  padding: 20px;
-  border-radius: 12px;
+.news-item {
+  background: #020617;
+  border-left: 4px solid #dc2626;
+  padding: 12px 14px;
+  border-radius: 8px;
+}
 
+.news-item h4 {
+  margin-bottom: 4px;
+}
+
+/* =========================
+   HISTORIA
+========================= */
+
+.club-history {
   line-height: 1.6;
-}/* ================= CLUB HEADER ================= */
-
-.club-header {
-  text-align: center;
-  padding: 40px 20px;
-
-  background: linear-gradient(135deg, #111, #000);
-}
-
-.club-header img {
-  width: 160px;
-  max-width: 80%;
-  margin-bottom: 15px;
-}
-
-.club-header h1 {
-  font-size: 2.2rem;
-  margin-bottom: 5px;
-}
-
-.club-header p {
-  opacity: .8;
-}
-
-
-/* ================= NAV ================= */
-
-.club-nav {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-
-  padding: 15px;
-
-  background: #05070f;
-}
-
-.club-nav button {
-  background: none;
-  border: 1px solid #444;
-
-  color: white;
-  padding: 6px 16px;
-
-  border-radius: 20px;
-  cursor: pointer;
-}
-
-.club-nav button.active {
-  background: crimson;
-  border-color: crimson;
-}
-
-
-/* ================= CONTENT ================= */
-
-.club-content {
-  max-width: 1000px;
-  margin: auto;
-  padding: 25px;
-}
-
-.tab {
-  display: none;
-}
-
-.tab.active {
-  display: block;
-}
-
-
-/* ================= NEWS ================= */
-
-.news-card {
-  background: #0b0f1f;
-  padding: 15px;
-  border-radius: 12px;
-
-  border-left: 4px solid crimson;
-  margin-bottom: 15px;
-}
-
-
-/* ================= PLANTEL ================= */
-
-.squad-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.squad-table th,
-.squad-table td {
-  padding: 8px;
-  text-align: center;
-
-  border-bottom: 1px solid #333;
-}
-
-.squad-table th {
-  color: #ffb74d;
-}
-
-
-/* ================= HISTORY ================= */
-
-.history-box {
-  background: #0b0f1f;
-  padding: 20px;
-  border-radius: 12px;
-
-  line-height: 1.6;
+  opacity: 0.9;
 }
