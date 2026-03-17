@@ -1,275 +1,158 @@
 <!DOCTYPE html>
 <html lang="es" data-theme="dark">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>ABNECH Basket</title>
+<title>ABNECH Basket</title>
 
-  <link rel="stylesheet" href="./css/style.css" />
-  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet"/>
+<link rel="stylesheet" href="./css/style.css">
 
-  <style>
-
-    /* HERO */
-
-    .hero {
-      min-height: 100vh;
-      background:
-        linear-gradient(to bottom, rgba(0,0,0,.7), rgba(0,0,0,.9)),
-        url("./img/hero-bg.jpg") center/cover no-repeat;
-
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      gap: 1.5rem;
-      padding: 2rem;
-    }
-
-    .hero h1 {
-      font-size: clamp(2.5rem, 6vw, 4rem);
-      font-weight: 800;
-    }
-
-    .hero p {
-      font-size: 1.2rem;
-      opacity: .9;
-    }
-
-    .enter-btn {
-      padding: 1rem 2.8rem;
-      border-radius: 50px;
-      border: none;
-      cursor: pointer;
-
-      background: linear-gradient(135deg,#ff6b00,#ff9c42);
-      color: #fff;
-      font-weight: bold;
-
-      transition: .3s;
-    }
-
-    .enter-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 30px rgba(255,107,0,.4);
-    }
-
-    /* LOGOS LANDING (FIJOS) */
-
-    .landing-logos{
-      display:flex;
-      gap:18px;
-      margin-top:2rem;
-      flex-wrap:wrap;
-      justify-content:center;
-      align-items:center;
-      max-width:900px;
-    }
-
-    .landing-logos img{
-      height:46px;
-      object-fit:contain;
-    }
-
-    /* TRANSICIÓN */
-
-    #app {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: .6s ease;
-    }
-
-    #app.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-  </style>
 </head>
 
 <body>
 
-<!-- ================= LANDING ================= -->
+<header class="main-header">
 
-<section id="landing" class="hero">
+<div class="container header-content">
 
-  <h1 data-aos="fade-down">ABNECH Basket</h1>
+<h1 class="logo">
+ABNECH Basket
+</h1>
 
-  <p data-aos="fade-up">Liga Regional del Nordeste Chaqueño</p>
+</div>
 
-  <button class="enter-btn" id="enterBtn">
-    Ver Fixture
-  </button>
+</header>
 
-  <!-- LOGOS SOLO UNA VEZ -->
 
-  <div class="landing-logos">
+<section class="hero">
 
-    <img src="./img/clubs/union.png">
-    <img src="./img/clubs/funebrero.png">
-    <img src="./img/clubs/cfa.png">
-    <img src="./img/clubs/general-vedia.png">
-    <img src="./img/clubs/la-leonesa.png">
-    <img src="./img/clubs/palermo-cap.png">
-    <img src="./img/clubs/puerto-bermejo.png">
-    <img src="./img/clubs/zapallar.png">
+<div class="container hero-content">
 
-  </div>
+<h1>
+Liga Regional de Básquet
+</h1>
+
+<p>
+Resultados, fixture y estadísticas oficiales
+</p>
+
+<button id="enterBtn" class="primary-btn">
+Ver Fixture
+</button>
+
+</div>
 
 </section>
 
-<!-- ================= APP ================= -->
+
+<section class="clubs">
+
+<div class="container">
+
+<h2>Clubes participantes</h2>
+
+<div class="club-grid">
+
+<a href="club.html?id=funebrero">
+<img src="./img/clubs/funebrero.png">
+</a>
+
+<a href="club.html?id=union">
+<img src="./img/clubs/union.png">
+</a>
+
+<a href="club.html?id=cfa">
+<img src="./img/clubs/cfa.png">
+</a>
+
+<a href="club.html?id=zapallar">
+<img src="./img/clubs/zapallar.png">
+</a>
+
+</div>
+
+</div>
+
+</section>
+
 
 <div id="app" style="display:none">
 
-  <header class="site-header">
+<main class="container">
 
-    <span class="logo-main">ABNECH Basket</span>
+<section class="section-block">
 
-    <a id="adminLink"
-       href="/admin/admin.html"
-       style="display:none;margin-left:auto">
-      ⚙️
-    </a>
+<h2>Fixture</h2>
 
-  </header>
+<div id="fixture-grid"></div>
 
-    <!-- BARRA CLUBES -->
-  <div class="clubs-bar">
-
-    <a href="club.html?id=union">
-      <img src="./img/clubs/union.png" alt="Unión">
-    </a>
-
-    <a href="clubs/funebrero.html">
-      <img src="./img/clubs/funebrero.png">
-    </a>  
-
-    <a href="club.html?id=cfa">
-      <img src="./img/clubs/cfa.png" alt="CFA">
-    </a>
-
-    <a href="club.html?id=general-vedia">
-      <img src="./img/clubs/general-vedia.png" alt="General Vedia">
-    </a>
-
-    <a href="club.html?id=la-leonesa">
-      <img src="./img/clubs/la-leonesa.png" alt="La Leonesa">
-    </a>
-
-    <a href="club.html?id=palermo-cap">
-      <img src="./img/clubs/palermo-cap.png" alt="Palermo CAP">
-    </a>
-
-    <a href="club.html?id=puerto-bermejo">
-      <img src="./img/clubs/puerto-bermejo.png" alt="Puerto Bermejo">
-    </a>
-
-    <a href="club.html?id=zapallar">
-      <img src="./img/clubs/zapallar.png" alt="Zapallar">
-    </a>
-
-  </div>
+</section>
 
 
-  <main>
+<section class="section-block">
 
-    <div class="content-area">
+<h2>Tabla</h2>
 
-      <section class="section-block">
+<div class="standings-table-wrapper">
 
-        <h2>FIXTURE</h2>
+<table class="standings-table">
 
-        <div class="fixture-filters">
+<thead>
 
-          <input id="filter-round" type="number" placeholder="Jornada">
+<tr>
+<th>#</th>
+<th>Club</th>
+<th>PJ</th>
+<th>PG</th>
+<th>PP</th>
+<th>PF</th>
+<th>PC</th>
+<th>DG</th>
+<th>PTS</th>
+</tr>
 
-          <select id="filter-status">
-            <option value="all">Todos</option>
-            <option value="finished">Jugados</option>
-            <option value="pending">Pendientes</option>
-          </select>
+</thead>
 
-          <select id="filter-club">
-            <option value="all">Todos</option>
-          </select>
+<tbody id="standingsBody"></tbody>
 
-        </div>
+</table>
 
-        <div id="fixture-grid"></div>
+</div>
 
-      </section>
+</section>
 
-
-      <section class="section-block">
-
-        <h2>TABLA</h2>
-
-        <div class="standings-table-wrapper">
-
-          <table class="standings-table">
-
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Club</th>
-                <th>PJ</th>
-                <th>PG</th>
-                <th>PP</th>
-                <th>PF</th>
-                <th>PC</th>
-                <th>DG</th>
-                <th>PTS</th>
-              </tr>
-            </thead>
-
-            <tbody id="standingsBody"></tbody>
-
-          </table>
-
-        </div>
-
-      </section>
-
-    </div>
-
-  </main>
-
-  <footer class="site-footer">
-    © 2026 ABNECH Basket
-  </footer>
+</main>
 
 </div>
 
 
-<!-- ================= SCRIPTS ================= -->
+<footer class="site-footer">
 
-<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+© 2026 ABNECH Basket
+
+</footer>
 
 <script type="module">
 
-  import { initPublicPage } from "./js/public.js";
+import { initPublicPage } from "./js/public.js";
 
-  AOS.init();
+const landingBtn = document.getElementById("enterBtn");
+const app = document.getElementById("app");
 
-  const landing = document.getElementById("landing");
-  const app = document.getElementById("app");
+landingBtn.onclick = () => {
 
-  document.getElementById("enterBtn").onclick = () => {
+app.style.display = "block";
 
-    landing.remove();
+initPublicPage();
 
-    app.style.display = "block";
+window.scrollTo({
+top: app.offsetTop,
+behavior: "smooth"
+});
 
-    requestAnimationFrame(() => {
-      app.classList.add("show");
-    });
-
-    initPublicPage();
-
-  };
+};
 
 </script>
 
