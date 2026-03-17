@@ -14,112 +14,141 @@
 <body>
 
 <header class="main-header">
-
-<div class="container header-content">
-
-<h1 class="logo">
-ABNECH Basket
-</h1>
-
-</div>
-
+  <div class="container header-content">
+    <h1 class="logo">ABNECH Basket</h1>
+  </div>
 </header>
 
+<!-- ================= HERO + SLIDER ================= -->
 
 <section class="hero">
 
-<div class="container hero-content">
+  <div class="hero-slider">
 
-<h1>
-Liga Regional de Básquet
-</h1>
+    <div class="slide active">
+      <img src="./img/anima.gif">
+    </div>
 
-<p>
-Resultados, fixture y estadísticas oficiales
-</p>
+  </div>
 
-<button id="enterBtn" class="primary-btn">
-Ver Fixture
-</button>
+  <div class="hero-content container">
+    <h1>Liga Regional de Básquet</h1>
+    <p>Resultados, estadísticas y toda la acción</p>
 
-</div>
-
-</section>
-
-
-<section class="clubs">
-
-<div class="container">
-
-<h2>Clubes participantes</h2>
-
-<div class="club-grid">
-
-<a href="club.html?id=funebrero">
-<img src="./img/clubs/funebrero.png">
-</a>
-
-<a href="club.html?id=union">
-<img src="./img/clubs/union.png">
-</a>
-
-<a href="club.html?id=cfa">
-<img src="./img/clubs/cfa.png">
-</a>
-
-<a href="club.html?id=zapallar">
-<img src="./img/clubs/zapallar.png">
-</a>
-
-</div>
-
-</div>
+    <button id="enterBtn" class="primary-btn">
+      Ver Fixture
+    </button>
+  </div>
 
 </section>
 
+<!-- ================= LOGOS ================= -->
+
+<section class="logos-marquee">
+  <div class="logos-track">
+
+    <img src="./img/clubs/funebrero.png">
+    <img src="./img/clubs/union.png">
+    <img src="./img/clubs/cfa.png">
+    <img src="./img/clubs/zapallar.png">
+
+    <!-- DUPLICADO PARA LOOP -->
+    <img src="./img/clubs/funebrero.png">
+    <img src="./img/clubs/union.png">
+    <img src="./img/clubs/cfa.png">
+    <img src="./img/clubs/zapallar.png">
+
+  </div>
+</section>
+
+<!-- ================= APP ================= -->
 
 <div id="app" style="display:none">
 
 <main class="container">
 
-<section class="section-block">
+<!-- ================= PROXIMA FECHA ================= -->
 
-<h2>Fixture</h2>
+<section class="card-section">
 
-<div id="fixture-grid"></div>
+  <h2>📅 Próxima Fecha</h2>
+
+  <div class="match-highlight">
+
+    <div class="team">
+      <img src="./img/clubs/funebrero.png">
+      <span>Funebrero</span>
+    </div>
+
+    <div class="vs">VS</div>
+
+    <div class="team">
+      <img src="./img/clubs/union.png">
+      <span>Unión</span>
+    </div>
+
+    <div class="match-info">
+      Domingo 20:00 hs
+    </div>
+
+  </div>
 
 </section>
 
+<!-- ================= RESULTADOS ================= -->
 
-<section class="section-block">
+<section class="card-section">
 
-<h2>Tabla</h2>
+  <h2>📊 Últimos Resultados</h2>
 
-<div class="standings-table-wrapper">
+  <div class="results-grid">
 
-<table class="standings-table">
+    <div class="result-card">
+      <span>Funebrero</span>
+      <strong>78 - 70</strong>
+      <span>Unión</span>
+    </div>
 
-<thead>
+    <div class="result-card">
+      <span>CFA</span>
+      <strong>65 - 60</strong>
+      <span>Zapallar</span>
+    </div>
 
-<tr>
-<th>#</th>
-<th>Club</th>
-<th>PJ</th>
-<th>PG</th>
-<th>PP</th>
-<th>PF</th>
-<th>PC</th>
-<th>DG</th>
-<th>PTS</th>
-</tr>
+  </div>
 
-</thead>
+</section>
 
-<tbody id="standingsBody"></tbody>
+<!-- ================= FIXTURE ================= -->
 
-</table>
+<section class="card-section">
+  <h2>Fixture</h2>
+  <div id="fixture-grid"></div>
+</section>
 
-</div>
+<!-- ================= TABLA ================= -->
+
+<section class="card-section">
+  <h2>Tabla</h2>
+
+  <div class="standings-table-wrapper">
+    <table class="standings-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Club</th>
+          <th>PJ</th>
+          <th>PG</th>
+          <th>PP</th>
+          <th>PF</th>
+          <th>PC</th>
+          <th>DG</th>
+          <th>PTS</th>
+        </tr>
+      </thead>
+      <tbody id="standingsBody"></tbody>
+    </table>
+  </div>
 
 </section>
 
@@ -127,33 +156,25 @@ Ver Fixture
 
 </div>
 
-
 <footer class="site-footer">
-
 © 2026 ABNECH Basket
-
 </footer>
 
 <script type="module">
-
 import { initPublicPage } from "./js/public.js";
 
-const landingBtn = document.getElementById("enterBtn");
+const btn = document.getElementById("enterBtn");
 const app = document.getElementById("app");
 
-landingBtn.onclick = () => {
+btn.onclick = () => {
+  app.style.display = "block";
+  initPublicPage();
 
-app.style.display = "block";
-
-initPublicPage();
-
-window.scrollTo({
-top: app.offsetTop,
-behavior: "smooth"
-});
-
+  window.scrollTo({
+    top: app.offsetTop,
+    behavior: "smooth"
+  });
 };
-
 </script>
 
 </body>
