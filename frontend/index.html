@@ -2,13 +2,12 @@
 <html lang="es" data-theme="dark">
 
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>ABNECH Basket</title>
+  <title>ABNECH Basket</title>
 
-<link rel="stylesheet" href="./css/style.css">
-
+  <link rel="stylesheet" href="./css/style.css">
 </head>
 
 <body>
@@ -19,18 +18,31 @@
   </div>
 </header>
 
-<!-- ================= HERO + SLIDER ================= -->
+<!-- ================= HERO ================= -->
 
 <section class="hero">
 
+  <!-- SLIDER -->
   <div class="hero-slider">
 
     <div class="slide active">
-      <img src="./img/anima.gif">
+      <img src="./img/slide1.jpg">
+    </div>
+
+    <div class="slide">
+      <img src="./img/slide2.jpg">
+    </div>
+
+    <div class="slide">
+      <img src="./img/slide3.jpg">
     </div>
 
   </div>
 
+  <!-- PARTICULAS -->
+  <canvas id="particles"></canvas>
+
+  <!-- CONTENIDO -->
   <div class="hero-content container">
     <h1>Liga Regional de Básquet</h1>
     <p>Resultados, estadísticas y toda la acción</p>
@@ -52,7 +64,7 @@
     <img src="./img/clubs/cfa.png">
     <img src="./img/clubs/zapallar.png">
 
-    <!-- DUPLICADO PARA LOOP -->
+    <!-- duplicado -->
     <img src="./img/clubs/funebrero.png">
     <img src="./img/clubs/union.png">
     <img src="./img/clubs/cfa.png">
@@ -67,14 +79,10 @@
 
 <main class="container">
 
-<!-- ================= PROXIMA FECHA ================= -->
-
 <section class="card-section">
-
   <h2>📅 Próxima Fecha</h2>
 
   <div class="match-highlight">
-
     <div class="team">
       <img src="./img/clubs/funebrero.png">
       <span>Funebrero</span>
@@ -90,15 +98,10 @@
     <div class="match-info">
       Domingo 20:00 hs
     </div>
-
   </div>
-
 </section>
 
-<!-- ================= RESULTADOS ================= -->
-
 <section class="card-section">
-
   <h2>📊 Últimos Resultados</h2>
 
   <div class="results-grid">
@@ -116,17 +119,12 @@
     </div>
 
   </div>
-
 </section>
-
-<!-- ================= FIXTURE ================= -->
 
 <section class="card-section">
   <h2>Fixture</h2>
   <div id="fixture-grid"></div>
 </section>
-
-<!-- ================= TABLA ================= -->
 
 <section class="card-section">
   <h2>Tabla</h2>
@@ -160,6 +158,8 @@
 © 2026 ABNECH Basket
 </footer>
 
+<!-- ================= SCRIPTS ================= -->
+
 <script type="module">
 import { initPublicPage } from "./js/public.js";
 
@@ -175,6 +175,63 @@ btn.onclick = () => {
     behavior: "smooth"
   });
 };
+</script>
+
+<!-- SLIDER + PARTICULAS -->
+<script>
+
+/* ===== SLIDER ===== */
+
+const slides = document.querySelectorAll(".slide");
+let current = 0;
+
+setInterval(() => {
+  slides[current].classList.remove("active");
+  current = (current + 1) % slides.length;
+  slides[current].classList.add("active");
+}, 4000);
+
+
+/* ===== PARTICULAS ===== */
+
+const canvas = document.getElementById("particles");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+for (let i = 0; i < 50; i++) {
+  particles.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    size: Math.random() * 2,
+    speed: Math.random() * 0.5
+  });
+}
+
+function animate() {
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  particles.forEach(p => {
+
+    p.y += p.speed;
+
+    if (p.y > canvas.height) p.y = 0;
+
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(255,255,255,0.2)";
+    ctx.fill();
+  });
+
+  requestAnimationFrame(animate);
+}
+
+animate();
+
 </script>
 
 </body>
