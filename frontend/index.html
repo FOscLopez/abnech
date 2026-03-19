@@ -24,12 +24,13 @@
       Ver Fixture
     </button>
 
-    <!-- 🔥 BANNER PRO -->
+   <!-- ================= ULTRA BANNER ================= -->
+
 <div class="clubs-banner">
 
-  <div class="clubs-track">
+  <div class="clubs-track" id="track1">
 
-    <!-- ITEM -->
+    <!-- CLUB -->
     <a href="club.html?id=funebrero" class="club-item">
       <img src="./img/clubs/funebrero.png">
       <span>Funebrero</span>
@@ -70,8 +71,7 @@
       <span>Zapallar</span>
     </a>
 
-    <!-- DUPLICADO PARA LOOP PERFECTO -->
-    <!-- (NO TOCAR) -->
+    <!-- DUPLICADO -->
     <a href="club.html?id=funebrero" class="club-item">
       <img src="./img/clubs/funebrero.png">
       <span>Funebrero</span>
@@ -80,39 +80,11 @@
     <a href="club.html?id=union" class="club-item">
       <img src="./img/clubs/union.png">
       <span>Unión</span>
-    </a>
-
-    <a href="club.html?id=cfa" class="club-item">
-      <img src="./img/clubs/cfa.png">
-      <span>CFA</span>
-    </a>
-
-    <a href="club.html?id=general-vedia" class="club-item">
-      <img src="./img/clubs/general-vedia.png">
-      <span>General Vedia</span>
-    </a>
-
-    <a href="club.html?id=la-leonesa" class="club-item">
-      <img src="./img/clubs/la-leonesa.png">
-      <span>La Leonesa</span>
-    </a>
-
-    <a href="club.html?id=palermo-cap" class="club-item">
-      <img src="./img/clubs/palermo-cap.png">
-      <span>Palermo CAP</span>
-    </a>
-
-    <a href="club.html?id=puerto-bermejo" class="club-item">
-      <img src="./img/clubs/puerto-bermejo.png">
-      <span>Puerto Bermejo</span>
-    </a>
-
-    <a href="club.html?id=zapallar" class="club-item">
-      <img src="./img/clubs/zapallar.png">
-      <span>Zapallar</span>
     </a>
 
   </div>
+
+</div>
 
 </div>
 
@@ -223,6 +195,28 @@ btn.onclick = () => {
   });
 };
 </script>
+<script>
+
+  /* CAMBIO DE DIRECCIÓN AUTOMÁTICO */
+  
+  const track = document.getElementById("track1");
+  
+  setInterval(() => {
+    track.classList.toggle("reverse");
+  }, 10000);
+  
+  
+  /* PAUSA EN TOUCH (MOBILE) */
+  
+  track.addEventListener("touchstart", () => {
+    track.style.animationPlayState = "paused";
+  });
+  
+  track.addEventListener("touchend", () => {
+    track.style.animationPlayState = "running";
+  });
+  
+  </script>
 
 </body>
 </html>
