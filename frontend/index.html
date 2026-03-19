@@ -4,7 +4,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>ABNECH Basket</title>
 
   <link rel="stylesheet" href="./css/style.css">
@@ -12,150 +11,135 @@
 
 <body>
 
-<header class="main-header">
-  <div class="container header-content">
-    <h1 class="logo">ABNECH Basket</h1>
-  </div>
-</header>
-
 <!-- ================= HERO ================= -->
 
 <section class="hero">
 
-  <!-- SLIDER -->
-  <div class="hero-slider">
-
-    <div class="slide active">
-      <img src="./img/slide1.jpg">
-    </div>
-
-    <div class="slide">
-      <img src="./img/slide2.jpg">
-    </div>
-
-    <div class="slide">
-      <img src="./img/slide3.jpg">
-    </div>
-
-  </div>
-
-  <!-- PARTICULAS -->
-  <canvas id="particles"></canvas>
-
   <!-- CONTENIDO -->
-  <div class="hero-content container">
+  <div class="hero-content">
     <h1>Liga Regional de Básquet</h1>
     <p>Resultados, estadísticas y toda la acción</p>
 
     <button id="enterBtn" class="primary-btn">
       Ver Fixture
     </button>
+
+    <!-- 🔥 BANNER LOGOS (NUEVO) -->
+    <div class="clubs-banner">
+
+      <div class="clubs-track">
+
+        <!-- LOGOS -->
+        <img src="./img/clubs/funebrero.png">
+        <img src="./img/clubs/union.png">
+        <img src="./img/clubs/cfa.png">
+        <img src="./img/clubs/general-vedia.png">
+        <img src="./img/clubs/la-leonesa.png">
+        <img src="./img/clubs/palermo-cap.png">
+        <img src="./img/clubs/puerto-bermejo.png">
+        <img src="./img/clubs/zapallar.png">
+
+        <!-- DUPLICADO PARA LOOP SUAVE -->
+        <img src="./img/clubs/funebrero.png">
+        <img src="./img/clubs/union.png">
+        <img src="./img/clubs/cfa.png">
+        <img src="./img/clubs/general-vedia.png">
+        <img src="./img/clubs/la-leonesa.png">
+        <img src="./img/clubs/palermo-cap.png">
+        <img src="./img/clubs/puerto-bermejo.png">
+        <img src="./img/clubs/zapallar.png">
+
+      </div>
+
+    </div>
+
   </div>
 
-</section>
-
-<!-- ================= LOGOS ================= -->
-
-<section class="logos-marquee">
-  <div class="logos-track">
-
-    <img src="./img/clubs/funebrero.png">
-    <img src="./img/clubs/union.png">
-    <img src="./img/clubs/cfa.png">
-    <img src="./img/clubs/zapallar.png">
-
-    <!-- duplicado -->
-    <img src="./img/clubs/funebrero.png">
-    <img src="./img/clubs/union.png">
-    <img src="./img/clubs/cfa.png">
-    <img src="./img/clubs/zapallar.png">
-
-  </div>
 </section>
 
 <!-- ================= APP ================= -->
 
 <div id="app" style="display:none">
 
-<main class="container">
+  <main>
 
-<section class="card-section">
-  <h2>📅 Próxima Fecha</h2>
+    <section class="section-block">
+      <h2>📅 Próxima Fecha</h2>
 
-  <div class="match-highlight">
-    <div class="team">
-      <img src="./img/clubs/funebrero.png">
-      <span>Funebrero</span>
-    </div>
+      <div class="match-highlight">
+        <div class="team">
+          <img src="./img/clubs/funebrero.png">
+          <span>Funebrero</span>
+        </div>
 
-    <div class="vs">VS</div>
+        <div class="vs">VS</div>
 
-    <div class="team">
-      <img src="./img/clubs/union.png">
-      <span>Unión</span>
-    </div>
+        <div class="team">
+          <img src="./img/clubs/union.png">
+          <span>Unión</span>
+        </div>
 
-    <div class="match-info">
-      Domingo 20:00 hs
-    </div>
-  </div>
-</section>
+        <div class="match-info">
+          Domingo 20:00 hs
+        </div>
+      </div>
+    </section>
 
-<section class="card-section">
-  <h2>📊 Últimos Resultados</h2>
+    <section class="section-block">
+      <h2>📊 Últimos Resultados</h2>
 
-  <div class="results-grid">
+      <div class="results-grid">
 
-    <div class="result-card">
-      <span>Funebrero</span>
-      <strong>78 - 70</strong>
-      <span>Unión</span>
-    </div>
+        <div class="result-card">
+          <span>Funebrero</span>
+          <strong>78 - 70</strong>
+          <span>Unión</span>
+        </div>
 
-    <div class="result-card">
-      <span>CFA</span>
-      <strong>65 - 60</strong>
-      <span>Zapallar</span>
-    </div>
+        <div class="result-card">
+          <span>CFA</span>
+          <strong>65 - 60</strong>
+          <span>Zapallar</span>
+        </div>
 
-  </div>
-</section>
+      </div>
+    </section>
 
-<section class="card-section">
-  <h2>Fixture</h2>
-  <div id="fixture-grid"></div>
-</section>
+    <section class="section-block">
+      <h2>Fixture</h2>
+      <div id="fixture-grid"></div>
+    </section>
 
-<section class="card-section">
-  <h2>Tabla</h2>
+    <section class="section-block">
+      <h2>Tabla</h2>
 
-  <div class="standings-table-wrapper">
-    <table class="standings-table">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Club</th>
-          <th>PJ</th>
-          <th>PG</th>
-          <th>PP</th>
-          <th>PF</th>
-          <th>PC</th>
-          <th>DG</th>
-          <th>PTS</th>
-        </tr>
-      </thead>
-      <tbody id="standingsBody"></tbody>
-    </table>
-  </div>
+      <div class="standings-table-wrapper">
+        <table class="standings-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Club</th>
+              <th>PJ</th>
+              <th>PG</th>
+              <th>PP</th>
+              <th>PF</th>
+              <th>PC</th>
+              <th>DG</th>
+              <th>PTS</th>
+            </tr>
+          </thead>
+          <tbody id="standingsBody"></tbody>
+        </table>
+      </div>
 
-</section>
+    </section>
 
-</main>
+  </main>
 
 </div>
 
 <footer class="site-footer">
-© 2026 ABNECH Basket
+  © 2026 ABNECH Basket
 </footer>
 
 <!-- ================= SCRIPTS ================= -->
@@ -175,63 +159,6 @@ btn.onclick = () => {
     behavior: "smooth"
   });
 };
-</script>
-
-<!-- SLIDER + PARTICULAS -->
-<script>
-
-/* ===== SLIDER ===== */
-
-const slides = document.querySelectorAll(".slide");
-let current = 0;
-
-setInterval(() => {
-  slides[current].classList.remove("active");
-  current = (current + 1) % slides.length;
-  slides[current].classList.add("active");
-}, 4000);
-
-
-/* ===== PARTICULAS ===== */
-
-const canvas = document.getElementById("particles");
-const ctx = canvas.getContext("2d");
-
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-let particles = [];
-
-for (let i = 0; i < 50; i++) {
-  particles.push({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    size: Math.random() * 2,
-    speed: Math.random() * 0.5
-  });
-}
-
-function animate() {
-
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  particles.forEach(p => {
-
-    p.y += p.speed;
-
-    if (p.y > canvas.height) p.y = 0;
-
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-    ctx.fillStyle = "rgba(255,255,255,0.2)";
-    ctx.fill();
-  });
-
-  requestAnimationFrame(animate);
-}
-
-animate();
-
 </script>
 
 </body>

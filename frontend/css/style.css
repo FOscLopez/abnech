@@ -906,3 +906,44 @@ margin-top:60px;
   border-radius: 10px;
   text-align: center;
 }
+/* =========================
+   BANNER LOGOS HERO
+========================= */
+
+.clubs-banner {
+  margin-top: 30px;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+}
+
+.clubs-track {
+  display: flex;
+  gap: 50px;
+  align-items: center;
+
+  animation: scrollLogos 25s linear infinite;
+}
+
+.clubs-track img {
+  height: 42px;
+  object-fit: contain;
+  opacity: 0.85;
+  transition: 0.3s;
+}
+
+.clubs-track img:hover {
+  transform: scale(1.1);
+  opacity: 1;
+}
+
+/* MOVIMIENTO SUAVE */
+@keyframes scrollLogos {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
