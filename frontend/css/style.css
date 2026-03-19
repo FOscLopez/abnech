@@ -907,7 +907,7 @@ margin-top:60px;
   text-align: center;
 }
 /* =========================
-   BANNER LOGOS HERO
+   BANNER PRO CLUBES
 ========================= */
 
 .clubs-banner {
@@ -918,32 +918,73 @@ margin-top:60px;
   justify-content: center;
 }
 
+/* TRACK */
 .clubs-track {
   display: flex;
-  gap: 50px;
+  gap: 60px;
   align-items: center;
+  width: max-content;
 
-  animation: scrollLogos 25s linear infinite;
+  animation: scrollBanner 25s linear infinite;
 }
 
-.clubs-track img {
-  height: 42px;
-  object-fit: contain;
-  opacity: 0.85;
+/* PAUSA */
+.clubs-banner:hover .clubs-track {
+  animation-play-state: paused;
+}
+
+/* ITEM */
+.club-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: white;
+  font-size: 0.7rem;
+  opacity: 0.8;
   transition: 0.3s;
 }
 
-.clubs-track img:hover {
-  transform: scale(1.1);
+.club-item img {
+  height: 42px;
+  object-fit: contain;
+  margin-bottom: 4px;
+}
+
+/* HOVER */
+.club-item:hover {
+  transform: scale(1.15);
   opacity: 1;
 }
 
-/* MOVIMIENTO SUAVE */
-@keyframes scrollLogos {
+/* TEXTO HOVER */
+.club-item span {
+  opacity: 0;
+  transform: translateY(5px);
+  transition: 0.3s;
+}
+
+.club-item:hover span {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* MOVIMIENTO REAL DERECHA → IZQUIERDA */
+@keyframes scrollBanner {
   from {
     transform: translateX(0);
   }
   to {
     transform: translateX(-50%);
+  }
+}
+
+/* =========================
+   MOBILE (más lento)
+========================= */
+
+@media (max-width: 768px) {
+  .clubs-track {
+    animation-duration: 40s;
   }
 }
