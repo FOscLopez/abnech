@@ -1,24 +1,27 @@
 <!DOCTYPE html>
 <html lang="es" data-theme="dark">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
   <title>ABNECH Basket</title>
 
-  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/style.css" />
+
+  <!-- FUENTES NBA STYLE -->
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
 </head>
 
 <body>
 
 <header class="main-header">
   <div class="container header-content">
-    <h1 class="logo">ABNECH Basket</h1>
+    <div class="logo">ABNECH Basket</div>
   </div>
 </header>
 
-<!-- ================= HERO ================= -->
-
+<!-- HERO -->
 <section class="hero">
 
   <div class="hero-content">
@@ -29,120 +32,36 @@
       Ver Fixture
     </button>
 
-    <!-- ===== BANNER CLUBES ===== -->
+    <!-- 🔥 BANNER -->
     <div class="clubs-banner">
-
       <div class="clubs-track">
 
-        <!-- ORIGINAL -->
-        <a href="club.html?id=funebrero" class="club-item">
-          <img src="./img/clubs/funebrero.png">
-          <span>Funebrero</span>
-        </a>
+        <!-- 8 LOGOS -->
+        <a href="club.html?id=union" class="club-item"><img src="./img/clubs/union.png"><span>Unión</span></a>
+        <a href="club.html?id=funebrero" class="club-item"><img src="./img/clubs/funebrero.png"><span>Funebrero</span></a>
+        <a href="club.html?id=cfa" class="club-item"><img src="./img/clubs/cfa.png"><span>CFA</span></a>
+        <a href="club.html?id=general-vedia" class="club-item"><img src="./img/clubs/general-vedia.png"><span>Vedia</span></a>
+        <a href="club.html?id=la-leonesa" class="club-item"><img src="./img/clubs/la-leonesa.png"><span>Leonesa</span></a>
+        <a href="club.html?id=palermo-cap" class="club-item"><img src="./img/clubs/palermo-cap.png"><span>Palermo</span></a>
+        <a href="club.html?id=puerto-bermejo" class="club-item"><img src="./img/clubs/puerto-bermejo.png"><span>Bermejo</span></a>
+        <a href="club.html?id=zapallar" class="club-item"><img src="./img/clubs/zapallar.png"><span>Zapallar</span></a>
 
-        <a href="club.html?id=union" class="club-item">
-          <img src="./img/clubs/union.png">
-          <span>Unión</span>
-        </a>
-
-        <a href="club.html?id=cfa" class="club-item">
-          <img src="./img/clubs/cfa.png">
-          <span>CFA</span>
-        </a>
-
-        <a href="club.html?id=zapallar" class="club-item">
-          <img src="./img/clubs/zapallar.png">
-          <span>Zapallar</span>
-        </a>
-
-        <!-- DUPLICADO (CLAVE) -->
-        <a href="club.html?id=funebrero" class="club-item">
-          <img src="./img/clubs/funebrero.png">
-          <span>Funebrero</span>
-        </a>
-
-        <a href="club.html?id=union" class="club-item">
-          <img src="./img/clubs/union.png">
-          <span>Unión</span>
-        </a>
-
-        <a href="club.html?id=cfa" class="club-item">
-          <img src="./img/clubs/cfa.png">
-          <span>CFA</span>
-        </a>
-
-        <a href="club.html?id=zapallar" class="club-item">
-          <img src="./img/clubs/zapallar.png">
-          <span>Zapallar</span>
-        </a>
+        <!-- DUPLICADO (OBLIGATORIO) -->
+        <a href="#" class="club-item"><img src="./img/clubs/union.png"></a>
+        <a href="#" class="club-item"><img src="./img/clubs/funebrero.png"></a>
+        <a href="#" class="club-item"><img src="./img/clubs/cfa.png"></a>
+        <a href="#" class="club-item"><img src="./img/clubs/general-vedia.png"></a>
+        <a href="#" class="club-item"><img src="./img/clubs/la-leonesa.png"></a>
+        <a href="#" class="club-item"><img src="./img/clubs/palermo-cap.png"></a>
+        <a href="#" class="club-item"><img src="./img/clubs/puerto-bermejo.png"></a>
+        <a href="#" class="club-item"><img src="./img/clubs/zapallar.png"></a>
 
       </div>
-
     </div>
 
   </div>
 
 </section>
-
-<!-- ================= APP ================= -->
-
-<div id="app" style="display:none">
-
-  <main class="container">
-
-    <section class="section-block">
-      <h2>Fixture</h2>
-      <div id="fixture-grid"></div>
-    </section>
-
-    <section class="section-block">
-      <h2>Tabla</h2>
-
-      <div class="standings-table-wrapper">
-        <table class="standings-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Club</th>
-              <th>PJ</th>
-              <th>PG</th>
-              <th>PP</th>
-              <th>PF</th>
-              <th>PC</th>
-              <th>DG</th>
-              <th>PTS</th>
-            </tr>
-          </thead>
-          <tbody id="standingsBody"></tbody>
-        </table>
-      </div>
-
-    </section>
-
-  </main>
-
-</div>
-
-<footer class="site-footer">
-© 2026 ABNECH Basket
-</footer>
-
-<script type="module">
-import { initPublicPage } from "./js/public.js";
-
-const btn = document.getElementById("enterBtn");
-const app = document.getElementById("app");
-
-btn.onclick = () => {
-  app.style.display = "block";
-  initPublicPage();
-
-  window.scrollTo({
-    top: app.offsetTop,
-    behavior: "smooth"
-  });
-};
-</script>
 
 </body>
 </html>

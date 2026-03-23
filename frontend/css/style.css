@@ -1,210 +1,98 @@
-/* =========================================================
-   TIPOGRAFÍA Y RESET
-========================================================= */
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;500&family=Teko:wght@400;500;600&display=swap');
-
+/* RESET */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* =========================================================
-   VARIABLES
-========================================================= */
+/* VARIABLES */
 :root {
-  --nba-blue: #1d428a;
-  --nba-red: #c8102e;
-  --panel-dark: #0a0c14;
-  --panel-soft: #111827;
-  --text-light: #e8eaf6;
-  --text-muted: #90a4ae;
-  --orange: #ff9800;
-  --shadow-strong: 0 12px 32px rgba(0,0,0,0.8);
-
-  --bg-dark: #0d1117;
-  --bg-light: #ffffff;
-
-  --win: #22c55e;
-  --lose: #ef4444;
+  --bg: #020617;
+  --text: #e5e7eb;
+  --orange: #ff6b00;
 }
 
-/* =========================================================
-   MODO OSCURO / CLARO
-========================================================= */
-html[data-theme='dark'] {
-  --bg: var(--bg-dark);
-  --text: var(--text-light);
-  --card: var(--panel-soft);
-}
-
-html[data-theme='light'] {
-  --bg: var(--bg-light);
-  --text: #111;
-  --card: #f3f3f3;
-}
-
+/* BODY */
 body {
-  background: var(--bg);
+  background: radial-gradient(circle at top, #0f172a, #020617);
   color: var(--text);
   font-family: 'Poppins', sans-serif;
-  transition: background 0.25s ease, color 0.25s ease;
 }
 
-/* =========================================================
-   LAYOUT BASE
-========================================================= */
-.section-block {
-  padding: 2rem 1.4rem;
+/* HEADER */
+.main-header {
+  background: #020617;
+  border-bottom: 1px solid rgba(255,255,255,.05);
 }
 
-.section-block h2 {
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 0 20px;
+}
+
+.header-content {
+  height: 70px;
+  display: flex;
+  align-items: center;
+}
+
+.logo {
   font-family: 'Bebas Neue';
   font-size: 2rem;
-  letter-spacing: 0.08em;
-  margin-bottom: 1rem;
+  letter-spacing: 1px;
 }
 
-/* =========================================================
-   FIXTURE
-========================================================= */
-.fixture-card {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #0b0f1f;
-  padding: 1rem;
-  border-radius: 16px;
-  border: 1px solid rgba(255,255,255,0.09);
-  box-shadow: var(--shadow-strong);
-  transition: .25s;
-}
-
-.fixture-card:hover {
-  transform: translateY(-4px);
-}
-
-.fixture-team {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.fixture-team img {
-  width: 36px;
-  height: 36px;
-}
-
-.fixture-center {
-  font-size: 1.4rem;
-  font-weight: 700;
-}
-
-.win { color: var(--win); }
-.lose { color: var(--lose); }
-
-/* =========================================================
-   TABLA
-========================================================= */
-.standings-table-wrapper {
-  background: #111827;
-  border-radius: 14px;
-  overflow-x: auto;
-  box-shadow: var(--shadow-strong);
-}
-
-.standings-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.standings-table th,
-.standings-table td {
-  padding: 0.5rem;
-  text-align: center;
-}
-
-.club-cell {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.club-cell img {
-  width: 28px;
-}
-
-/* =========================================================
-   HEADER / HERO
-========================================================= */
+/* HERO */
 .hero {
-  position: relative;
   height: 90vh;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   text-align: center;
 }
 
-.hero-slider {
-  position: absolute;
-  inset: 0;
+.hero h1 {
+  font-family: 'Oswald';
+  font-size: 3.5rem;
+  letter-spacing: 1px;
 }
 
-.slide {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  transition: 1.5s;
+.hero p {
+  opacity: .7;
+  margin-top: 10px;
 }
 
-.slide.active {
-  opacity: 1;
-}
+/* 🔥 BOTON PRO */
+.primary-btn {
+  margin-top: 25px;
+  padding: 14px 34px;
+  font-size: 1rem;
+  font-weight: 600;
 
-.slide img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: brightness(0.35);
-}
-
-.hero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom, rgba(2,6,23,.6), rgba(2,6,23,.95));
-}
-
-.hero-content {
-  position: relative;
-  z-index: 3;
-}
-
-/* =========================================================
-   RESULTADOS
-========================================================= */
-.results-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
-  gap: 15px;
-}
-
-.result-card {
-  background: #0b1220;
-  padding: 15px;
+  background: linear-gradient(135deg,#ff6b00,#ff8c1a);
+  border: none;
   border-radius: 10px;
+  color: white;
+
+  cursor: pointer;
+  transition: .3s;
 }
 
-/* =========================================================
-   🔥 BANNER FIX REAL
-========================================================= */
+.primary-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(255,107,0,.5);
+}
+
+/* =========================
+   🔥 BANNER PRO REAL
+========================= */
 
 .clubs-banner {
+  margin-top: 40px;
   width: 100%;
   overflow: hidden;
   position: relative;
-  margin-top: 30px;
 }
 
 /* fade */
@@ -233,59 +121,61 @@ body {
   display: flex;
   gap: 60px;
   align-items: center;
-
   width: max-content;
 
-  /* 🔥 CLAVE */
-  animation: scrollFull 30s linear infinite;
+  animation: scrollFull 28s linear infinite;
 }
 
-/* ITEMS */
+/* ITEM */
 .club-item {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-decoration: none;
-  color: white;
   font-size: 0.7rem;
+  color: white;
   opacity: 0.7;
   transition: .3s;
 }
 
 .club-item img {
-  height: 42px;
+  height: 44px;
 }
 
+/* HOVER */
 .club-item:hover {
-  transform: scale(1.15);
+  transform: scale(1.2);
   opacity: 1;
+}
+
+.club-item:hover img {
+  filter: drop-shadow(0 0 10px rgba(255,120,0,0.8));
 }
 
 /* TEXTO */
 .club-item span {
   opacity: 0;
-  transform: translateY(6px);
   transition: .3s;
 }
 
 .club-item:hover span {
   opacity: 1;
-  transform: translateY(0);
 }
 
-/* 🔥 MOVIMIENTO REAL COMPLETO */
+/* 🔥 MOVIMIENTO COMPLETO */
 @keyframes scrollFull {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 /* MOBILE */
-@media (max-width: 768px) {
+@media (max-width:768px){
   .clubs-track {
     animation-duration: 45s;
+    gap: 40px;
+  }
+
+  .hero h1 {
+    font-size: 2.3rem;
   }
 }
