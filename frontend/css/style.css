@@ -225,3 +225,165 @@ body{
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
 }
+/* =========================
+   FIX PROXIMA FECHA (ARREGLA LOGO GIGANTE)
+========================= */
+
+.next-match {
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.next-match h2 {
+  font-family: 'Bebas Neue';
+  font-size: 2rem;
+  margin-bottom: 30px;
+}
+
+.match-highlight {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+
+  background: #0b1220;
+  padding: 25px;
+  border-radius: 16px;
+
+  max-width: 600px;
+  margin: auto;
+}
+
+/* EQUIPOS */
+.team {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.team img {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+}
+
+.team p {
+  margin-top: 6px;
+  font-size: 0.9rem;
+}
+
+/* VS */
+.vs {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #ff6b00;
+}
+
+/* INFO */
+.match-info {
+  position: absolute;
+  margin-top: 90px;
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+/* =========================
+   FIX CLUBES GRID (CENTRADO PRO)
+========================= */
+
+.club-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 25px;
+  max-width: 1100px;
+  margin: 40px auto;
+}
+
+/* CARD PRO */
+.club-card {
+  background: #0b1220;
+  border-radius: 14px;
+  padding: 20px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  transition: .25s;
+}
+
+.club-card img {
+  height: 70px;
+  object-fit: contain;
+}
+
+.club-card p {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  letter-spacing: .05em;
+}
+
+.club-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 0 20px rgba(255,120,0,0.3);
+}
+
+/* =========================
+   FIX BANNER FULL WIDTH REAL
+========================= */
+
+.clubs-banner {
+  width: 100%;
+  overflow: hidden;
+  margin-top: 30px;
+}
+
+.clubs-track {
+  display: flex;
+  gap: 80px;
+  width: max-content;
+
+  animation: bannerLoop 30s linear infinite;
+}
+
+/* IMPORTANTE → movimiento real completo */
+@keyframes bannerLoop {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* LOGOS */
+.clubs-track img {
+  height: 45px;
+  object-fit: contain;
+  opacity: 0.9;
+}
+
+/* =========================
+   BOTÓN PRO (VISIBLE Y ACTIVO)
+========================= */
+
+.primary-btn {
+  display: inline-block;
+  margin-top: 20px;
+
+  padding: 14px 34px;
+  border-radius: 10px;
+
+  background: linear-gradient(135deg,#ff6b00,#ff8c00);
+
+  color: white;
+  text-decoration: none;
+
+  font-weight: 600;
+
+  box-shadow: 0 0 20px rgba(255,120,0,0.5);
+}
+
+.primary-btn:hover {
+  transform: scale(1.05);
+}
