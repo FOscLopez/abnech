@@ -8,35 +8,34 @@
 
   <link rel="stylesheet" href="./css/style.css" />
 
-  <!-- FUENTES NBA STYLE -->
+  <!-- FUENTES -->
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
 </head>
 
 <body>
 
-<header class="main-header">
-  <div class="container header-content">
-    <div class="logo">ABNECH Basket</div>
-  </div>
-</header>
-
 <!-- HERO -->
-<section class="hero">
+<section id="landing" class="hero">
 
   <div class="hero-content">
-    <h1>Liga Regional de Básquet</h1>
-    <p>Resultados, estadísticas y toda la acción</p>
+
+    <span class="badge">TEMPORADA 2026</span>
+
+    <h1>
+      ABNECH <span>BASKET</span>
+    </h1>
+
+    <p>Liga Regional del Nordeste Chaqueño</p>
 
     <button id="enterBtn" class="primary-btn">
       Ver Fixture
     </button>
 
-    <!-- 🔥 BANNER -->
+    <!-- BANNER -->
     <div class="clubs-banner">
       <div class="clubs-track">
 
-        <!-- 8 LOGOS -->
+        <!-- 8 logos -->
         <a href="club.html?id=union" class="club-item"><img src="./img/clubs/union.png"><span>Unión</span></a>
         <a href="club.html?id=funebrero" class="club-item"><img src="./img/clubs/funebrero.png"><span>Funebrero</span></a>
         <a href="club.html?id=cfa" class="club-item"><img src="./img/clubs/cfa.png"><span>CFA</span></a>
@@ -46,22 +45,56 @@
         <a href="club.html?id=puerto-bermejo" class="club-item"><img src="./img/clubs/puerto-bermejo.png"><span>Bermejo</span></a>
         <a href="club.html?id=zapallar" class="club-item"><img src="./img/clubs/zapallar.png"><span>Zapallar</span></a>
 
-        <!-- DUPLICADO (OBLIGATORIO) -->
-        <a href="#" class="club-item"><img src="./img/clubs/union.png"></a>
-        <a href="#" class="club-item"><img src="./img/clubs/funebrero.png"></a>
-        <a href="#" class="club-item"><img src="./img/clubs/cfa.png"></a>
-        <a href="#" class="club-item"><img src="./img/clubs/general-vedia.png"></a>
-        <a href="#" class="club-item"><img src="./img/clubs/la-leonesa.png"></a>
-        <a href="#" class="club-item"><img src="./img/clubs/palermo-cap.png"></a>
-        <a href="#" class="club-item"><img src="./img/clubs/puerto-bermejo.png"></a>
-        <a href="#" class="club-item"><img src="./img/clubs/zapallar.png"></a>
+        <!-- DUPLICADO -->
+        <a class="club-item"><img src="./img/clubs/union.png"></a>
+        <a class="club-item"><img src="./img/clubs/funebrero.png"></a>
+        <a class="club-item"><img src="./img/clubs/cfa.png"></a>
+        <a class="club-item"><img src="./img/clubs/general-vedia.png"></a>
+        <a class="club-item"><img src="./img/clubs/la-leonesa.png"></a>
+        <a class="club-item"><img src="./img/clubs/palermo-cap.png"></a>
+        <a class="club-item"><img src="./img/clubs/puerto-bermejo.png"></a>
+        <a class="club-item"><img src="./img/clubs/zapallar.png"></a>
 
       </div>
     </div>
 
   </div>
-
 </section>
+
+<!-- APP -->
+<div id="app" style="display:none">
+
+  <!-- CLUBES -->
+  <section class="clubs">
+    <h2><span>CLUBES</span> PARTICIPANTES</h2>
+
+    <div class="club-grid">
+
+      <div class="club-card"><img src="./img/clubs/union.png"><p>UNIÓN</p></div>
+      <div class="club-card"><img src="./img/clubs/funebrero.png"><p>FUNEBRERO</p></div>
+      <div class="club-card"><img src="./img/clubs/cfa.png"><p>CFA</p></div>
+      <div class="club-card"><img src="./img/clubs/general-vedia.png"><p>GENERAL VEDIA</p></div>
+      <div class="club-card"><img src="./img/clubs/la-leonesa.png"><p>LA LEONESA</p></div>
+      <div class="club-card"><img src="./img/clubs/palermo-cap.png"><p>PALERMO CAP</p></div>
+      <div class="club-card"><img src="./img/clubs/puerto-bermejo.png"><p>PUERTO BERMEJO</p></div>
+      <div class="club-card"><img src="./img/clubs/zapallar.png"><p>ZAPALLAR</p></div>
+
+    </div>
+  </section>
+
+</div>
+
+<!-- SCRIPT -->
+<script>
+const btn = document.getElementById("enterBtn");
+const landing = document.getElementById("landing");
+const app = document.getElementById("app");
+
+btn.onclick = () => {
+  landing.style.display = "none";
+  app.style.display = "block";
+};
+</script>
 
 </body>
 </html>
