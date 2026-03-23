@@ -1,40 +1,46 @@
 <!DOCTYPE html>
 <html lang="es" data-theme="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>ABNECH Basket</title>
 
-  <link rel="stylesheet" href="./css/style.css" />
+  <link rel="stylesheet" href="./css/style.css">
 
+  <!-- FUENTES PRO -->
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
 <!-- HERO -->
-<section id="landing" class="hero">
+<section class="hero">
+
+  <!-- SLIDER -->
+  <div class="hero-slider">
+    <div class="slide active"><img src="./img/slide1.jpg"></div>
+    <div class="slide"><img src="./img/slide2.jpg"></div>
+    <div class="slide"><img src="./img/slide3.jpg"></div>
+  </div>
+
+  <!-- PARTÍCULAS -->
+  <canvas id="particles"></canvas>
 
   <div class="hero-content">
-
     <span class="badge">TEMPORADA 2026</span>
 
-    <h1>
-      ABNECH <span>BASKET</span>
-    </h1>
+    <h1>ABNECH <span>BASKET</span></h1>
 
     <p>Liga Regional del Nordeste Chaqueño</p>
 
-    <button id="enterBtn" class="primary-btn">
-      Ver Fixture
-    </button>
+    <a href="#fixture" class="primary-btn">Ver Fixture</a>
 
-    <!-- 🔥 BANNER SOLO LOGOS -->
+    <!-- BANNER -->
     <div class="clubs-banner">
       <div class="clubs-track">
 
-        <!-- 8 logos -->
+        <!-- DUPLICADO PARA LOOP REAL -->
         <img src="./img/clubs/union.png">
         <img src="./img/clubs/funebrero.png">
         <img src="./img/clubs/cfa.png">
@@ -44,7 +50,6 @@
         <img src="./img/clubs/puerto-bermejo.png">
         <img src="./img/clubs/zapallar.png">
 
-        <!-- DUPLICADO -->
         <img src="./img/clubs/union.png">
         <img src="./img/clubs/funebrero.png">
         <img src="./img/clubs/cfa.png">
@@ -60,78 +65,76 @@
   </div>
 </section>
 
-<!-- APP -->
-<div id="app" style="display:none">
+<!-- CLUBES -->
+<section class="clubs">
 
-  <!-- CLUBES -->
-  <section class="clubs">
-    <h2><span>CLUBES</span> PARTICIPANTES</h2>
+  <h2><span>CLUBES</span> PARTICIPANTES</h2>
 
-    <div class="club-grid">
+  <div class="club-grid">
+    <div class="club-card"><img src="./img/clubs/union.png"><p>UNIÓN</p></div>
+    <div class="club-card"><img src="./img/clubs/funebrero.png"><p>FUNEBRERO</p></div>
+    <div class="club-card"><img src="./img/clubs/cfa.png"><p>CFA</p></div>
+    <div class="club-card"><img src="./img/clubs/general-vedia.png"><p>GENERAL VEDIA</p></div>
+    <div class="club-card"><img src="./img/clubs/la-leonesa.png"><p>LA LEONESA</p></div>
+    <div class="club-card"><img src="./img/clubs/palermo-cap.png"><p>PALERMO CAP</p></div>
+    <div class="club-card"><img src="./img/clubs/puerto-bermejo.png"><p>PUERTO BERMEJO</p></div>
+    <div class="club-card"><img src="./img/clubs/zapallar.png"><p>ZAPALLAR</p></div>
+  </div>
 
-      <div class="club-card"><img src="./img/clubs/union.png"><p>UNIÓN</p></div>
-      <div class="club-card"><img src="./img/clubs/funebrero.png"><p>FUNEBRERO</p></div>
-      <div class="club-card"><img src="./img/clubs/cfa.png"><p>CFA</p></div>
-      <div class="club-card"><img src="./img/clubs/general-vedia.png"><p>GENERAL VEDIA</p></div>
-      <div class="club-card"><img src="./img/clubs/la-leonesa.png"><p>LA LEONESA</p></div>
-      <div class="club-card"><img src="./img/clubs/palermo-cap.png"><p>PALERMO CAP</p></div>
-      <div class="club-card"><img src="./img/clubs/puerto-bermejo.png"><p>PUERTO BERMEJO</p></div>
-      <div class="club-card"><img src="./img/clubs/zapallar.png"><p>ZAPALLAR</p></div>
+</section>
 
-    </div>
-  </section>
+<!-- PROXIMA FECHA -->
+<section class="next-match">
 
-  <!-- 🔥 FIXTURE PRO -->
-  <section class="fixture">
+  <h2><span>PRÓXIMA</span> FECHA</h2>
 
-    <h2><span>FIXTURE</span></h2>
-
-    <div class="fixture-list">
-
-      <div class="match-card">
-        <span class="date">2025-06-21</span>
-        <div class="teams">
-          <span>Funebrero</span>
-          <strong>89 - 70</strong>
-          <span>Unión</span>
-        </div>
-      </div>
-
-      <div class="match-card">
-        <span class="date">2026-01-13</span>
-        <div class="teams">
-          <span>Palermo CAP</span>
-          <strong>65 - 60</strong>
-          <span>Puerto Bermejo</span>
-        </div>
-      </div>
-
-      <div class="match-card">
-        <span class="date">2026-01-15</span>
-        <div class="teams">
-          <span>General Vedia</span>
-          <strong>46 - 80</strong>
-          <span>La Leonesa</span>
-        </div>
-      </div>
-
+  <div class="match-highlight">
+    <div class="team">
+      <img src="./img/clubs/funebrero.png">
+      <p>Funebrero</p>
     </div>
 
-  </section>
+    <div class="vs">VS</div>
 
-</div>
+    <div class="team">
+      <img src="./img/clubs/union.png">
+      <p>Unión</p>
+    </div>
+
+    <div class="match-info">
+      25 Marzo - 21:30 hs
+    </div>
+  </div>
+
+</section>
+
+<!-- FIXTURE -->
+<section id="fixture" class="fixture">
+
+  <h2><span>FIXTURE</span></h2>
+
+  <div class="match-card">
+    <span class="date">2025-06-21</span>
+    <div class="teams">
+      <span>Funebrero</span>
+      <strong>89 - 70</strong>
+      <span>Unión</span>
+    </div>
+  </div>
+
+  <div class="match-card">
+    <span class="date">2026-01-13</span>
+    <div class="teams">
+      <span>Palermo CAP</span>
+      <strong>65 - 60</strong>
+      <span>Puerto Bermejo</span>
+    </div>
+  </div>
+
+</section>
 
 <!-- SCRIPT -->
-<script>
-const btn = document.getElementById("enterBtn");
-const landing = document.getElementById("landing");
-const app = document.getElementById("app");
-
-btn.onclick = () => {
-  landing.style.display = "none";
-  app.style.display = "block";
-};
-</script>
+<script src="./js/main.js"></script>
 
 </body>
 </html>
