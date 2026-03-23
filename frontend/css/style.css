@@ -71,9 +71,9 @@ body {
   cursor:pointer;
 }
 
-/* =========================================================
-   🔥 BANNER (ÚNICO Y FUNCIONAL)
-========================================================= */
+/* =========================
+   BANNER CORREGIDO REAL
+========================= */
 
 .clubs-banner {
   margin-top: 30px;
@@ -88,7 +88,7 @@ body {
   content: "";
   position: absolute;
   top: 0;
-  width: 100px;
+  width: 120px;
   height: 100%;
   z-index: 2;
 }
@@ -103,28 +103,25 @@ body {
   background: linear-gradient(to left, #020617, transparent);
 }
 
-/* track */
+/* TRACK */
 .clubs-track {
   display: flex;
-  gap: 60px;
   align-items: center;
+  gap: 60px;
+
+  /* 🔥 CLAVE */
   width: max-content;
 
-  animation: bannerMove 25s linear infinite;
+  animation: bannerScroll 30s linear infinite;
 }
 
-/* pausa */
-.clubs-banner:hover .clubs-track {
-  animation-play-state: paused;
-}
-
-/* item */
+/* ITEM */
 .club-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-decoration: none;
   color: white;
+  text-decoration: none;
   font-size: 0.7rem;
   opacity: 0.7;
   transition: 0.3s;
@@ -132,13 +129,16 @@ body {
 
 .club-item img {
   height: 42px;
+  object-fit: contain;
 }
 
+/* hover */
 .club-item:hover {
-  transform: scale(1.2);
+  transform: scale(1.15);
   opacity: 1;
 }
 
+/* texto */
 .club-item span {
   opacity: 0;
   transform: translateY(6px);
@@ -150,12 +150,12 @@ body {
   transform: translateY(0);
 }
 
-/* animación real */
-@keyframes bannerMove {
-  from {
+/* 🔥 ANIMACIÓN CORRECTA */
+@keyframes bannerScroll {
+  0% {
     transform: translateX(0);
   }
-  to {
+  100% {
     transform: translateX(-50%);
   }
 }
