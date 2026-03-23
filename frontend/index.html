@@ -11,11 +11,16 @@
 
 <body>
 
+<header class="main-header">
+  <div class="container header-content">
+    <h1 class="logo">ABNECH Basket</h1>
+  </div>
+</header>
+
 <!-- ================= HERO ================= -->
 
 <section class="hero">
 
-  <!-- CONTENIDO -->
   <div class="hero-content">
     <h1>Liga Regional de Básquet</h1>
     <p>Resultados, estadísticas y toda la acción</p>
@@ -24,69 +29,56 @@
       Ver Fixture
     </button>
 
-   <!-- ================= ULTRA BANNER ================= -->
+    <!-- ===== BANNER CLUBES ===== -->
+    <div class="clubs-banner">
 
-<div class="clubs-banner">
+      <div class="clubs-track">
 
-  <div class="clubs-track" id="track1">
+        <!-- ORIGINAL -->
+        <a href="club.html?id=funebrero" class="club-item">
+          <img src="./img/clubs/funebrero.png">
+          <span>Funebrero</span>
+        </a>
 
-    <!-- CLUB -->
-    <a href="club.html?id=funebrero" class="club-item">
-      <img src="./img/clubs/funebrero.png">
-      <span>Funebrero</span>
-    </a>
+        <a href="club.html?id=union" class="club-item">
+          <img src="./img/clubs/union.png">
+          <span>Unión</span>
+        </a>
 
-    <a href="club.html?id=union" class="club-item">
-      <img src="./img/clubs/union.png">
-      <span>Unión</span>
-    </a>
+        <a href="club.html?id=cfa" class="club-item">
+          <img src="./img/clubs/cfa.png">
+          <span>CFA</span>
+        </a>
 
-    <a href="club.html?id=cfa" class="club-item">
-      <img src="./img/clubs/cfa.png">
-      <span>CFA</span>
-    </a>
+        <a href="club.html?id=zapallar" class="club-item">
+          <img src="./img/clubs/zapallar.png">
+          <span>Zapallar</span>
+        </a>
 
-    <a href="club.html?id=general-vedia" class="club-item">
-      <img src="./img/clubs/general-vedia.png">
-      <span>General Vedia</span>
-    </a>
+        <!-- DUPLICADO (CLAVE) -->
+        <a href="club.html?id=funebrero" class="club-item">
+          <img src="./img/clubs/funebrero.png">
+          <span>Funebrero</span>
+        </a>
 
-    <a href="club.html?id=la-leonesa" class="club-item">
-      <img src="./img/clubs/la-leonesa.png">
-      <span>La Leonesa</span>
-    </a>
+        <a href="club.html?id=union" class="club-item">
+          <img src="./img/clubs/union.png">
+          <span>Unión</span>
+        </a>
 
-    <a href="club.html?id=palermo-cap" class="club-item">
-      <img src="./img/clubs/palermo-cap.png">
-      <span>Palermo CAP</span>
-    </a>
+        <a href="club.html?id=cfa" class="club-item">
+          <img src="./img/clubs/cfa.png">
+          <span>CFA</span>
+        </a>
 
-    <a href="club.html?id=puerto-bermejo" class="club-item">
-      <img src="./img/clubs/puerto-bermejo.png">
-      <span>Puerto Bermejo</span>
-    </a>
+        <a href="club.html?id=zapallar" class="club-item">
+          <img src="./img/clubs/zapallar.png">
+          <span>Zapallar</span>
+        </a>
 
-    <a href="club.html?id=zapallar" class="club-item">
-      <img src="./img/clubs/zapallar.png">
-      <span>Zapallar</span>
-    </a>
+      </div>
 
-    <!-- DUPLICADO -->
-    <a href="club.html?id=funebrero" class="club-item">
-      <img src="./img/clubs/funebrero.png">
-      <span>Funebrero</span>
-    </a>
-
-    <a href="club.html?id=union" class="club-item">
-      <img src="./img/clubs/union.png">
-      <span>Unión</span>
-    </a>
-
-  </div>
-
-</div>
-
-</div>
+    </div>
 
   </div>
 
@@ -96,49 +88,7 @@
 
 <div id="app" style="display:none">
 
-  <main>
-
-    <section class="section-block">
-      <h2>📅 Próxima Fecha</h2>
-
-      <div class="match-highlight">
-        <div class="team">
-          <img src="./img/clubs/funebrero.png">
-          <span>Funebrero</span>
-        </div>
-
-        <div class="vs">VS</div>
-
-        <div class="team">
-          <img src="./img/clubs/union.png">
-          <span>Unión</span>
-        </div>
-
-        <div class="match-info">
-          Domingo 20:00 hs
-        </div>
-      </div>
-    </section>
-
-    <section class="section-block">
-      <h2>📊 Últimos Resultados</h2>
-
-      <div class="results-grid">
-
-        <div class="result-card">
-          <span>Funebrero</span>
-          <strong>78 - 70</strong>
-          <span>Unión</span>
-        </div>
-
-        <div class="result-card">
-          <span>CFA</span>
-          <strong>65 - 60</strong>
-          <span>Zapallar</span>
-        </div>
-
-      </div>
-    </section>
+  <main class="container">
 
     <section class="section-block">
       <h2>Fixture</h2>
@@ -174,10 +124,8 @@
 </div>
 
 <footer class="site-footer">
-  © 2026 ABNECH Basket
+© 2026 ABNECH Basket
 </footer>
-
-<!-- ================= SCRIPTS ================= -->
 
 <script type="module">
 import { initPublicPage } from "./js/public.js";
@@ -195,28 +143,6 @@ btn.onclick = () => {
   });
 };
 </script>
-<script>
-
-  /* CAMBIO DE DIRECCIÓN AUTOMÁTICO */
-  
-  const track = document.getElementById("track1");
-  
-  setInterval(() => {
-    track.classList.toggle("reverse");
-  }, 10000);
-  
-  
-  /* PAUSA EN TOUCH (MOBILE) */
-  
-  track.addEventListener("touchstart", () => {
-    track.style.animationPlayState = "paused";
-  });
-  
-  track.addEventListener("touchend", () => {
-    track.style.animationPlayState = "running";
-  });
-  
-  </script>
 
 </body>
 </html>

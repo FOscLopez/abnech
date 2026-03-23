@@ -38,977 +38,59 @@ html[data-theme='dark'] {
   --card: var(--panel-soft);
 }
 
-html[data-theme='light'] {
-  --bg: var(--bg-light);
-  --text: #111;
-  --card: #f3f3f3;
-}
-
 body {
   background: var(--bg);
   color: var(--text);
   font-family: 'Poppins', sans-serif;
-  transition: background 0.25s ease, color 0.25s ease;
-  background-size: 150% 150%;
-  animation: bgfloat 20s ease-in-out infinite;
-}
-
-@keyframes bgfloat {
-  0% { background-position: 0% 0%; }
-  50% { background-position: 100% 70%; }
-  100% { background-position: 0% 0%; }
 }
 
 /* =========================================================
-   LAYOUT BASE
+   HERO
 ========================================================= */
-.section-block {
-  padding: 2rem 1.4rem;
-}
-
-.section-block h2 {
-  font-family: 'Bebas Neue';
-  font-size: 2rem;
-  letter-spacing: 0.08em;
-  margin-bottom: 1rem;
-}
-
-/* =========================================================
-   FIXTURE
-========================================================= */
-.fixture-card {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #0b0f1f;
-  padding: 1rem;
-  border-radius: 16px;
-  border: 1px solid rgba(255,255,255,0.09);
-  box-shadow: var(--shadow-strong);
-  transition: transform .25s ease, box-shadow .25s ease;
-}
-
-.fixture-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 16px 36px rgba(0,0,0,0.9);
-}
-
-.fixture-team {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 120px;
-}
-
-.fixture-team img {
-  width: 36px;
-  height: 36px;
-  object-fit: contain;
-}
-
-.fixture-center {
-  text-align: center;
-  font-family: 'Courier New', monospace;
-  font-size: 1.4rem;
-  font-weight: 700;
-}
-
-.win { color: var(--win); }
-.lose { color: var(--lose); }
-
-/* =========================================================
-   TABLA DE POSICIONES
-========================================================= */
-.standings-table-wrapper {
-  background: #111827;
-  border-radius: 14px;
-  border: 1px solid rgba(255,255,255,0.08);
-  overflow-x: auto;
-  box-shadow: var(--shadow-strong);
-  contain: layout paint;
-}
-
-.standings-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.9rem;
-}
-
-.standings-table th,
-.standings-table td {
-  padding: 0.45rem 0.6rem;
-  text-align: center;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-
-.standings-table th {
-  color: #ffb74d;
-  font-weight: 600;
-}
-
-.club-cell {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  justify-content: flex-start;
-}
-
-.club-cell img {
-  width: 28px;
-  height: 28px;
-  object-fit: contain;
-}
-
-/* Estados */
-.standings-table td.dg-positive {
-  color: var(--win);
-  font-weight: 600;
-}
-
-.standings-table td.dg-negative {
-  color: var(--lose);
-  font-weight: 600;
-}
-
-.standings-table td.pts {
-  color: #f59e0b;
-  font-weight: bold;
-}
-
-/* Líder */
-.standings-table tbody tr.leader {
-  background: linear-gradient(90deg, #1e293b, #020617);
-  box-shadow: inset 0 0 0 1px #f59e0b;
-  animation: leader-pulse 2.5s ease-in-out infinite;
-}
-
-/* Hover */
-.standings-table tbody tr {
-  transition: background .2s ease, transform .2s ease;
-  will-change: transform, opacity;
-}
-
-.standings-table tbody tr:hover {
-  background: rgba(255,255,255,0.05);
-  transform: scale(1.01);
-}
-
-@keyframes leader-pulse {
-  0% { box-shadow: inset 0 0 0 1px #f59e0b; }
-  50% { box-shadow: inset 0 0 0 2px rgba(245,158,11,.9); }
-  100% { box-shadow: inset 0 0 0 1px #f59e0b; }
-}
-
-/* =========================================================
-   EMPTY STATES
-========================================================= */
-.empty-state {
-  padding: 1rem;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.04);
-  border: 1px dashed rgba(255,255,255,0.15);
-  color: #bbb;
-  font-style: italic;
-  text-align: center;
-}
-
-/* =========================================================
-   SKELETON LOADERS (UNIFICADO)
-========================================================= */
-.skeleton {
-  position: relative;
-  overflow: hidden;
-  background: #1e293b;
-  border-radius: 8px;
-}
-
-.skeleton::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  transform: translateX(-100%);
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255,255,255,0.08),
-    transparent
-  );
-  animation: skeleton-shimmer 1.2s infinite;
-}
-
-@keyframes skeleton-shimmer {
-  100% { transform: translateX(100%); }
-}
-
-.skeleton-fixture {
-  height: 64px;
-  margin-bottom: 12px;
-}
-
-.skeleton-row {
-  height: 36px;
-  margin-bottom: 8px;
-}
-
-/* =========================================================
-   CAMBIO DE CATEGORÍA / FEEDBACK
-========================================================= */
-.content-area {
-  transition: opacity .25s ease, transform .25s ease;
-}
-
-.content-area.fade-out {
-  opacity: 0;
-  transform: translateY(8px);
-  pointer-events: none;
-}
-
-.content-area.updating {
-  opacity: .6;
-  transform: translateY(2px);
-}
-
-/* =========================================================
-   STICKY NAV
-========================================================= */
-.site-header {
-  transition: padding .25s ease, background .25s ease, box-shadow .25s ease;
-}
-
-.site-header.is-sticky {
-  padding: .4rem 1rem;
-  background: rgba(0,0,0,.75);
-  box-shadow: 0 8px 24px rgba(0,0,0,.6);
-}
-
-/* =========================================================
-   PERFORMANCE
-========================================================= */
-.match-card,
-.result-card,
-.club-card,
-.player-card {
-  will-change: transform, opacity;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation: none !important;
-    transition: none !important;
-  }
-}
-
-/* =========================================================
-   RESPONSIVE
-========================================================= */
-@media (max-width: 768px) {
-  .fixture-card {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .fixture-team {
-    justify-content: center;
-  }
-
-  .standings-table {
-    font-size: .85rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .section-block {
-    padding: 1.4rem 1rem;
-  }
-
-  .fixture-center {
-    font-size: 1.2rem;
-  }
-}
-/* =========================
-   FILTROS FIXTURE
-========================= */
-.filters-bar {
-  display: flex;
-  gap: 0.6rem;
-  margin-bottom: 1rem;
-  flex-wrap: wrap;
-}
-
-.filters-bar input,
-.filters-bar select {
-  padding: 0.45rem 0.7rem;
-  border-radius: 8px;
-  border: 1px solid rgba(255,255,255,0.2);
-  background: #0b0f1f;
-  color: #fff;
-  font-size: 0.85rem;
-}
-
-.filters-bar input::placeholder {
-  color: #9ca3af;
-}
-
-.filters-bar select option {
-  background: #0b0f1f;
-}
-/* =========================
-   EXPAND INLINE – DETALLE PARTIDO
-========================= */
-
-.fixture-card {
-  cursor: pointer;
-}
-
-.fixture-main {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.fixture-details {
-  margin-top: 0.8rem;
-  padding-top: 0.6rem;
-  border-top: 1px solid rgba(255,255,255,0.1);
-  font-size: 0.85rem;
-  color: #cbd5f5;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 0.4rem;
-  animation: expandFade 0.25s ease;
-}
-
-@keyframes expandFade {
-  from { opacity: 0; transform: translateY(-4px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.fixture-card.open {
-  box-shadow: 0 0 0 1px rgba(255,255,255,0.12);
-}
-/* =========================
-   STATS PANEL
-========================= */
-.stats-summary {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 12px;
-  margin-bottom: 1rem;
-}
-
-.stat-item {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 10px;
-  padding: 0.6rem 0.8rem;
-  text-align: center;
-}
-
-.stat-label {
-  display: block;
-  font-size: 0.75rem;
-  color: #aaa;
-}
-
-.stat-value {
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-
-/* =========================
-   BADGES EQUIPO
-========================= */
-.team-badges {
-  display: flex;
-  gap: 6px;
-  font-size: 0.7rem;
-  margin-top: 2px;
-  color: #ddd;
-}
-
-.team-badges span {
-  background: rgba(255,255,255,0.06);
-  padding: 2px 6px;
-  border-radius: 6px;
-}
-/* =========================
-   LOGOS LANDING
-========================= */
-
-.clubs-strip {
-  display: flex;
-  gap: 18px;
-  justify-content: center;
-  align-items: center;
-  margin-top: 2rem;
-  flex-wrap: wrap;
-}
-
-.club-logo {
-  width: 60px;
-  height: 60px;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  background: rgba(255,255,255,0.03);
-  border-radius: 50%;
-  border: 1px solid rgba(255,255,255,0.15);
-
-  backdrop-filter: blur(4px);
-
-  transition: 0.3s;
-}
-
-.club-logo img {
-  max-width: 80%;
-  max-height: 80%;
-
-  object-fit: contain;
-  display: block;
-}
-
-/* Hover suave */
-.club-logo:hover {
-  transform: scale(1.08);
-  box-shadow: 0 0 12px rgba(255,153,0,0.6);
-}
-
-/* =========================
-   BANNER INFO LANDING
-========================= */
-
-.banner-info {
-  background: rgba(0,0,0,.6);
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  border: 1px solid rgba(255,255,255,0.15);
-}
-/* =========================
-   LANDING LOGOS
-========================= */
-
-.club-logos {
-  margin-top: 20px;
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.club-logos img {
-  max-height: 45px;
-  object-fit: contain;
-}
-
-
-/* =========================
-   BARRA CLUBES SUPERIOR
-========================= */
-
-.clubs-bar {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 22px;
-
-  padding: 12px 10px;
-
-  background: #05070f;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-
-  position: sticky;
-  top: 0;
-  z-index: 50;
-}
-
-.clubs-bar a {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.clubs-bar img {
-  height: 42px;
-  width: auto;
-  object-fit: contain;
-
-  transition: 0.2s ease;
-}
-
-.clubs-bar img:hover {
-  transform: scale(1.15);
-  filter: drop-shadow(0 0 6px rgba(255,153,0,0.6));
-}
-.container{
-max-width:1200px;
-margin:auto;
-padding:0 20px;
-}
-
-.main-header{
-background:#020617;
-border-bottom:1px solid rgba(255,255,255,.05);
-}
-
-.header-content{
-display:flex;
-align-items:center;
-justify-content:space-between;
-height:70px;
-}
-
-.logo{
-font-size:1.6rem;
-font-weight:700;
-}
-
 .hero{
-padding:120px 0;
-text-align:center;
-background:linear-gradient(180deg,#020617,#0f172a);
+  padding:120px 0;
+  text-align:center;
+  background:linear-gradient(180deg,#020617,#0f172a);
 }
 
 .hero h1{
-font-size:3rem;
-margin-bottom:10px;
+  font-size:3rem;
 }
 
 .hero p{
-opacity:.7;
-margin-bottom:30px;
+  opacity:.7;
+  margin-bottom:30px;
 }
 
 .primary-btn{
-background:#ff6b00;
-border:none;
-padding:14px 32px;
-border-radius:8px;
-font-weight:600;
-cursor:pointer;
+  background:#ff6b00;
+  border:none;
+  padding:14px 32px;
+  border-radius:8px;
+  font-weight:600;
+  cursor:pointer;
 }
 
-.primary-btn:hover{
-opacity:.9;
-}
-
-.clubs{
-padding:80px 0;
-text-align:center;
-}
-
-.club-grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
-gap:30px;
-margin-top:30px;
-}
-
-.club-grid img{
-height:70px;
-object-fit:contain;
-transition:.25s;
-}
-
-.club-grid img:hover{
-transform:scale(1.1);
-}
-
-.section-block{
-padding:60px 0;
-}
-
-.site-footer{
-text-align:center;
-padding:30px;
-border-top:1px solid rgba(255,255,255,.08);
-margin-top:60px;
-}
-/* HERO */
-
-.hero {
-  position: relative;
-  height: 90vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-}
-
-.hero-slider {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-}
-
-.hero-slider img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0.25;
-}
-
-.hero-content {
-  position: relative;
-  z-index: 2;
-}
-
-.hero h1 {
-  font-size: 3rem;
-}
-
-.primary-btn {
-  margin-top: 20px;
-  padding: 12px 28px;
-  background: #ff6b00;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-/* LOGOS ANIMADOS */
-
-.logos-marquee {
-  overflow: hidden;
-  background: #020617;
-}
-
-.logos-track {
-  display: flex;
-  gap: 40px;
-  animation: scroll 20s linear infinite;
-}
-
-.logos-track img {
-  height: 40px;
-}
-
-@keyframes scroll {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-
-/* CARDS */
-
-.card-section {
-  margin: 60px 0;
-}
-
-.match-highlight {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  background: #0b1220;
-  padding: 20px;
-  border-radius: 12px;
-}
-
-.team {
-  text-align: center;
-}
-
-.team img {
-  height: 50px;
-}
-
-.vs {
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-
-.match-info {
-  margin-left: 20px;
-  opacity: 0.7;
-}
-
-/* RESULTADOS */
-
-.results-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
-  gap: 15px;
-}
-
-.result-card {
-  background: #0b1220;
-  padding: 15px;
-  border-radius: 10px;
-  text-align: center;
-  transition: .2s;
-}
-
-.result-card:hover {
-  transform: scale(1.05);
-}
-/* HERO BASE */
-
-.hero {
-  position: relative;
-  height: 90vh;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* SLIDER */
-
-.hero-slider {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-}
-
-.slide {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  transition: opacity 1.5s ease-in-out;
-}
-
-.slide.active {
-  opacity: 1;
-}
-
-.slide img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: brightness(0.4);
-}
-
-/* OVERLAY PRO */
-
-.hero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom, rgba(2,6,23,0.6), rgba(2,6,23,0.95));
-  z-index: 1;
-}
-
-/* CONTENIDO */
-
-.hero-content {
-  position: relative;
-  z-index: 3;
-  text-align: center;
-}
-
-.hero h1 {
-  font-size: 3rem;
-}
-
-/* PARTÍCULAS */
-
-#particles {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-}
-.hero {
-  position: relative;
-  height: 90vh;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.hero-slider {
-  position: absolute;
-  inset: 0;
-}
-
-.slide {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  transition: opacity 1.5s ease;
-}
-
-.slide.active {
-  opacity: 1;
-}
-
-.slide img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: brightness(0.35);
-}
-
-.hero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom, rgba(2,6,23,.6), rgba(2,6,23,.95));
-}
-
-.hero-content {
-  position: relative;
-  z-index: 3;
-  text-align: center;
-}
-
-#particles {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-}
-
-.logos-marquee {
-  overflow: hidden;
-  background: #020617;
-}
-
-.logos-track {
-  display: flex;
-  gap: 40px;
-  animation: scroll 20s linear infinite;
-}
-
-.logos-track img {
-  height: 40px;
-}
-
-@keyframes scroll {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-
-.card-section {
-  margin: 60px 0;
-}
-
-.match-highlight {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  background: #0b1220;
-  padding: 20px;
-  border-radius: 12px;
-}
-
-.results-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
-  gap: 15px;
-}
-
-.result-card {
-  background: #0b1220;
-  padding: 15px;
-  border-radius: 10px;
-  text-align: center;
-}
-/* =========================
-   BANNER PRO CLUBES
-========================= */
+/* =========================================================
+   🔥 BANNER (ÚNICO Y FUNCIONAL)
+========================================================= */
 
 .clubs-banner {
   margin-top: 30px;
   width: 100%;
   overflow: hidden;
-  display: flex;
-  justify-content: center;
-}
-
-/* TRACK */
-.clubs-track {
-  display: flex;
-  gap: 60px;
-  align-items: center;
-  width: max-content;
-
-  animation: scrollBanner 25s linear infinite;
-}
-
-/* PAUSA */
-.clubs-banner:hover .clubs-track {
-  animation-play-state: paused;
-}
-
-/* ITEM */
-.club-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-decoration: none;
-  color: white;
-  font-size: 0.7rem;
-  opacity: 0.8;
-  transition: 0.3s;
-}
-
-.club-item img {
-  height: 42px;
-  object-fit: contain;
-  margin-bottom: 4px;
-}
-
-/* HOVER */
-.club-item:hover {
-  transform: scale(1.15);
-  opacity: 1;
-}
-
-/* TEXTO HOVER */
-.club-item span {
-  opacity: 0;
-  transform: translateY(5px);
-  transition: 0.3s;
-}
-
-.club-item:hover span {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* MOVIMIENTO REAL DERECHA → IZQUIERDA */
-@keyframes scrollBanner {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-/* =========================
-   MOBILE (más lento)
-========================= */
-
-@media (max-width: 768px) {
-  .clubs-track {
-    animation-duration: 40s;
-  }
-}
-/* =========================
-   ULTRA BANNER
-========================= */
-
-.clubs-banner {
-  margin-top: 35px;
-  width: 100%;
-  overflow: hidden;
   position: relative;
 }
 
-/* FADE LATERAL PRO */
+/* fade lateral */
 .clubs-banner::before,
 .clubs-banner::after {
   content: "";
   position: absolute;
   top: 0;
-  width: 120px;
+  width: 100px;
   height: 100%;
-  z-index: 5;
-  pointer-events: none;
+  z-index: 2;
 }
 
 .clubs-banner::before {
@@ -1021,27 +103,22 @@ margin-top:60px;
   background: linear-gradient(to left, #020617, transparent);
 }
 
-/* TRACK */
+/* track */
 .clubs-track {
   display: flex;
-  gap: 70px;
+  gap: 60px;
   align-items: center;
   width: max-content;
 
-  animation: ultraScroll 28s linear infinite;
+  animation: bannerMove 25s linear infinite;
 }
 
-/* DIRECCIÓN AUTOMÁTICA (cada 10s cambia) */
-.clubs-track.reverse {
-  animation-direction: reverse;
-}
-
-/* PAUSA */
+/* pausa */
 .clubs-banner:hover .clubs-track {
   animation-play-state: paused;
 }
 
-/* ITEM */
+/* item */
 .club-item {
   display: flex;
   flex-direction: column;
@@ -1053,25 +130,15 @@ margin-top:60px;
   transition: 0.3s;
 }
 
-/* LOGO */
 .club-item img {
-  height: 44px;
-  object-fit: contain;
-  transition: 0.3s;
+  height: 42px;
 }
 
-/* HOVER PRO */
 .club-item:hover {
-  opacity: 1;
   transform: scale(1.2);
+  opacity: 1;
 }
 
-/* GLOW */
-.club-item:hover img {
-  filter: drop-shadow(0 0 10px rgba(255,120,0,0.8));
-}
-
-/* TEXTO */
 .club-item span {
   opacity: 0;
   transform: translateY(6px);
@@ -1083,8 +150,8 @@ margin-top:60px;
   transform: translateY(0);
 }
 
-/* ANIMACIÓN */
-@keyframes ultraScroll {
+/* animación real */
+@keyframes bannerMove {
   from {
     transform: translateX(0);
   }
@@ -1093,10 +160,34 @@ margin-top:60px;
   }
 }
 
-/* MOBILE */
+/* mobile */
 @media (max-width: 768px) {
   .clubs-track {
     animation-duration: 45s;
-    gap: 40px;
   }
+}
+
+/* =========================================================
+   RESTO (TU SISTEMA ORIGINAL)
+========================================================= */
+
+.section-block {
+  padding: 60px 0;
+}
+
+.standings-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.standings-table td,
+.standings-table th {
+  padding: 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.site-footer {
+  text-align:center;
+  padding:30px;
+  border-top:1px solid rgba(255,255,255,.1);
 }
