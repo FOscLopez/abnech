@@ -1,18 +1,16 @@
 async function loadData() {
-    const res = await fetch('./data/fixture.json');
+    const res = await fetch("http://localhost:3000/api/fixture");
     const data = await res.json();
   
     renderNextMatch(data.nextMatch);
     renderResults(data.results);
   }
   
-  /* =========================
-     PRÓXIMA FECHA
-  ========================= */
+  /* ========================= */
   function renderNextMatch(match) {
-    const container = document.getElementById("nextMatch");
+    const el = document.getElementById("nextMatch");
   
-    container.innerHTML = `
+    el.innerHTML = `
       <div class="match-highlight">
   
         <div class="team">
@@ -35,19 +33,16 @@ async function loadData() {
     `;
   }
   
-  /* =========================
-     RESULTADOS
-  ========================= */
+  /* ========================= */
   function renderResults(results) {
-    const container = document.getElementById("results");
+    const el = document.getElementById("results");
   
-    container.innerHTML = results.map(r => `
+    el.innerHTML = results.map(r => `
       <div class="result-card">
         <span>${r.date}</span>
         <h4>${r.home} ${r.score} ${r.away}</h4>
       </div>
-    `).join('');
+    `).join("");
   }
   
-  /* INIT */
   loadData();
