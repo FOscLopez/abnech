@@ -38,51 +38,176 @@ html[data-theme='dark'] {
   --card: var(--panel-soft);
 }
 
+html[data-theme='light'] {
+  --bg: var(--bg-light);
+  --text: #111;
+  --card: #f3f3f3;
+}
+
 body {
   background: var(--bg);
   color: var(--text);
   font-family: 'Poppins', sans-serif;
+  transition: background 0.25s ease, color 0.25s ease;
 }
 
 /* =========================================================
-   HERO
+   LAYOUT BASE
 ========================================================= */
-.hero{
-  padding:120px 0;
-  text-align:center;
-  background:linear-gradient(180deg,#020617,#0f172a);
+.section-block {
+  padding: 2rem 1.4rem;
 }
 
-.hero h1{
-  font-size:3rem;
+.section-block h2 {
+  font-family: 'Bebas Neue';
+  font-size: 2rem;
+  letter-spacing: 0.08em;
+  margin-bottom: 1rem;
 }
 
-.hero p{
-  opacity:.7;
-  margin-bottom:30px;
+/* =========================================================
+   FIXTURE
+========================================================= */
+.fixture-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #0b0f1f;
+  padding: 1rem;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.09);
+  box-shadow: var(--shadow-strong);
+  transition: .25s;
 }
 
-.primary-btn{
-  background:#ff6b00;
-  border:none;
-  padding:14px 32px;
-  border-radius:8px;
-  font-weight:600;
-  cursor:pointer;
+.fixture-card:hover {
+  transform: translateY(-4px);
 }
 
-/* =========================
-   BANNER CORREGIDO REAL
-========================= */
+.fixture-team {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fixture-team img {
+  width: 36px;
+  height: 36px;
+}
+
+.fixture-center {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.win { color: var(--win); }
+.lose { color: var(--lose); }
+
+/* =========================================================
+   TABLA
+========================================================= */
+.standings-table-wrapper {
+  background: #111827;
+  border-radius: 14px;
+  overflow-x: auto;
+  box-shadow: var(--shadow-strong);
+}
+
+.standings-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.standings-table th,
+.standings-table td {
+  padding: 0.5rem;
+  text-align: center;
+}
+
+.club-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.club-cell img {
+  width: 28px;
+}
+
+/* =========================================================
+   HEADER / HERO
+========================================================= */
+.hero {
+  position: relative;
+  height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.hero-slider {
+  position: absolute;
+  inset: 0;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: 1.5s;
+}
+
+.slide.active {
+  opacity: 1;
+}
+
+.slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.35);
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(2,6,23,.6), rgba(2,6,23,.95));
+}
+
+.hero-content {
+  position: relative;
+  z-index: 3;
+}
+
+/* =========================================================
+   RESULTADOS
+========================================================= */
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+  gap: 15px;
+}
+
+.result-card {
+  background: #0b1220;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+/* =========================================================
+   🔥 BANNER FIX REAL
+========================================================= */
 
 .clubs-banner {
-  margin-top: 30px;
   width: 100%;
   overflow: hidden;
   position: relative;
+  margin-top: 30px;
 }
 
-/* fade lateral */
+/* fade */
 .clubs-banner::before,
 .clubs-banner::after {
   content: "";
@@ -106,43 +231,41 @@ body {
 /* TRACK */
 .clubs-track {
   display: flex;
-  align-items: center;
   gap: 60px;
+  align-items: center;
 
-  /* 🔥 CLAVE */
   width: max-content;
 
-  animation: bannerScroll 30s linear infinite;
+  /* 🔥 CLAVE */
+  animation: scrollFull 30s linear infinite;
 }
 
-/* ITEM */
+/* ITEMS */
 .club-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: white;
   text-decoration: none;
+  color: white;
   font-size: 0.7rem;
   opacity: 0.7;
-  transition: 0.3s;
+  transition: .3s;
 }
 
 .club-item img {
   height: 42px;
-  object-fit: contain;
 }
 
-/* hover */
 .club-item:hover {
   transform: scale(1.15);
   opacity: 1;
 }
 
-/* texto */
+/* TEXTO */
 .club-item span {
   opacity: 0;
   transform: translateY(6px);
-  transition: 0.3s;
+  transition: .3s;
 }
 
 .club-item:hover span {
@@ -150,8 +273,8 @@ body {
   transform: translateY(0);
 }
 
-/* 🔥 ANIMACIÓN CORRECTA */
-@keyframes bannerScroll {
+/* 🔥 MOVIMIENTO REAL COMPLETO */
+@keyframes scrollFull {
   0% {
     transform: translateX(0);
   }
@@ -160,34 +283,9 @@ body {
   }
 }
 
-/* mobile */
+/* MOBILE */
 @media (max-width: 768px) {
   .clubs-track {
     animation-duration: 45s;
   }
-}
-
-/* =========================================================
-   RESTO (TU SISTEMA ORIGINAL)
-========================================================= */
-
-.section-block {
-  padding: 60px 0;
-}
-
-.standings-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.standings-table td,
-.standings-table th {
-  padding: 8px;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-
-.site-footer {
-  text-align:center;
-  padding:30px;
-  border-top:1px solid rgba(255,255,255,.1);
 }
