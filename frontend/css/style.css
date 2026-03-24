@@ -387,3 +387,76 @@ body{
 .primary-btn:hover {
   transform: scale(1.05);
 }
+/* =========================
+   CLUB PAGE PRO
+========================= */
+
+.club-hero-pro {
+  text-align: center;
+  padding: 60px 20px;
+  background: linear-gradient(180deg,#020617,#0b1220);
+}
+
+.club-logo-pro {
+  height: 90px;
+  margin-bottom: 10px;
+}
+
+.club-hero-pro h1 {
+  font-family: 'Bebas Neue';
+  font-size: 2.5rem;
+  letter-spacing: 2px;
+}
+
+.club-colors {
+  opacity: .7;
+}
+
+/* CONTENEDOR */
+.club-container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 20px;
+}
+
+/* CARD */
+.club-card-pro {
+  background: #0b1220;
+  padding: 20px;
+  border-radius: 14px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 10px 25px rgba(0,0,0,.6);
+}
+
+/* TITULOS */
+.club-card-pro h2 {
+  margin-bottom: 15px;
+  color: #ff6b00;
+  font-family: 'Bebas Neue';
+}
+
+/* TABLA */
+.club-table-pro {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.club-table-pro th,
+.club-table-pro td {
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+/* NOTICIAS */
+.news-item-pro {
+  background: rgba(255,255,255,0.03);
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.news-item-pro span {
+  font-size: 0.8rem;
+  opacity: .6;
+}
