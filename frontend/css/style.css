@@ -481,3 +481,31 @@ body{
   transform: translateY(-6px) scale(1.05);
   box-shadow: 0 10px 25px rgba(0,0,0,.6);
 }
+/* FIX GLOBAL IMAGENES CLUBES */
+.clubs > a {
+  display: none !important;
+}
+
+/* SOLO GRID CONTROLA LOS LOGOS */
+.club-grid img {
+  height: 60px !important;
+  width: auto !important;
+  max-width: 100%;
+}
+
+/* TARJETAS */
+.club-card {
+  background: #0b1220;
+  padding: 18px;
+  border-radius: 14px;
+  text-align: center;
+  text-decoration: none;
+  color: white;
+  transition: 0.25s;
+  display: block;
+}
+
+.club-card:hover {
+  transform: translateY(-6px) scale(1.05);
+  box-shadow: 0 10px 25px rgba(0,0,0,.6);
+}
