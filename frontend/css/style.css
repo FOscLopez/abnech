@@ -460,3 +460,24 @@ body{
   font-size: 0.8rem;
   opacity: .6;
 }
+.club-card {
+  background: #0b1220;
+  padding: 18px;
+  border-radius: 14px;
+  text-align: center;
+  text-decoration: none;
+  color: white;
+  transition: 0.25s;
+  display: block;
+}
+
+.club-card img {
+  height: 60px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+.club-card:hover {
+  transform: translateY(-6px) scale(1.05);
+  box-shadow: 0 10px 25px rgba(0,0,0,.6);
+}
