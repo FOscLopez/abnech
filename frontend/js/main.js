@@ -49,3 +49,37 @@ function update(){
 }
 
 setInterval(draw,33);
+
+// =========================
+// GENERAR CLUBES DINÁMICOS
+// =========================
+
+const container = document.getElementById("clubs-container");
+
+if (container) {
+  clubs.forEach(club => {
+    const card = document.createElement("a");
+
+    card.href = club.link;
+    card.className = "club-card";
+
+    card.innerHTML = `
+      <img src="${club.img}" alt="${club.name}">
+      <p>${club.name}</p>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+const track = document.getElementById("clubs-track");
+
+if (track) {
+  const duplicated = [...clubs, ...clubs];
+
+  duplicated.forEach(club => {
+    const img = document.createElement("img");
+    img.src = club.img;
+    track.appendChild(img);
+  });
+}
