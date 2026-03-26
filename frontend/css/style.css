@@ -966,3 +966,34 @@ h1, h2, h3, p, span {
     transform: translateY(0) scale(1);
   }
 }
+/* =========================
+   SCROLL REVEAL SYSTEM
+========================= */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(40px) scale(0.98);
+  filter: blur(8px);
+
+  transition: all 0.8s ease;
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0);
+}
+
+/* variantes (opcional pro) */
+.reveal-left {
+  transform: translateX(-60px);
+}
+
+.reveal-right {
+  transform: translateX(60px);
+}
+
+.reveal-left.active,
+.reveal-right.active {
+  transform: translateX(0);
+}

@@ -177,3 +177,23 @@ window.addEventListener("load", () => {
     hero.classList.add("loaded");
   }, 200);
 });
+// =========================
+// SCROLL REVEAL PRO
+// =========================
+
+const reveals = document.querySelectorAll(".reveal");
+
+function revealOnScroll() {
+  const triggerBottom = window.innerHeight * 0.85;
+
+  reveals.forEach(el => {
+    const top = el.getBoundingClientRect().top;
+
+    if (top < triggerBottom) {
+      el.classList.add("active");
+    }
+  });
+}
+
+window.addEventListener("scroll", revealOnScroll);
+window.addEventListener("load", revealOnScroll);
