@@ -91,3 +91,12 @@ document.addEventListener("mousemove", (e) => {
 
   logo.style.filter = `drop-shadow(0 0 ${glow}px rgba(255,140,0,0.9))`;
 });
+const header = document.querySelector(".main-header-pro");
+
+window.addEventListener("scroll", () => {
+  if (window.scrollY > 50) {
+    header.classList.add("scrolled");
+  } else {
+    header.classList.remove("scrolled");
+  }
+});

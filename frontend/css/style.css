@@ -4,10 +4,21 @@
   box-sizing:border-box;
 }
 
-body{
-  background:#020617;
-  color:#e5e7eb;
-  font-family:'Poppins';
+body {
+  background: radial-gradient(circle at 50% 30%, #0f172a, #020617 70%);
+  color: var(--text);
+  font-family: 'Poppins', sans-serif;
+
+  overflow-x: hidden;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+
+  background: radial-gradient(circle at center, rgba(255,120,0,0.08), transparent 60%);
+  pointer-events: none;
+  z-index: 0;
 }
 
 /* HERO */
@@ -591,4 +602,61 @@ body{
   .hero-content {
     margin-top: 100px;
   }
+}
+/* =========================
+   HEADER PROFESIONAL PRO
+========================= */
+
+.main-header-pro {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+
+  background: rgba(2,6,23,0.3);
+  backdrop-filter: blur(10px);
+
+  transition: all 0.3s ease;
+}
+
+.main-header-pro.scrolled {
+  background: rgba(2,6,23,0.9);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+}
+
+/* CONTENIDO */
+.header-inner {
+  max-width: 1200px;
+  margin: auto;
+  padding: 10px 20px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* LOGO */
+.header-logo {
+  height: 45px;
+  filter: drop-shadow(0 0 6px rgba(255,120,0,0.6));
+}
+
+/* NAV */
+.header-nav {
+  display: flex;
+  gap: 20px;
+}
+
+.header-nav a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.9rem;
+  opacity: 0.8;
+  transition: 0.3s;
+}
+
+.header-nav a:hover {
+  opacity: 1;
+  color: #ff6b00;
 }
