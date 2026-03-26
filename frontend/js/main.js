@@ -83,3 +83,11 @@ if (track) {
     track.appendChild(img);
   });
 }
+const logo = document.querySelector(".logo-elite img");
+
+document.addEventListener("mousemove", (e) => {
+  const x = e.clientX / window.innerWidth;
+  const glow = 10 + x * 20;
+
+  logo.style.filter = `drop-shadow(0 0 ${glow}px rgba(255,140,0,0.9))`;
+});
