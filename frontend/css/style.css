@@ -555,62 +555,97 @@ body::before {
   }
 }
 /* =========================
-   LOGO ELITE AJUSTADO
+   ESPN ALIGNMENT SYSTEM
 ========================= */
 
 .logo-elite {
   position: absolute;
-  top: 70px; /* 🔥 BAJA EL LOGO (NO CHOCA CON HEADER) */
+  top: 90px; /* 🔥 separación real del header */
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
-  text-align: center;
 }
 
 .logo-elite img {
-  width: 250px; /* 🔥 UN POCO MÁS GRANDE */
+  width: 240px; /* 🔥 tamaño equilibrado */
   height: auto;
 
   animation: elitePulse 2.5s ease-in-out infinite;
-  filter: drop-shadow(0 0 14px rgba(255,120,0,0.8));
+  filter: drop-shadow(0 0 18px rgba(255,120,0,0.85));
 }
 
-/* MOBILE */
+/* =========================
+   CONTENIDO CENTRADO REAL
+========================= */
+
+.hero-content {
+  position: relative;
+  z-index: 3;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  height: 100%;
+  padding-top: 160px; /* 🔥 clave para balance */
+}
+
+/* TITULO PERFECTO */
+.hero h1 {
+  font-size: 5.5rem;
+  line-height: 0.95;
+  letter-spacing: 2px;
+  text-align: center;
+}
+
+/* SUBTITULO */
+.subtitle {
+  margin-top: 10px;
+  font-size: 1rem;
+  color: #9ca3af;
+}
+
+/* BOTON */
+.primary-btn {
+  margin-top: 25px;
+}
+
+/* =========================
+   MOBILE PERFECT ALIGNMENT
+========================= */
+
 @media (max-width: 768px) {
+
   .logo-elite {
-    top: 80px; /* 🔥 baja más en mobile */
+    top: 100px;
   }
 
   .logo-elite img {
     width: 170px;
   }
-}
-/* ANIMACIÓN */
-@keyframes elitePulse {
-  0% {
-    opacity: 1;
-    transform: scale(1);
+
+  .hero-content {
+    padding-top: 140px;
   }
 
-  50% {
-    opacity: 0.85;
-    transform: scale(1.08);
+  .hero h1 {
+    font-size: 3rem;
   }
 
-  100% {
-    opacity: 1;
-    transform: scale(1);
+  .hero h1 span {
+    display: block;
   }
 }
 
-/* MOBILE */
-@media (max-width: 768px) {
+@media (max-width: 480px) {
+
   .logo-elite img {
     width: 140px;
   }
 
-  .hero-content {
-    margin-top: 200px; /* 🔥 le damos más espacio al logo */
+  .hero h1 {
+    font-size: 2.4rem;
   }
 }
 /* =========================
