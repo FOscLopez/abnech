@@ -702,3 +702,85 @@ body::before {
 .header-nav a:hover {
   opacity: 1;
 }
+/* =========================
+   🔥 FIX LEGIBILIDAD GLOBAL
+========================= */
+
+body {
+  color: #e5e7eb; /* 🔥 texto claro SIEMPRE */
+}
+
+/* subtitulo */
+.subtitle {
+  color: #9ca3af;
+}
+
+/* títulos visibles */
+h1, h2, h3, p, span {
+  color: inherit;
+}
+
+/* =========================
+   🔥 HEADER FIX
+========================= */
+
+.fake-logo {
+  width: 45px;
+}
+
+/* =========================
+   🔥 HERO TEXT FIX
+========================= */
+
+.hero h1 {
+  color: #f1f5f9;
+}
+
+.hero p {
+  color: #9ca3af;
+}
+
+/* =========================
+   🔥 NAV FIX
+========================= */
+
+.header-nav a {
+  color: #cbd5f5;
+}
+
+.header-nav a.active {
+  color: #ff6b00;
+}
+
+/* =========================
+   🔥 INDICADOR NAV
+========================= */
+
+.nav-indicator {
+  position: absolute;
+  bottom: 0;
+  height: 2px;
+  width: 0;
+  background: #ff6b00;
+  transition: 0.3s;
+}
+
+/* =========================
+   🔥 FIX LOGO SUPERPOSICIÓN
+========================= */
+
+.hero-content {
+  margin-top: 180px;
+}
+
+/* =========================
+   🔥 FIX TEXTOS FIXTURE
+========================= */
+
+.fixture {
+  color: #e5e7eb;
+}
+
+.match-card span {
+  color: #cbd5f5;
+}

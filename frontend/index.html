@@ -3,37 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>ABNECH Basket</title>
 
   <link rel="stylesheet" href="./css/style.css">
 
-  <!-- FUENTES PRO -->
+  <!-- FUENTES -->
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 
 <body>
-  <header class="main-header-pro">
 
-    <div class="header-inner">
-  
-      <img src="./img/logo.png" class="header-logo">
-  
-      <nav class="header-nav">
-        <a href="#">Inicio</a>
-        <a href="#fixture">Fixture</a>
-        <a href="#">Clubes</a>
-      </nav>
-  
-    </div>
-  
-  </header>
+<!-- HEADER -->
+<header class="main-header-pro">
+  <div class="header-inner">
+
+    <!-- 🔥 SACAMOS LOGO ROTO -->
+    <div class="fake-logo"></div>
+
+    <nav class="header-nav">
+      <a href="#hero" class="active">Inicio</a>
+      <a href="#fixture">Fixture</a>
+      <a href="#clubs">Clubes</a>
+
+      <!-- INDICADOR -->
+      <span class="nav-indicator"></span>
+    </nav>
+
+  </div>
+</header>
+
 <!-- HERO -->
-<section class="hero">
+<section id="hero" class="hero">
 
-  <!-- LOGO ELITE -->
+  <!-- LOGO GRANDE -->
   <div class="logo-elite">
-    <img src="./img/logo-abnech.png" alt="ABNECH Logo">
+    <img src="./img/logo-abnech.png">
   </div>
 
   <!-- SLIDER -->
@@ -43,20 +47,21 @@
     <div class="slide"><img src="./img/slide3.jpg"></div>
   </div>
 
-  <!-- PARTÍCULAS -->
   <canvas id="particles"></canvas>
 
   <div class="hero-content">
-    
+
     <h1>ABNECH <span>BASKET</span></h1>
 
-    <p>Liga Regional del Nordeste Chaqueño</p>
+    <p class="subtitle">Liga Regional del Nordeste Chaqueño</p>
 
     <a href="#fixture" class="primary-btn">Ver Fixture</a>
 
     <!-- BANNER -->
     <div class="clubs-banner">
       <div class="clubs-track">
+
+        <!-- 8 logos -->
         <img src="./img/clubs/union.png">
         <img src="./img/clubs/funebrero.png">
         <img src="./img/clubs/cfa.png">
@@ -75,23 +80,21 @@
         <img src="./img/clubs/palermo-cap.png">
         <img src="./img/clubs/puerto-bermejo.png">
         <img src="./img/clubs/zapallar.png">
+
       </div>
     </div>
 
   </div>
 </section>
 
-<section class="clubs">
-
+<!-- CLUBES -->
+<section id="clubs" class="clubs">
   <h2><span>CLUBES</span> PARTICIPANTES</h2>
-
   <div id="clubs-container" class="club-grid"></div>
-
 </section>
 
 <!-- PROXIMA FECHA -->
 <section class="next-match">
-
   <h2>PRÓXIMA FECHA</h2>
 
   <div class="match-highlight">
@@ -113,12 +116,10 @@
   <div class="match-info">
     25 Marzo - 21:30 hs
   </div>
-
 </section>
 
 <!-- FIXTURE -->
 <section id="fixture" class="fixture">
-
   <h2><span>FIXTURE</span></h2>
 
   <div class="match-card">
@@ -141,7 +142,6 @@
 
 </section>
 
-<!-- SCRIPT -->
 <script src="./js/clubs.js"></script>
 <script src="./js/main.js"></script>
 
