@@ -190,6 +190,7 @@ body{
 
 /* contenido */
 .hero-content {
+  margin-top: 140px;
   position: relative;
   z-index: 3;
   text-align: center;
@@ -543,33 +544,27 @@ body{
   }
 }
 /* =========================
-   LOGO ELITE PRO
+   LOGO ELITE GRANDE
 ========================= */
 
 .logo-elite {
   position: absolute;
-  top: 20px;
+  top: 10px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
+  text-align: center;
 }
 
 .logo-elite img {
-  width: 110px;
+  width: 220px; /* 🔥 MÁS GRANDE */
   height: auto;
 
   animation: elitePulse 2.5s ease-in-out infinite;
-  filter: drop-shadow(0 0 8px rgba(255,120,0,0.6));
-  transition: 0.3s;
+  filter: drop-shadow(0 0 12px rgba(255,120,0,0.7));
 }
 
-/* HOVER PRO */
-.logo-elite img:hover {
-  transform: scale(1.1);
-  filter: drop-shadow(0 0 18px rgba(255,140,0,0.9));
-}
-
-/* ANIMACIÓN ELITE (NO MOLESTA) */
+/* ANIMACIÓN */
 @keyframes elitePulse {
   0% {
     opacity: 1;
@@ -577,8 +572,8 @@ body{
   }
 
   50% {
-    opacity: 0.75;
-    transform: scale(1.05);
+    opacity: 0.85;
+    transform: scale(1.08);
   }
 
   100% {
@@ -590,6 +585,10 @@ body{
 /* MOBILE */
 @media (max-width: 768px) {
   .logo-elite img {
-    width: 80px;
+    width: 140px;
+  }
+
+  .hero-content {
+    margin-top: 100px;
   }
 }
