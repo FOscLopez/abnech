@@ -555,12 +555,12 @@ body::before {
   }
 }
 /* =========================
-   LOGO ELITE GRANDE
+   LOGO ELITE AJUSTADO
 ========================= */
 
 .logo-elite {
   position: absolute;
-  top: 10px;
+  top: 70px; /* 🔥 BAJA EL LOGO (NO CHOCA CON HEADER) */
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
@@ -568,13 +568,23 @@ body::before {
 }
 
 .logo-elite img {
-  width: 220px; /* 🔥 MÁS GRANDE */
+  width: 250px; /* 🔥 UN POCO MÁS GRANDE */
   height: auto;
 
   animation: elitePulse 2.5s ease-in-out infinite;
-  filter: drop-shadow(0 0 12px rgba(255,120,0,0.7));
+  filter: drop-shadow(0 0 14px rgba(255,120,0,0.8));
 }
 
+/* MOBILE */
+@media (max-width: 768px) {
+  .logo-elite {
+    top: 80px; /* 🔥 baja más en mobile */
+  }
+
+  .logo-elite img {
+    width: 170px;
+  }
+}
 /* ANIMACIÓN */
 @keyframes elitePulse {
   0% {
@@ -600,7 +610,7 @@ body::before {
   }
 
   .hero-content {
-    margin-top: 100px;
+    margin-top: 200px; /* 🔥 le damos más espacio al logo */
   }
 }
 /* =========================
