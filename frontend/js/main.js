@@ -100,3 +100,73 @@ window.addEventListener("scroll", () => {
     header.classList.remove("scrolled");
   }
 });
+// =========================
+// SCROLL SUAVE
+// =========================
+document.querySelectorAll('.header-nav a').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+
+    const target = document.querySelector(link.getAttribute('href'));
+
+    target.scrollIntoView({
+      behavior: 'smooth'
+    });
+  });
+});
+
+
+// =========================
+// INDICADOR DINÁMICO
+// =========================
+const links = document.querySelectorAll('.header-nav a');
+const indicator = document.querySelector('.nav-indicator');
+
+function moveIndicator(el) {
+  indicator.style.width = el.offsetWidth + "px";
+  indicator.style.left = el.offsetLeft + "px";
+}
+
+// click activo
+links.forEach(link => {
+  link.addEventListener('click', () => {
+    links.forEach(l => l.classList.remove('active'));
+    link.classList.add('active');
+
+    moveIndicator(link);
+  });
+});
+
+// inicial
+if (links[0]) {
+  links[0].classList.add('active');
+  moveIndicator(links[0]);
+}
+
+
+// =========================
+// SCROLL DETECTOR (PRO)
+// =========================
+const sections = document.querySelectorAll("section");
+
+window.addEventListener("scroll", () => {
+  let current = "";
+
+  sections.forEach(section => {
+    const top = section.offsetTop - 120;
+    const height = section.offsetHeight;
+
+    if (scrollY >= top && scrollY < top + height) {
+      current = section.getAttribute("id");
+    }
+  });
+
+  links.forEach(link => {
+    link.classList.remove("active");
+
+    if (link.getAttribute("href") === "#" + current) {
+      link.classList.add("active");
+      moveIndicator(link);
+    }
+  });
+});

@@ -660,3 +660,45 @@ body::before {
   opacity: 1;
   color: #ff6b00;
 }
+/* =========================
+   NAVBAR PRO INTERACTIVO
+========================= */
+
+.header-nav {
+  position: relative;
+  display: flex;
+  gap: 25px;
+}
+
+/* LINKS */
+.header-nav a {
+  position: relative;
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.95rem;
+  opacity: 0.7;
+  padding-bottom: 4px;
+  transition: 0.3s;
+}
+
+.header-nav a.active {
+  opacity: 1;
+  color: #ff6b00;
+}
+
+/* INDICADOR */
+.nav-indicator {
+  position: absolute;
+  bottom: 0;
+  height: 2px;
+  width: 0;
+  background: #ff6b00;
+  border-radius: 2px;
+
+  transition: all 0.3s ease;
+}
+
+/* HOVER */
+.header-nav a:hover {
+  opacity: 1;
+}
