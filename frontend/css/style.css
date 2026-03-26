@@ -997,3 +997,92 @@ h1, h2, h3, p, span {
 .reveal-right.active {
   transform: translateX(0);
 }
+/* =========================
+   MICRO INTERACCIONES PRO
+========================= */
+
+/* BOTONES (EFECTO PRESIÓN) */
+.primary-btn {
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.primary-btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 0 10px rgba(255,120,0,0.4);
+}
+
+/* HOVER MÁS REAL */
+.primary-btn:hover {
+  transform: translateY(-2px) scale(1.03);
+}
+
+/* =========================
+   CARDS (EFECTO FÍSICO)
+========================= */
+
+.club-card,
+.match-card {
+  transition: all 0.25s ease;
+}
+
+/* HOVER */
+.club-card:hover,
+.match-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 
+    0 10px 25px rgba(0,0,0,0.6),
+    0 0 15px rgba(255,120,0,0.15);
+}
+
+/* CLICK */
+.club-card:active,
+.match-card:active {
+  transform: scale(0.97);
+}
+
+/* =========================
+   NAVBAR LINKS (RESPUESTA)
+========================= */
+
+.header-nav a {
+  transition: all 0.2s ease;
+}
+
+.header-nav a:active {
+  transform: scale(0.9);
+}
+
+/* =========================
+   LOGOS (INTERACCIÓN SUAVE)
+========================= */
+
+.clubs-track img {
+  transition: 0.3s;
+}
+
+.clubs-track img:hover {
+  transform: scale(1.2);
+  filter: drop-shadow(0 0 10px rgba(255,140,0,0.8));
+}
+
+/* =========================
+   BOTON RIPPLE (EFECTO CLICK PRO)
+========================= */
+
+.primary-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: rgba(255,255,255,0.2);
+
+  opacity: 0;
+  transform: scale(0.8);
+  transition: 0.3s;
+}
+
+.primary-btn:active::after {
+  opacity: 1;
+  transform: scale(1);
+}

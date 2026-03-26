@@ -197,3 +197,13 @@ function revealOnScroll() {
 
 window.addEventListener("scroll", revealOnScroll);
 window.addEventListener("load", revealOnScroll);
+
+// micro feedback global
+document.querySelectorAll("a, button, .club-card").forEach(el => {
+  el.addEventListener("click", () => {
+    el.style.transform += " scale(0.96)";
+    setTimeout(() => {
+      el.style.transform = "";
+    }, 120);
+  });
+});
