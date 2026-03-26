@@ -1086,3 +1086,157 @@ h1, h2, h3, p, span {
   opacity: 1;
   transform: scale(1);
 }
+/* =========================
+   🎯 UI FINAL POLISH
+========================= */
+
+/* TIPOGRAFÍA PRO */
+body {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* TITULOS */
+h1, h2 {
+  letter-spacing: 1.5px;
+}
+
+.hero h1 {
+  text-transform: uppercase;
+}
+
+/* SUBTEXTO */
+.subtitle {
+  max-width: 500px;
+  margin: 10px auto 0;
+  line-height: 1.4;
+}
+
+/* =========================
+   ESPACIADO GLOBAL PRO
+========================= */
+
+section {
+  margin-top: 40px;
+}
+
+/* separación limpia entre bloques */
+.clubs,
+.next-match,
+.fixture {
+  margin-top: 80px;
+}
+
+/* =========================
+   TARJETAS NIVEL PRO
+========================= */
+
+.club-card,
+.match-card {
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+/* glow sutil */
+.club-card:hover,
+.match-card:hover {
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.6),
+    0 0 20px rgba(255,120,0,0.12);
+}
+
+/* =========================
+   BOTÓN NIVEL APP
+========================= */
+
+.primary-btn {
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.primary-btn:active {
+  transform: scale(0.96);
+}
+
+/* =========================
+   NAVBAR PRO FINAL
+========================= */
+
+.main-header-pro {
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.header-nav a {
+  font-weight: 500;
+  letter-spacing: 0.05em;
+}
+
+/* indicador más fino */
+.nav-indicator {
+  height: 2px;
+  background: linear-gradient(90deg,#ff6b00,#ff8c00);
+}
+
+/* =========================
+   HERO BALANCE FINAL
+========================= */
+
+.hero h1 {
+  text-shadow: 0 4px 20px rgba(0,0,0,0.6);
+}
+
+.logo-elite img {
+  filter: drop-shadow(0 0 20px rgba(255,120,0,0.9));
+}
+
+/* =========================
+   SCROLL SMOOTH GLOBAL
+========================= */
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* =========================
+   DETALLES FINOS
+========================= */
+
+/* textos secundarios */
+p {
+  color: #cbd5f5;
+}
+
+/* fechas */
+.date {
+  color: #94a3b8;
+}
+
+/* VS más fuerte */
+.vs {
+  letter-spacing: 2px;
+}
+
+/* =========================
+   MOBILE ULTRA CLEAN
+========================= */
+
+@media (max-width: 768px) {
+
+  section {
+    margin-top: 20px;
+  }
+
+  .clubs,
+  .next-match,
+  .fixture {
+    margin-top: 50px;
+  }
+
+  .hero h1 {
+    letter-spacing: 1px;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+  }
+}
