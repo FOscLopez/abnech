@@ -784,3 +784,54 @@ h1, h2, h3, p, span {
 .match-card span {
   color: #cbd5f5;
 }
+/* =========================
+   📱 MOBILE FIX HERO TITLE
+========================= */
+
+@media (max-width: 768px) {
+
+  .hero h1 {
+    font-size: 3.2rem; /* 🔥 antes era gigante */
+    line-height: 1.1;
+  }
+
+  .hero h1 span {
+    display: block; /* 🔥 hace salto de línea */
+  }
+
+  .hero-content {
+    margin-top: 140px;
+    padding: 0 15px;
+  }
+
+  .primary-btn {
+    padding: 12px 24px;
+    font-size: 0.9rem;
+  }
+
+  /* banner más compacto */
+  .clubs-track img {
+    height: 35px;
+  }
+
+  /* logo grande ajustado */
+  .logo-elite img {
+    width: 160px;
+  }
+}
+
+/* 📱 MOBILE CHICO */
+@media (max-width: 480px) {
+
+  .hero h1 {
+    font-size: 2.6rem;
+  }
+
+  .logo-elite img {
+    width: 130px;
+  }
+
+  .clubs-track {
+    gap: 40px;
+  }
+}
