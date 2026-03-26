@@ -170,3 +170,10 @@ window.addEventListener("scroll", () => {
     }
   });
 });
+window.addEventListener("load", () => {
+  const hero = document.querySelector(".hero");
+
+  setTimeout(() => {
+    hero.classList.add("loaded");
+  }, 200);
+});

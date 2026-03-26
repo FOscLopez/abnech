@@ -880,3 +880,89 @@ h1, h2, h3, p, span {
     gap: 40px;
   }
 }
+/* =========================
+   CINEMATIC HERO INTRO
+========================= */
+
+/* estado inicial oculto */
+.hero-content,
+.logo-elite img {
+  opacity: 0;
+  transform: translateY(20px) scale(0.95);
+}
+
+/* cuando activa */
+.hero.loaded .logo-elite img {
+  animation: logoIntro 1.2s ease forwards;
+}
+
+.hero.loaded .hero-content {
+  animation: contentIntro 1.4s ease forwards;
+}
+
+/* delay por elementos */
+.hero.loaded h1 {
+  animation: textIntro 1s ease forwards;
+  animation-delay: 0.4s;
+  opacity: 0;
+}
+
+.hero.loaded p {
+  animation: textIntro 1s ease forwards;
+  animation-delay: 0.7s;
+  opacity: 0;
+}
+
+.hero.loaded .primary-btn {
+  animation: btnIntro 1s ease forwards;
+  animation-delay: 1s;
+  opacity: 0;
+}
+
+/* =========================
+   ANIMACIONES
+========================= */
+
+@keyframes logoIntro {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes contentIntro {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes textIntro {
+  0% {
+    opacity: 0;
+    transform: translateY(25px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes btnIntro {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
