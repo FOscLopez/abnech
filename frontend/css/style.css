@@ -1240,3 +1240,28 @@ p {
     font-size: 0.9rem;
   }
 }
+/* =========================
+   ⚡ PERFORMANCE BOOST
+========================= */
+
+/* evita repaints innecesarios */
+.hero,
+.club-card,
+.match-card {
+  will-change: transform, opacity;
+}
+
+/* imágenes más eficientes */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* reduce costo de animaciones */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
