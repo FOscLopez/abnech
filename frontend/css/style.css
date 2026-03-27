@@ -1,3 +1,6 @@
+/* =========================
+   RESET + BASE
+========================= */
 *{
   margin:0;
   padding:0;
@@ -6,192 +9,120 @@
 
 body {
   background: radial-gradient(circle at 50% 30%, #0f172a, #020617 70%);
-  color: var(--text);
+  color: #e5e7eb;
   font-family: 'Poppins', sans-serif;
-
   overflow-x: hidden;
+
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
+
 body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-
+  content:"";
+  position:fixed;
+  inset:0;
   background: radial-gradient(circle at center, rgba(255,120,0,0.08), transparent 60%);
-  pointer-events: none;
-  z-index: 0;
+  pointer-events:none;
 }
 
-/* HERO */
-.hero{
-  height:100vh;
+/* =========================
+   HEADER PRO
+========================= */
+.main-header-pro {
+  position: fixed;
+  top:0;
+  width:100%;
+  z-index:100;
+  background: rgba(2,6,23,0.3);
+  backdrop-filter: blur(10px);
+  transition: .3s;
+  border-bottom:1px solid rgba(255,255,255,0.05);
+}
+
+.main-header-pro.scrolled {
+  background: rgba(2,6,23,0.9);
+  box-shadow:0 8px 25px rgba(0,0,0,0.6);
+}
+
+.header-inner {
+  max-width:1200px;
+  margin:auto;
+  padding:10px 20px;
   display:flex;
-  justify-content:center;
+  justify-content:space-between;
   align-items:center;
-  text-align:center;
 }
 
-.badge{
-  color:#ff6b00;
-  border:1px solid #ff6b00;
-  padding:6px 14px;
-  border-radius:20px;
+.fake-logo {
+  width:45px;
 }
 
-.hero h1{
-  font-family:'Bebas Neue';
-  font-size:6rem;
-}
-
-.hero h1 span{
-  color:#ff6b00;
-}
-
-/* BOTON */
-.primary-btn{
-  margin-top:20px;
-  padding:12px 30px;
-  background:#ff6b00;
-  border:none;
-  border-radius:8px;
-  color:#fff;
-  cursor:pointer;
-}
-
-/* 🔥 BANNER SOLO LOGOS */
-.clubs-banner{
-  margin-top:40px;
-  overflow:hidden;
-}
-
-.clubs-track{
+/* NAV */
+.header-nav {
+  position:relative;
   display:flex;
-  gap:60px;
-  width:max-content;
-  animation:scroll 25s linear infinite;
+  gap:25px;
 }
 
-.clubs-track img{
-  height:45px;
-}
-
-/* ANIMACION */
-@keyframes scroll{
-  from{transform:translateX(0);}
-  to{transform:translateX(-50%);}
-}
-
-/* CLUBES */
-.clubs{
-  padding:80px 20px;
-  text-align:center;
-}
-
-.clubs h2{
-  font-family:'Bebas Neue';
-  font-size:2.5rem;
-}
-
-.clubs h2 span{
-  color:#ff6b00;
-}
-
-.club-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:30px;
-  margin-top:40px;
-  max-width:1100px;
-  margin-left:auto;
-  margin-right:auto;
-}
-
-.club-card{
-  background:#0b1220;
-  padding:40px 20px;
-  border-radius:14px;
-  text-align:center;
+.header-nav a {
+  color:#cbd5f5;
+  text-decoration:none;
+  font-size:0.95rem;
+  opacity:.7;
   transition:.3s;
 }
 
-.club-card img{
-  height:80px;
-}
-
-.club-card:hover{
-  transform:translateY(-6px);
-}
-
-/* 🔥 FIXTURE */
-.fixture{
-  padding:80px 20px;
-  max-width:900px;
-  margin:auto;
-}
-
-.fixture h2{
-  font-family:'Bebas Neue';
-  font-size:2.5rem;
-  margin-bottom:30px;
-}
-
-.fixture h2 span{
+.header-nav a.active,
+.header-nav a:hover {
+  opacity:1;
   color:#ff6b00;
 }
 
-.match-card{
-  background:#0b1220;
-  padding:20px;
-  border-radius:12px;
-  margin-bottom:15px;
-  border:1px solid rgba(255,255,255,0.05);
+.nav-indicator {
+  position:absolute;
+  bottom:0;
+  height:2px;
+  width:0;
+  background:linear-gradient(90deg,#ff6b00,#ff8c00);
+  transition:.3s;
 }
 
-.date{
-  font-size:.8rem;
-  opacity:.5;
-}
-
-.teams{
-  display:flex;
-  justify-content:space-between;
-  margin-top:10px;
-  font-size:1.1rem;
-}
-
-.teams strong{
-  color:#ff6b00;
-}
-/* ===== HERO PRO ===== */
+/* =========================
+   HERO
+========================= */
 .hero {
-  position: relative;
-  height: 100vh;
-  overflow: hidden;
+  position:relative;
+  height:100vh;
+  overflow:hidden;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
 
+/* SLIDER */
 .hero-slider {
-  position: absolute;
-  inset: 0;
+  position:absolute;
+  inset:0;
 }
 
 .slide {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  transition: opacity 1.5s ease;
+  position:absolute;
+  inset:0;
+  opacity:0;
+  transition:opacity 1.5s ease;
 }
 
 .slide.active {
-  opacity: 1;
+  opacity:1;
 }
 
 .slide img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: brightness(0.35);
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  filter:brightness(0.35);
 }
 
-/* overlay */
 .hero::after {
   content:"";
   position:absolute;
@@ -199,1069 +130,270 @@ body::before {
   background:linear-gradient(to bottom, rgba(2,6,23,.6), rgba(2,6,23,.95));
 }
 
-/* contenido */
-.hero-content {
-  margin-top: 140px;
-  position: relative;
-  z-index: 3;
-  text-align: center;
-}
-
-/* partículas */
-#particles {
-  position:absolute;
-  inset:0;
-  z-index:2;
-}
-
-/* ===== BOTON PRO ===== */
-.primary-btn {
-  background: linear-gradient(135deg,#ff6b00,#ff8c00);
-  box-shadow: 0 0 20px rgba(255,120,0,0.5);
-  transition: .3s;
-}
-
-.primary-btn:hover {
-  transform: scale(1.05);
-}
-
-/* ===== BANNER FIX REAL ===== */
-.clubs-track {
-  display: flex;
-  gap: 70px;
-  width: max-content;
-  animation: scrollFull 30s linear infinite;
-}
-
-@keyframes scrollFull {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-/* =========================
-   FIX PROXIMA FECHA (ARREGLA LOGO GIGANTE)
-========================= */
-
-.next-match {
-  padding: 80px 20px;
-  text-align: center;
-}
-
-.next-match h2 {
-  font-family: 'Bebas Neue';
-  font-size: 2rem;
-  margin-bottom: 30px;
-}
-
-.match-highlight {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 40px;
-
-  background: #0b1220;
-  padding: 25px;
-  border-radius: 16px;
-
-  max-width: 600px;
-  margin: auto;
-}
-
-/* EQUIPOS */
-.team {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.team img {
-  width: 70px;
-  height: 70px;
-  object-fit: contain;
-}
-
-.team p {
-  margin-top: 6px;
-  font-size: 0.9rem;
-}
-
-/* VS */
-.vs {
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: #ff6b00;
-}
-
-/* INFO */
-.match-info {
-  position: absolute;
-  margin-top: 90px;
-  font-size: 0.9rem;
-  opacity: 0.7;
-}
-
-/* =========================
-   FIX CLUBES GRID (CENTRADO PRO)
-========================= */
-
-.club-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 25px;
-  max-width: 1100px;
-  margin: 40px auto;
-}
-
-/* CARD PRO */
-.club-card {
-  background: #0b1220;
-  border-radius: 14px;
-  padding: 20px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  transition: .25s;
-}
-
-.club-card img {
-  height: 70px;
-  object-fit: contain;
-}
-
-.club-card p {
-  margin-top: 10px;
-  font-size: 0.85rem;
-  letter-spacing: .05em;
-}
-
-.club-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 0 20px rgba(255,120,0,0.3);
-}
-
-/* =========================
-   FIX BANNER FULL WIDTH REAL
-========================= */
-
-.clubs-banner {
-  width: 100%;
-  overflow: hidden;
-  margin-top: 30px;
-}
-
-.clubs-track {
-  display: flex;
-  gap: 80px;
-  width: max-content;
-
-  animation: bannerLoop 30s linear infinite;
-}
-
-/* IMPORTANTE → movimiento real completo */
-@keyframes bannerLoop {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-/* LOGOS */
-.clubs-track img {
-  height: 45px;
-  object-fit: contain;
-  opacity: 0.9;
-}
-
-/* =========================
-   BOTÓN PRO (VISIBLE Y ACTIVO)
-========================= */
-
-.primary-btn {
-  display: inline-block;
-  margin-top: 20px;
-
-  padding: 14px 34px;
-  border-radius: 10px;
-
-  background: linear-gradient(135deg,#ff6b00,#ff8c00);
-
-  color: white;
-  text-decoration: none;
-
-  font-weight: 600;
-
-  box-shadow: 0 0 20px rgba(255,120,0,0.5);
-}
-
-.primary-btn:hover {
-  transform: scale(1.05);
-}
-/* =========================
-   CLUB PAGE PRO
-========================= */
-
-.club-hero-pro {
-  text-align: center;
-  padding: 60px 20px;
-  background: linear-gradient(180deg,#020617,#0b1220);
-}
-
-.club-logo-pro {
-  height: 90px;
-  margin-bottom: 10px;
-}
-
-.club-hero-pro h1 {
-  font-family: 'Bebas Neue';
-  font-size: 2.5rem;
-  letter-spacing: 2px;
-}
-
-.club-colors {
-  opacity: .7;
-}
-
-/* CONTENEDOR */
-.club-container {
-  max-width: 1000px;
-  margin: auto;
-  padding: 20px;
-}
-
-/* CARD */
-.club-card-pro {
-  background: #0b1220;
-  padding: 20px;
-  border-radius: 14px;
-  margin-bottom: 20px;
-  border: 1px solid rgba(255,255,255,0.08);
-  box-shadow: 0 10px 25px rgba(0,0,0,.6);
-}
-
-/* TITULOS */
-.club-card-pro h2 {
-  margin-bottom: 15px;
-  color: #ff6b00;
-  font-family: 'Bebas Neue';
-}
-
-/* TABLA */
-.club-table-pro {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.club-table-pro th,
-.club-table-pro td {
-  padding: 10px;
-  text-align: center;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-}
-
-/* NOTICIAS */
-.news-item-pro {
-  background: rgba(255,255,255,0.03);
-  padding: 12px;
-  border-radius: 8px;
-}
-
-.news-item-pro span {
-  font-size: 0.8rem;
-  opacity: .6;
-}
-.club-card {
-  background: #0b1220;
-  padding: 18px;
-  border-radius: 14px;
-  text-align: center;
-  text-decoration: none;
-  color: white;
-  transition: 0.25s;
-  display: block;
-}
-
-.club-card img {
-  height: 60px;
-  object-fit: contain;
-  margin-bottom: 10px;
-}
-
-.club-card:hover {
-  transform: translateY(-6px) scale(1.05);
-  box-shadow: 0 10px 25px rgba(0,0,0,.6);
-}
-/* FIX GLOBAL IMAGENES CLUBES */
-.clubs > a {
-  display: none !important;
-}
-
-/* SOLO GRID CONTROLA LOS LOGOS */
-.club-grid img {
-  height: 60px !important;
-  width: auto !important;
-  max-width: 100%;
-}
-
-/* TARJETAS */
-.club-card {
-  background: #0b1220;
-  padding: 18px;
-  border-radius: 14px;
-  text-align: center;
-  text-decoration: none;
-  color: white;
-  transition: 0.25s;
-  display: block;
-}
-
-.club-card:hover {
-  transform: translateY(-6px) scale(1.05);
-  box-shadow: 0 10px 25px rgba(0,0,0,.6);
-}
-/* =========================
-   LOGO ABNECH HERO
-========================= */
-
-.logo-abnech {
-  width: 140px;
-  margin-bottom: 15px;
-
-  animation: logoPulse 2.5s ease-in-out infinite;
-
-  filter: drop-shadow(0 0 10px rgba(255,120,0,0.6));
-}
-
-/* EFECTO PARPADEO PRO (SUAVE) */
-@keyframes logoPulse {
-  0% {
-    transform: scale(1);
-    opacity: 1;
-    filter: drop-shadow(0 0 8px rgba(255,120,0,0.6));
-  }
-
-  50% {
-    transform: scale(1.08);
-    opacity: 0.85;
-    filter: drop-shadow(0 0 18px rgba(255,180,0,0.9));
-  }
-
-  100% {
-    transform: scale(1);
-    opacity: 1;
-    filter: drop-shadow(0 0 8px rgba(255,120,0,0.6));
-  }
-}
-/* =========================
-   ESPN ALIGNMENT SYSTEM
-========================= */
-
+/* LOGO */
 .logo-elite {
-  position: absolute;
-  top: 90px; /* 🔥 separación real del header */
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
+  position:absolute;
+  top:90px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:10;
 }
 
 .logo-elite img {
-  width: 240px; /* 🔥 tamaño equilibrado */
-  height: auto;
-
-  animation: elitePulse 2.5s ease-in-out infinite;
-  filter: drop-shadow(0 0 18px rgba(255,120,0,0.85));
+  width:240px;
+  animation: pulse 2.5s infinite;
+  filter: drop-shadow(0 0 18px rgba(255,120,0,0.8));
 }
 
-/* =========================
-   CONTENIDO CENTRADO REAL
-========================= */
+@keyframes pulse {
+  0%,100% {transform:scale(1);}
+  50% {transform:scale(1.08);}
+}
 
+/* CONTENIDO */
 .hero-content {
-  position: relative;
-  z-index: 3;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  height: 100%;
-  padding-top: 160px; /* 🔥 clave para balance */
+  position:relative;
+  z-index:3;
+  text-align:center;
+  padding-top:160px;
 }
 
-/* TITULO PERFECTO */
 .hero h1 {
-  font-size: 5.5rem;
-  line-height: 0.95;
-  letter-spacing: 2px;
-  text-align: center;
+  font-family:'Bebas Neue';
+  font-size:5.5rem;
+  letter-spacing:2px;
+  text-transform:uppercase;
 }
 
-/* SUBTITULO */
+.hero h1 span {
+  color:#ff6b00;
+}
+
 .subtitle {
-  margin-top: 10px;
-  font-size: 1rem;
-  color: #9ca3af;
+  margin-top:10px;
+  color:#9ca3af;
 }
 
 /* BOTON */
 .primary-btn {
-  margin-top: 25px;
+  display:inline-block;
+  margin-top:25px;
+  padding:14px 34px;
+  border-radius:10px;
+  background:linear-gradient(135deg,#ff6b00,#ff8c00);
+  color:white;
+  text-decoration:none;
+  font-weight:600;
+  transition:.25s;
+  box-shadow:0 0 20px rgba(255,120,0,0.5);
 }
 
-/* =========================
-   MOBILE PERFECT ALIGNMENT
-========================= */
-
-@media (max-width: 768px) {
-
-  .logo-elite {
-    top: 100px;
-  }
-
-  .logo-elite img {
-    width: 170px;
-  }
-
-  .hero-content {
-    padding-top: 140px;
-  }
-
-  .hero h1 {
-    font-size: 3rem;
-  }
-
-  .hero h1 span {
-    display: block;
-  }
-}
-
-@media (max-width: 480px) {
-
-  .logo-elite img {
-    width: 140px;
-  }
-
-  .hero h1 {
-    font-size: 2.4rem;
-  }
-}
-/* =========================
-   HEADER PROFESIONAL PRO
-========================= */
-
-.main-header-pro {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 100;
-
-  background: rgba(2,6,23,0.3);
-  backdrop-filter: blur(10px);
-
-  transition: all 0.3s ease;
-}
-
-.main-header-pro.scrolled {
-  background: rgba(2,6,23,0.9);
-  box-shadow: 0 8px 25px rgba(0,0,0,0.6);
-}
-
-/* CONTENIDO */
-.header-inner {
-  max-width: 1200px;
-  margin: auto;
-  padding: 10px 20px;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-/* LOGO */
-.header-logo {
-  height: 45px;
-  filter: drop-shadow(0 0 6px rgba(255,120,0,0.6));
-}
-
-/* NAV */
-.header-nav {
-  display: flex;
-  gap: 20px;
-}
-
-.header-nav a {
-  color: #fff;
-  text-decoration: none;
-  font-size: 0.9rem;
-  opacity: 0.8;
-  transition: 0.3s;
-}
-
-.header-nav a:hover {
-  opacity: 1;
-  color: #ff6b00;
-}
-/* =========================
-   NAVBAR PRO INTERACTIVO
-========================= */
-
-.header-nav {
-  position: relative;
-  display: flex;
-  gap: 25px;
-}
-
-/* LINKS */
-.header-nav a {
-  position: relative;
-  color: #fff;
-  text-decoration: none;
-  font-size: 0.95rem;
-  opacity: 0.7;
-  padding-bottom: 4px;
-  transition: 0.3s;
-}
-
-.header-nav a.active {
-  opacity: 1;
-  color: #ff6b00;
-}
-
-/* INDICADOR */
-.nav-indicator {
-  position: absolute;
-  bottom: 0;
-  height: 2px;
-  width: 0;
-  background: #ff6b00;
-  border-radius: 2px;
-
-  transition: all 0.3s ease;
-}
-
-/* HOVER */
-.header-nav a:hover {
-  opacity: 1;
-}
-/* =========================
-   🔥 FIX LEGIBILIDAD GLOBAL
-========================= */
-
-body {
-  color: #e5e7eb; /* 🔥 texto claro SIEMPRE */
-}
-
-/* subtitulo */
-.subtitle {
-  color: #9ca3af;
-}
-
-/* títulos visibles */
-h1, h2, h3, p, span {
-  color: inherit;
-}
-
-/* =========================
-   🔥 HEADER FIX
-========================= */
-
-.fake-logo {
-  width: 45px;
-}
-
-/* =========================
-   🔥 HERO TEXT FIX
-========================= */
-
-.hero h1 {
-  color: #f1f5f9;
-}
-
-.hero p {
-  color: #9ca3af;
-}
-
-/* =========================
-   🔥 NAV FIX
-========================= */
-
-.header-nav a {
-  color: #cbd5f5;
-}
-
-.header-nav a.active {
-  color: #ff6b00;
-}
-
-/* =========================
-   🔥 INDICADOR NAV
-========================= */
-
-.nav-indicator {
-  position: absolute;
-  bottom: 0;
-  height: 2px;
-  width: 0;
-  background: #ff6b00;
-  transition: 0.3s;
-}
-
-/* =========================
-   🔥 FIX LOGO SUPERPOSICIÓN
-========================= */
-
-.hero-content {
-  margin-top: 180px;
-}
-
-/* =========================
-   🔥 FIX TEXTOS FIXTURE
-========================= */
-
-.fixture {
-  color: #e5e7eb;
-}
-
-.match-card span {
-  color: #cbd5f5;
-}
-/* =========================
-   📱 MOBILE FIX HERO TITLE
-========================= */
-
-@media (max-width: 768px) {
-
-  .hero h1 {
-    font-size: 3.2rem; /* 🔥 antes era gigante */
-    line-height: 1.1;
-  }
-
-  .hero h1 span {
-    display: block; /* 🔥 hace salto de línea */
-  }
-
-  .hero-content {
-    margin-top: 140px;
-    padding: 0 15px;
-  }
-
-  .primary-btn {
-    padding: 12px 24px;
-    font-size: 0.9rem;
-  }
-
-  /* banner más compacto */
-  .clubs-track img {
-    height: 35px;
-  }
-
-  /* logo grande ajustado */
-  .logo-elite img {
-    width: 160px;
-  }
-}
-
-/* 📱 MOBILE CHICO */
-@media (max-width: 480px) {
-
-  .hero h1 {
-    font-size: 2.6rem;
-  }
-
-  .logo-elite img {
-    width: 130px;
-  }
-
-  .clubs-track {
-    gap: 40px;
-  }
-}
-/* =========================
-   CINEMATIC HERO INTRO
-========================= */
-
-/* estado inicial oculto */
-.hero-content,
-.logo-elite img {
-  opacity: 0;
-  transform: translateY(20px) scale(0.95);
-}
-
-/* cuando activa */
-.hero.loaded .logo-elite img {
-  animation: logoIntro 1.2s ease forwards;
-}
-
-.hero.loaded .hero-content {
-  animation: contentIntro 1.4s ease forwards;
-}
-
-/* delay por elementos */
-.hero.loaded h1 {
-  animation: textIntro 1s ease forwards;
-  animation-delay: 0.4s;
-  opacity: 0;
-}
-
-.hero.loaded p {
-  animation: textIntro 1s ease forwards;
-  animation-delay: 0.7s;
-  opacity: 0;
-}
-
-.hero.loaded .primary-btn {
-  animation: btnIntro 1s ease forwards;
-  animation-delay: 1s;
-  opacity: 0;
-}
-
-/* =========================
-   ANIMACIONES
-========================= */
-
-@keyframes logoIntro {
-  0% {
-    opacity: 0;
-    transform: translateY(-20px) scale(0.8);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes contentIntro {
-  0% {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes textIntro {
-  0% {
-    opacity: 0;
-    transform: translateY(25px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes btnIntro {
-  0% {
-    opacity: 0;
-    transform: translateY(30px) scale(0.9);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-/* =========================
-   SCROLL REVEAL SYSTEM
-========================= */
-
-.reveal {
-  opacity: 0;
-  transform: translateY(40px) scale(0.98);
-  filter: blur(8px);
-
-  transition: all 0.8s ease;
-}
-
-.reveal.active {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-  filter: blur(0);
-}
-
-/* variantes (opcional pro) */
-.reveal-left {
-  transform: translateX(-60px);
-}
-
-.reveal-right {
-  transform: translateX(60px);
-}
-
-.reveal-left.active,
-.reveal-right.active {
-  transform: translateX(0);
-}
-/* =========================
-   MICRO INTERACCIONES PRO
-========================= */
-
-/* BOTONES (EFECTO PRESIÓN) */
-.primary-btn {
-  transition: all 0.2s ease;
-  position: relative;
+.primary-btn:hover {
+  transform:translateY(-2px) scale(1.05);
 }
 
 .primary-btn:active {
-  transform: scale(0.95);
-  box-shadow: 0 0 10px rgba(255,120,0,0.4);
-}
-
-/* HOVER MÁS REAL */
-.primary-btn:hover {
-  transform: translateY(-2px) scale(1.03);
+  transform:scale(.95);
 }
 
 /* =========================
-   CARDS (EFECTO FÍSICO)
+   BANNER LOGOS
 ========================= */
-
-.club-card,
-.match-card {
-  transition: all 0.25s ease;
+.clubs-banner {
+  width:100%;
+  overflow:hidden;
+  margin-top:30px;
 }
 
-/* HOVER */
-.club-card:hover,
-.match-card:hover {
-  transform: translateY(-8px) scale(1.02);
-  box-shadow: 
-    0 10px 25px rgba(0,0,0,0.6),
-    0 0 15px rgba(255,120,0,0.15);
+.clubs-track {
+  display:flex;
+  gap:80px;
+  width:max-content;
+  animation:bannerLoop 30s linear infinite;
 }
 
-/* CLICK */
-.club-card:active,
-.match-card:active {
-  transform: scale(0.97);
+@keyframes bannerLoop {
+  from {transform:translateX(0);}
+  to {transform:translateX(-50%);}
 }
-
-/* =========================
-   NAVBAR LINKS (RESPUESTA)
-========================= */
-
-.header-nav a {
-  transition: all 0.2s ease;
-}
-
-.header-nav a:active {
-  transform: scale(0.9);
-}
-
-/* =========================
-   LOGOS (INTERACCIÓN SUAVE)
-========================= */
 
 .clubs-track img {
-  transition: 0.3s;
+  height:45px;
+  opacity:.9;
+  transition:.3s;
 }
 
 .clubs-track img:hover {
-  transform: scale(1.2);
-  filter: drop-shadow(0 0 10px rgba(255,140,0,0.8));
+  transform:scale(1.2);
+  filter:drop-shadow(0 0 10px orange);
 }
 
 /* =========================
-   BOTON RIPPLE (EFECTO CLICK PRO)
+   CLUBES GRID
 ========================= */
-
-.primary-btn::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: rgba(255,255,255,0.2);
-
-  opacity: 0;
-  transform: scale(0.8);
-  transition: 0.3s;
+.clubs {
+  padding:80px 20px;
+  text-align:center;
 }
 
-.primary-btn:active::after {
-  opacity: 1;
-  transform: scale(1);
-}
-/* =========================
-   🎯 UI FINAL POLISH
-========================= */
-
-/* TIPOGRAFÍA PRO */
-body {
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+.clubs h2 {
+  font-family:'Bebas Neue';
+  font-size:2.5rem;
 }
 
-/* TITULOS */
-h1, h2 {
-  letter-spacing: 1.5px;
+.clubs h2 span {
+  color:#ff6b00;
 }
 
-.hero h1 {
-  text-transform: uppercase;
+.club-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:25px;
+  max-width:1100px;
+  margin:40px auto;
 }
 
-/* SUBTEXTO */
-.subtitle {
-  max-width: 500px;
-  margin: 10px auto 0;
-  line-height: 1.4;
+.club-card {
+  background:#0b1220;
+  border-radius:14px;
+  padding:20px;
+  text-decoration:none;
+  color:white;
+  transition:.25s;
 }
 
-/* =========================
-   ESPACIADO GLOBAL PRO
-========================= */
-
-section {
-  margin-top: 40px;
+.club-card img {
+  height:60px;
+  object-fit:contain;
+  margin-bottom:10px;
 }
 
-/* separación limpia entre bloques */
-.clubs,
-.next-match,
-.fixture {
-  margin-top: 80px;
+.club-card:hover {
+  transform:translateY(-6px) scale(1.05);
+  box-shadow:0 10px 25px rgba(0,0,0,.6);
 }
 
 /* =========================
-   TARJETAS NIVEL PRO
+   PROXIMA FECHA
 ========================= */
-
-.club-card,
-.match-card {
-  backdrop-filter: blur(6px);
-  border: 1px solid rgba(255,255,255,0.06);
+.next-match {
+  padding:80px 20px;
+  text-align:center;
 }
 
-/* glow sutil */
-.club-card:hover,
-.match-card:hover {
-  box-shadow:
-    0 10px 30px rgba(0,0,0,0.6),
-    0 0 20px rgba(255,120,0,0.12);
+.match-highlight {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:40px;
+  background:#0b1220;
+  padding:25px;
+  border-radius:16px;
+  max-width:600px;
+  margin:auto;
 }
 
-/* =========================
-   BOTÓN NIVEL APP
-========================= */
-
-.primary-btn {
-  letter-spacing: 0.05em;
-  font-weight: 600;
+.team img {
+  width:70px;
+  height:70px;
 }
 
-.primary-btn:active {
-  transform: scale(0.96);
-}
-
-/* =========================
-   NAVBAR PRO FINAL
-========================= */
-
-.main-header-pro {
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-}
-
-.header-nav a {
-  font-weight: 500;
-  letter-spacing: 0.05em;
-}
-
-/* indicador más fino */
-.nav-indicator {
-  height: 2px;
-  background: linear-gradient(90deg,#ff6b00,#ff8c00);
-}
-
-/* =========================
-   HERO BALANCE FINAL
-========================= */
-
-.hero h1 {
-  text-shadow: 0 4px 20px rgba(0,0,0,0.6);
-}
-
-.logo-elite img {
-  filter: drop-shadow(0 0 20px rgba(255,120,0,0.9));
-}
-
-/* =========================
-   SCROLL SMOOTH GLOBAL
-========================= */
-
-html {
-  scroll-behavior: smooth;
-}
-
-/* =========================
-   DETALLES FINOS
-========================= */
-
-/* textos secundarios */
-p {
-  color: #cbd5f5;
-}
-
-/* fechas */
-.date {
-  color: #94a3b8;
-}
-
-/* VS más fuerte */
 .vs {
-  letter-spacing: 2px;
+  font-size:1.8rem;
+  color:#ff6b00;
+}
+
+.match-info {
+  margin-top:20px;
+  opacity:.7;
 }
 
 /* =========================
-   MOBILE ULTRA CLEAN
+   FIXTURE
 ========================= */
-
-@media (max-width: 768px) {
-
-  section {
-    margin-top: 20px;
-  }
-
-  .clubs,
-  .next-match,
-  .fixture {
-    margin-top: 50px;
-  }
-
-  .hero h1 {
-    letter-spacing: 1px;
-  }
-
-  .subtitle {
-    font-size: 0.9rem;
-  }
+.fixture {
+  padding:80px 20px;
+  max-width:900px;
+  margin:auto;
 }
-/* =========================
-   ⚡ PERFORMANCE BOOST
-========================= */
 
-/* evita repaints innecesarios */
+.match-card {
+  background:#0b1220;
+  padding:20px;
+  border-radius:12px;
+  margin-bottom:15px;
+}
+
+.teams {
+  display:flex;
+  justify-content:space-between;
+  margin-top:10px;
+}
+
+.teams strong {
+  color:#ff6b00;
+}
+
+/* =========================
+   SCROLL REVEAL
+========================= */
+.reveal {
+  opacity:0;
+  transform:translateY(40px);
+  transition:.8s;
+}
+
+.reveal.active {
+  opacity:1;
+  transform:none;
+}
+
+/* =========================
+   PERFORMANCE
+========================= */
 .hero,
 .club-card,
 .match-card {
-  will-change: transform, opacity;
+  will-change:transform, opacity;
 }
 
-/* imágenes más eficientes */
 img {
-  max-width: 100%;
-  height: auto;
-  display: block;
+  max-width:100%;
+  height:auto;
+  display:block;
 }
 
-/* reduce costo de animaciones */
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation: none !important;
-    transition: none !important;
+/* =========================
+   MOBILE
+========================= */
+@media (max-width:768px){
+
+  .hero h1 {
+    font-size:3rem;
   }
+
+  .hero h1 span {
+    display:block;
+  }
+
+  .logo-elite img {
+    width:160px;
+  }
+
+  .clubs-track img {
+    height:35px;
+  }
+
+}
+
+@media (max-width:480px){
+
+  .hero h1 {
+    font-size:2.4rem;
+  }
+
+  .logo-elite img {
+    width:130px;
+  }
+
 }
