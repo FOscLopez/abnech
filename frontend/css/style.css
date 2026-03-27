@@ -1,6 +1,3 @@
-/* =========================
-   RESET + BASE
-========================= */
 *{
   margin:0;
   padding:0;
@@ -8,390 +5,155 @@
 }
 
 body {
+  font-family:'Poppins', sans-serif;
   background: radial-gradient(circle at 50% 30%, #0f172a, #020617 70%);
-  color: #e5e7eb;
-  font-family: 'Poppins', sans-serif;
-  overflow-x: hidden;
-
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+  color:#e5e7eb;
+  overflow-x:hidden;
 }
 
-body::before {
-  content:"";
-  position:fixed;
-  inset:0;
-  background: radial-gradient(circle at center, rgba(255,120,0,0.08), transparent 60%);
-  pointer-events:none;
-}
-
-/* =========================
-   HEADER PRO
-========================= */
-.main-header-pro {
-  position: fixed;
-  top:0;
-  width:100%;
-  z-index:100;
-  background: rgba(2,6,23,0.3);
-  backdrop-filter: blur(10px);
-  transition: .3s;
-  border-bottom:1px solid rgba(255,255,255,0.05);
-}
-
-.main-header-pro.scrolled {
-  background: rgba(2,6,23,0.9);
-  box-shadow:0 8px 25px rgba(0,0,0,0.6);
-}
-
-.header-inner {
-  max-width:1200px;
-  margin:auto;
-  padding:10px 20px;
+/* HERO */
+.hero{
+  height:100vh;
   display:flex;
-  justify-content:space-between;
   align-items:center;
+  justify-content:center;
+  text-align:center;
 }
 
-.fake-logo {
-  width:45px;
+.hero-content{
+  max-width:1000px;
+  margin:auto;
 }
 
-/* NAV */
-.header-nav {
-  position:relative;
-  display:flex;
-  gap:25px;
+.hero h1{
+  font-family:'Bebas Neue';
+  font-size:5rem;
 }
 
-.header-nav a {
-  color:#cbd5f5;
-  text-decoration:none;
-  font-size:0.95rem;
-  opacity:.7;
-  transition:.3s;
-}
-
-.header-nav a.active,
-.header-nav a:hover {
-  opacity:1;
+.hero h1 span{
   color:#ff6b00;
 }
 
-.nav-indicator {
-  position:absolute;
-  bottom:0;
-  height:2px;
-  width:0;
-  background:linear-gradient(90deg,#ff6b00,#ff8c00);
-  transition:.3s;
-}
-
-/* =========================
-   HERO
-========================= */
-.hero {
-  position:relative;
-  height:100vh;
-  overflow:hidden;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-
-/* SLIDER */
-.hero-slider {
-  position:absolute;
-  inset:0;
-}
-
-.slide {
-  position:absolute;
-  inset:0;
-  opacity:0;
-  transition:opacity 1.5s ease;
-}
-
-.slide.active {
-  opacity:1;
-}
-
-.slide img {
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  filter:brightness(0.35);
-}
-
-.hero::after {
-  content:"";
-  position:absolute;
-  inset:0;
-  background:linear-gradient(to bottom, rgba(2,6,23,.6), rgba(2,6,23,.95));
-}
-
-/* LOGO */
-.logo-elite {
-  position: absolute;
-  top: 120px; /* 🔥 BAJA un poco más */
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-}
-
-.logo-elite img {
-  width: 260px; /* 🔥 un poco más grande */
-}
-
-.hero {
-  position: relative;
-  height: 100vh;
-  overflow: hidden;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* CONTENIDO CENTRADO REAL */
-.hero-content {
-  position: relative;
-  z-index: 3;
-
-  width: 100%;                /* 🔥 CLAVE */
-  max-width: 1100px;         /* 🔥 CONTENCIÓN PRO */
-  margin: 0 auto;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  text-align: center;
-
-  padding-top: 180px;        /* ajustado con header */
-}
-
-.hero h1 {
-  font-size: 5.2rem;
-  line-height: 1;
-  text-align: center;
-  max-width: 100%;
+.hero p{
+  margin-top:10px;
+  color:#9ca3af;
 }
 
 /* BOTON */
-.primary-btn {
+.primary-btn{
   display:inline-block;
-  margin-top:25px;
-  padding:14px 34px;
-  border-radius:10px;
-  background:linear-gradient(135deg,#ff6b00,#ff8c00);
+  margin-top:20px;
+  padding:12px 28px;
+  background:#ff6b00;
   color:white;
+  border-radius:8px;
   text-decoration:none;
-  font-weight:600;
-  transition:.25s;
-  box-shadow:0 0 20px rgba(255,120,0,0.5);
 }
 
-.primary-btn:hover {
-  transform:translateY(-2px) scale(1.05);
-}
-
-.primary-btn:active {
-  transform:scale(.95);
-}
-
-/* =========================
-   BANNER LOGOS
-========================= */
-.clubs-banner {
-  width:100%;
+/* BANNER */
+.clubs-banner{
+  margin-top:40px;
   overflow:hidden;
-  margin-top:30px;
 }
 
-.clubs-track {
+.clubs-track{
   display:flex;
-  gap:80px;
+  gap:60px;
   width:max-content;
-  animation:bannerLoop 30s linear infinite;
+  animation:scroll 25s linear infinite;
 }
 
-@keyframes bannerLoop {
-  from {transform:translateX(0);}
-  to {transform:translateX(-50%);}
-}
-
-.clubs-track img {
+.clubs-track img{
   height:45px;
-  opacity:.9;
-  transition:.3s;
 }
 
-.clubs-track img:hover {
-  transform:scale(1.2);
-  filter:drop-shadow(0 0 10px orange);
+@keyframes scroll{
+  from{transform:translateX(0);}
+  to{transform:translateX(-50%);}
 }
 
-/* =========================
-   CLUBES GRID
-========================= */
-.clubs {
+/* CLUBES */
+.clubs{
   padding:80px 20px;
   text-align:center;
 }
 
-.clubs h2 {
+.clubs h2{
   font-family:'Bebas Neue';
   font-size:2.5rem;
 }
 
-.clubs h2 span {
+.clubs h2 span{
   color:#ff6b00;
 }
 
-.club-grid {
+.club-grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
   gap:25px;
-  max-width:1100px;
+  max-width:1000px;
   margin:40px auto;
 }
 
-.club-card {
+.club-card{
   background:#0b1220;
-  border-radius:14px;
   padding:20px;
+  border-radius:12px;
+  text-align:center;
   text-decoration:none;
   color:white;
-  transition:.25s;
 }
 
-.club-card img {
+.club-card img{
   height:60px;
-  object-fit:contain;
   margin-bottom:10px;
 }
 
-.club-card:hover {
-  transform:translateY(-6px) scale(1.05);
-  box-shadow:0 10px 25px rgba(0,0,0,.6);
-}
-
-/* =========================
-   PROXIMA FECHA
-========================= */
-.next-match {
-  padding:80px 20px;
-  text-align:center;
-}
-
-.match-highlight {
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:40px;
-  background:#0b1220;
-  padding:25px;
-  border-radius:16px;
-  max-width:600px;
-  margin:auto;
-}
-
-.team img {
-  width:70px;
-  height:70px;
-}
-
-.vs {
-  font-size:1.8rem;
-  color:#ff6b00;
-}
-
-.match-info {
-  margin-top:20px;
-  opacity:.7;
-}
-
-/* =========================
-   FIXTURE
-========================= */
-.fixture {
+/* FIXTURE */
+.fixture{
   padding:80px 20px;
   max-width:900px;
   margin:auto;
 }
 
-.match-card {
+.fixture h2{
+  font-family:'Bebas Neue';
+  font-size:2.5rem;
+  margin-bottom:30px;
+}
+
+.fixture h2 span{
+  color:#ff6b00;
+}
+
+.match-card{
   background:#0b1220;
   padding:20px;
   border-radius:12px;
-  margin-bottom:15px;
 }
 
-.teams {
+.teams{
   display:flex;
   justify-content:space-between;
   margin-top:10px;
 }
 
-.teams strong {
+.teams strong{
   color:#ff6b00;
 }
 
-/* =========================
-   SCROLL REVEAL
-========================= */
-.reveal {
-  opacity:0;
-  transform:translateY(40px);
-  transition:.8s;
-}
-
-.reveal.active {
-  opacity:1;
-  transform:none;
-}
-
-/* =========================
-   PERFORMANCE
-========================= */
-.hero,
-.club-card,
-.match-card {
-  will-change:transform, opacity;
-}
-
-img {
-  max-width:100%;
-  height:auto;
-  display:block;
-}
-
-/* =========================
-   MOBILE
-========================= */
+/* MOBILE */
 @media (max-width:768px){
 
-  .hero-content {
-    padding-top: 150px;
-    padding-left: 15px;
-    padding-right: 15px;
+  .hero h1{
+    font-size:3rem;
   }
 
-  .hero h1 {
-    font-size: 3rem;
+  .hero h1 span{
+    display:block;
   }
 
-  .hero h1 span {
-    display: block;
-  }
-
-  .logo-elite {
-    top: 110px;
-  }
-
-  .logo-elite img {
-    width: 180px;
+  .clubs-track img{
+    height:35px;
   }
 }
