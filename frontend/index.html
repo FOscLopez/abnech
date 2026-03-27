@@ -3,40 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Liga ABNECH Basket - Resultados, fixture y clubes del Nordeste Chaqueño">
-  <meta property="og:title" content="ABNECH Basket">
-  <meta property="og:description" content="Liga regional de básquet">
-  <meta property="og:image" content="./img/logo-abnech.png">
+
   <title>ABNECH Basket</title>
-  
-  <link rel="stylesheet" href="./css/style.css">
+
+  <!-- SEO -->
+  <meta name="description" content="Liga ABNECH Basket - Resultados, fixture y clubes del Nordeste Chaqueño">
+
   <!-- PERFORMANCE -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  <!-- CARGA DIFERIDA JS -->
-  <script src="./js/main.js" defer></script>
-  <script src="./js/clubs.js" defer></script>
-
   <!-- FUENTES -->
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="./css/style.css">
+
+  <!-- JS (DEFER SOLO ACÁ) -->
+  <script src="./js/clubs.js" defer></script>
+  <script src="./js/main.js" defer></script>
 </head>
 
 <body>
 
-<!-- HEADER -->
 <header class="main-header-pro">
   <div class="header-inner">
 
-    <!-- 🔥 SACAMOS LOGO ROTO -->
     <div class="fake-logo"></div>
 
     <nav class="header-nav">
       <a href="#hero" class="active">Inicio</a>
       <a href="#fixture">Fixture</a>
       <a href="#clubs">Clubes</a>
-
-      <!-- INDICADOR -->
       <span class="nav-indicator"></span>
     </nav>
 
@@ -46,12 +44,10 @@
 <!-- HERO -->
 <section id="hero" class="hero">
 
-  <!-- LOGO GRANDE -->
   <div class="logo-elite">
-    <img src="./img/logo-abnech.png">
+    <img src="./img/logo-abnech.png" loading="lazy">
   </div>
 
-  <!-- SLIDER -->
   <div class="hero-slider">
     <div class="slide active"><img src="./img/slide1.jpg"></div>
     <div class="slide"><img src="./img/slide2.jpg"></div>
@@ -63,36 +59,13 @@
   <div class="hero-content">
 
     <h1>ABNECH <span>BASKET</span></h1>
-
     <p class="subtitle">Liga Regional del Nordeste Chaqueño</p>
 
     <a href="#fixture" class="primary-btn">Ver Fixture</a>
 
     <!-- BANNER -->
     <div class="clubs-banner">
-      <div class="clubs-track">
-
-        <!-- 8 logos -->
-        <img src="./img/clubs/union.png">
-        <img src="./img/clubs/funebrero.png">
-        <img src="./img/clubs/cfa.png">
-        <img src="./img/clubs/general-vedia.png">
-        <img src="./img/clubs/la-leonesa.png">
-        <img src="./img/clubs/palermo-cap.png">
-        <img src="./img/clubs/puerto-bermejo.png">
-        <img src="./img/clubs/zapallar.png">
-
-        <!-- DUPLICADO -->
-        <img src="./img/clubs/union.png">
-        <img src="./img/clubs/funebrero.png">
-        <img src="./img/clubs/cfa.png">
-        <img src="./img/clubs/general-vedia.png">
-        <img src="./img/clubs/la-leonesa.png">
-        <img src="./img/clubs/palermo-cap.png">
-        <img src="./img/clubs/puerto-bermejo.png">
-        <img src="./img/clubs/zapallar.png">
-
-      </div>
+      <div class="clubs-track" id="clubs-track"></div>
     </div>
 
   </div>
@@ -142,19 +115,7 @@
     </div>
   </div>
 
-  <div class="match-card">
-    <span class="date">2026-01-13</span>
-    <div class="teams">
-      <span>Palermo CAP</span>
-      <strong>65 - 60</strong>
-      <span>Puerto Bermejo</span>
-    </div>
-  </div>
-
 </section>
-
-<script src="./js/clubs.js"></script>
-<script src="./js/main.js"></script>
 
 </body>
 </html>
