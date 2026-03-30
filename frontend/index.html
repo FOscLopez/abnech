@@ -7,18 +7,30 @@
 
   <link rel="stylesheet" href="./css/style.css">
 
+  <!-- FUENTES -->
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <script defer src="./js/main.js"></script>
+  <script defer src="./js/clubs.js"></script>
 </head>
 
 <body>
 
-<!-- HEADER -->
+<!-- HEADER PRO -->
 <header class="header">
-  <nav>
-    <a href="#hero">Inicio</a>
-    <a href="#fixture">Fixture</a>
-    <a href="#clubs">Clubes</a>
-  </nav>
+  <div class="header-inner">
+
+    <div class="logo-mini"></div>
+
+    <nav class="nav">
+      <a href="#hero" class="active">Inicio</a>
+      <a href="#fixture">Fixture</a>
+      <a href="#clubs">Clubes</a>
+
+      <span class="nav-indicator"></span>
+    </nav>
+
+  </div>
 </header>
 
 <!-- HERO -->
@@ -32,7 +44,8 @@
 
     <div class="hero-text">
       <h1>ABNECH <span>BASKET</span></h1>
-      <p>Liga Regional del Nordeste Chaqueño</p>
+      <p class="subtitle">Liga Regional del Nordeste Chaqueño</p>
+
       <a href="#fixture" class="primary-btn">Ver Fixture</a>
     </div>
 
@@ -60,7 +73,7 @@
       <img src="./img/clubs/la-leonesa.png">
       <img src="./img/clubs/palermo-cap.png">
       <img src="./img/clubs/puerto-bermejo.png">
-      <img src="./img/clubs/zapallar.png">
+      <img src="./img/clubs/zapallar.png>
 
     </div>
   </div>
@@ -68,18 +81,17 @@
 </section>
 
 <!-- CLUBES -->
-<section id="clubs" class="clubs">
+<section id="clubs" class="clubs reveal">
   <h2><span>CLUBES</span> PARTICIPANTES</h2>
   <div id="clubs-container" class="club-grid"></div>
 </section>
 
 <!-- PROXIMA FECHA -->
-<section class="next-match">
+<section class="next-match reveal">
 
   <h2>PRÓXIMA FECHA</h2>
 
   <div class="match-highlight">
-
     <div class="team">
       <img src="./img/clubs/funebrero.png">
       <p>Funebrero</p>
@@ -91,7 +103,6 @@
       <img src="./img/clubs/union.png">
       <p>Unión</p>
     </div>
-
   </div>
 
   <div class="match-info">
@@ -101,7 +112,7 @@
 </section>
 
 <!-- FIXTURE -->
-<section id="fixture" class="fixture">
+<section id="fixture" class="fixture reveal">
 
   <h2><span>FIXTURE</span></h2>
 
@@ -115,9 +126,6 @@
   </div>
 
 </section>
-
-<script src="./js/clubs.js"></script>
-<script src="./js/main.js"></script>
 
 </body>
 </html>

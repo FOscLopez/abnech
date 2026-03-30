@@ -1,18 +1,45 @@
-// CLUBES DINÁMICOS
-const container = document.getElementById("clubs-container");
+// HEADER SCROLL
+const header = document.querySelector(".header");
 
-if (container && typeof clubs !== "undefined") {
-  clubs.forEach(club => {
-    const card = document.createElement("a");
+window.addEventListener("scroll", () => {
+  if (window.scrollY > 50) {
+    header.classList.add("scrolled");
+  } else {
+    header.classList.remove("scrolled");
+  }
+});
 
-    card.href = club.link;
-    card.className = "club-card";
+// NAV INDICATOR
+const links = document.querySelectorAll(".nav a");
+const indicator = document.querySelector(".nav-indicator");
 
-    card.innerHTML = `
-      <img src="${club.img}">
-      <p>${club.name}</p>
-    `;
+function moveIndicator(el){
+  indicator.style.width = el.offsetWidth + "px";
+  indicator.style.left = el.offsetLeft + "px";
+}
 
-    container.appendChild(card);
+links.forEach(link=>{
+  link.addEventListener("click",()=>{
+    links.forEach(l=>l.classList.remove("active"));
+    link.classList.add("active");
+    moveIndicator(link);
+  });
+});
+
+moveIndicator(links[0]);
+
+// SCROLL REVEAL
+const reveals = document.querySelectorAll(".reveal");
+
+function reveal(){
+  const trigger = window.innerHeight * 0.85;
+
+  reveals.forEach(el=>{
+    if(el.getBoundingClientRect().top < trigger){
+      el.classList.add("active");
+    }
   });
 }
+
+window.addEventListener("scroll", reveal);
+window.addEventListener("load", reveal);

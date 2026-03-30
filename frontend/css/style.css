@@ -8,36 +8,68 @@ body{
   font-family:'Poppins',sans-serif;
   background: radial-gradient(circle at 50% 30%, #0f172a, #020617 70%);
   color:#e5e7eb;
+  overflow-x:hidden;
 }
 
-/* HEADER */
+/* ================= HEADER PRO ================= */
+
 .header{
   position:fixed;
   top:0;
   width:100%;
-  background:rgba(2,6,23,0.8);
-  padding:10px 20px;
   z-index:100;
+  background:rgba(2,6,23,0.5);
+  backdrop-filter:blur(10px);
+  transition:.3s;
 }
 
-.header nav{
+.header.scrolled{
+  background:rgba(2,6,23,0.95);
+  box-shadow:0 8px 25px rgba(0,0,0,.6);
+}
+
+.header-inner{
+  max-width:1200px;
+  margin:auto;
   display:flex;
-  gap:20px;
-  justify-content:flex-end;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 20px;
 }
 
-.header a{
-  color:#fff;
+/* NAV */
+.nav{
+  position:relative;
+  display:flex;
+  gap:25px;
+}
+
+.nav a{
+  color:#cbd5f5;
   text-decoration:none;
+  font-size:.9rem;
   opacity:.7;
+  transition:.3s;
 }
 
-.header a:hover{
+.nav a:hover,
+.nav a.active{
   color:#ff6b00;
   opacity:1;
 }
 
-/* HERO */
+/* INDICADOR */
+.nav-indicator{
+  position:absolute;
+  bottom:-4px;
+  height:2px;
+  width:0;
+  background:#ff6b00;
+  transition:.3s;
+}
+
+/* ================= HERO ================= */
+
 .hero{
   padding-top:80px;
 }
@@ -47,31 +79,32 @@ body{
   align-items:center;
   justify-content:center;
   gap:80px;
-  min-height:80vh;
+  min-height:90vh;
   padding:20px;
 }
 
 /* LOGO */
 .hero-logo img{
-  width:350px;
-  max-width:90%;
+  width:340px;
+  animation:logoPulse 3s infinite;
 }
 
 /* TEXTO */
 .hero-text{
-  max-width:400px;
+  max-width:420px;
 }
 
 .hero h1{
   font-family:'Bebas Neue';
   font-size:5rem;
+  line-height:0.9;
 }
 
 .hero h1 span{
   color:#ff6b00;
 }
 
-.hero p{
+.subtitle{
   margin-top:10px;
   color:#9ca3af;
 }
@@ -79,15 +112,22 @@ body{
 /* BOTON */
 .primary-btn{
   display:inline-block;
-  margin-top:20px;
-  padding:12px 28px;
-  background:#ff6b00;
-  color:white;
-  border-radius:8px;
+  margin-top:25px;
+  padding:14px 32px;
+  border-radius:10px;
+  background:linear-gradient(135deg,#ff6b00,#ff8c00);
+  color:#fff;
   text-decoration:none;
+  box-shadow:0 0 20px rgba(255,120,0,.5);
+  transition:.2s;
 }
 
-/* BANNER */
+.primary-btn:hover{
+  transform:scale(1.05);
+}
+
+/* ================= BANNER ================= */
+
 .clubs-banner{
   overflow:hidden;
   margin-top:20px;
@@ -95,13 +135,14 @@ body{
 
 .clubs-track{
   display:flex;
-  gap:60px;
+  gap:70px;
   width:max-content;
-  animation:scroll 25s linear infinite;
+  animation:scroll 30s linear infinite;
 }
 
 .clubs-track img{
   height:45px;
+  opacity:.9;
 }
 
 @keyframes scroll{
@@ -109,7 +150,8 @@ body{
   to{transform:translateX(-50%);}
 }
 
-/* CLUBES */
+/* ================= CLUBES ================= */
+
 .clubs{
   padding:80px 20px;
   text-align:center;
@@ -135,10 +177,11 @@ body{
 .club-card{
   background:#0b1220;
   padding:20px;
-  border-radius:12px;
+  border-radius:14px;
   text-align:center;
-  color:white;
   text-decoration:none;
+  color:white;
+  transition:.25s;
 }
 
 .club-card img{
@@ -146,10 +189,16 @@ body{
   margin-bottom:10px;
 }
 
-/* MATCH */
+.club-card:hover{
+  transform:translateY(-8px);
+  box-shadow:0 0 20px rgba(255,120,0,.2);
+}
+
+/* ================= MATCH ================= */
+
 .next-match{
-  text-align:center;
   padding:80px 20px;
+  text-align:center;
 }
 
 .match-highlight{
@@ -164,11 +213,12 @@ body{
 }
 
 .vs{
+  font-size:1.5rem;
   color:#ff6b00;
-  font-weight:bold;
 }
 
-/* FIXTURE */
+/* ================= FIXTURE ================= */
+
 .fixture{
   padding:80px 20px;
 }
@@ -186,13 +236,34 @@ body{
   justify-content:space-between;
 }
 
-/* MOBILE */
+/* ================= ANIMACIONES ================= */
+
+@keyframes logoPulse{
+  0%{transform:scale(1);}
+  50%{transform:scale(1.05);}
+  100%{transform:scale(1);}
+}
+
+/* SCROLL REVEAL */
+.reveal{
+  opacity:0;
+  transform:translateY(40px);
+  transition:.8s;
+}
+
+.reveal.active{
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* ================= MOBILE ================= */
+
 @media(max-width:768px){
 
   .hero-container{
     flex-direction:column;
-    text-align:center;
     gap:30px;
+    text-align:center;
   }
 
   .hero h1{
