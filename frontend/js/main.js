@@ -1,45 +1,57 @@
-// HEADER SCROLL
-const header = document.querySelector(".header");
+// =========================
+// MODAL CLUB PRO
+// =========================
 
-window.addEventListener("scroll", () => {
-  if (window.scrollY > 50) {
-    header.classList.add("scrolled");
-  } else {
-    header.classList.remove("scrolled");
-  }
+const modal = document.createElement("div");
+modal.className = "club-modal";
+
+modal.innerHTML = `
+  <div class="modal-content">
+    <span class="modal-close">&times;</span>
+
+    <div class="modal-header">
+      <img id="modal-logo">
+      <h2 id="modal-name"></h2>
+    </div>
+
+    <div class="modal-body">
+      <p><strong>Ciudad:</strong> <span id="modal-city"></span></p>
+      <p><strong>Fundación:</strong> <span id="modal-year"></span></p>
+      <p><strong>Estadio:</strong> <span id="modal-stadium"></span></p>
+    </div>
+  </div>
+`;
+
+document.body.appendChild(modal);
+
+const closeBtn = modal.querySelector(".modal-close");
+
+// cerrar modal
+closeBtn.onclick = () => modal.classList.remove("active");
+
+window.onclick = (e) => {
+  if (e.target === modal) modal.classList.remove("active");
+};
+
+// =========================
+// ACTIVAR DESDE CLUBES
+// =========================
+
+document.addEventListener("click", (e) => {
+  const card = e.target.closest(".club-card");
+  if (!card) return;
+
+  e.preventDefault();
+
+  const club = clubs.find(c => c.name === card.innerText.trim());
+
+  if (!club) return;
+
+  document.getElementById("modal-logo").src = club.img;
+  document.getElementById("modal-name").innerText = club.name;
+  document.getElementById("modal-city").innerText = club.city || "N/A";
+  document.getElementById("modal-year").innerText = club.year || "N/A";
+  document.getElementById("modal-stadium").innerText = club.stadium || "N/A";
+
+  modal.classList.add("active");
 });
-
-// NAV INDICATOR
-const links = document.querySelectorAll(".nav a");
-const indicator = document.querySelector(".nav-indicator");
-
-function moveIndicator(el){
-  indicator.style.width = el.offsetWidth + "px";
-  indicator.style.left = el.offsetLeft + "px";
-}
-
-links.forEach(link=>{
-  link.addEventListener("click",()=>{
-    links.forEach(l=>l.classList.remove("active"));
-    link.classList.add("active");
-    moveIndicator(link);
-  });
-});
-
-moveIndicator(links[0]);
-
-// SCROLL REVEAL
-const reveals = document.querySelectorAll(".reveal");
-
-function reveal(){
-  const trigger = window.innerHeight * 0.85;
-
-  reveals.forEach(el=>{
-    if(el.getBoundingClientRect().top < trigger){
-      el.classList.add("active");
-    }
-  });
-}
-
-window.addEventListener("scroll", reveal);
-window.addEventListener("load", reveal);

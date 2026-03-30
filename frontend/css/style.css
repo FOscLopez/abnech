@@ -274,3 +274,85 @@ body{
     width:200px;
   }
 }
+/* =========================
+   MODAL CLUB PRO
+========================= */
+
+.club-modal{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.7);
+  backdrop-filter: blur(6px);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  opacity: 0;
+  pointer-events: none;
+
+  transition: .3s;
+  z-index: 999;
+}
+
+.club-modal.active{
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* CONTENIDO */
+.modal-content{
+  background: #0b1220;
+  border-radius: 16px;
+  padding: 30px;
+  width: 90%;
+  max-width: 400px;
+
+  box-shadow: 0 20px 60px rgba(0,0,0,.8);
+
+  transform: translateY(40px) scale(.95);
+  transition: .3s;
+}
+
+.club-modal.active .modal-content{
+  transform: translateY(0) scale(1);
+}
+
+/* HEADER */
+.modal-header{
+  text-align: center;
+}
+
+.modal-header img{
+  height: 80px;
+  margin-bottom: 10px;
+}
+
+.modal-header h2{
+  font-family: 'Bebas Neue';
+  letter-spacing: 1px;
+}
+
+/* BODY */
+.modal-body{
+  margin-top: 20px;
+  font-size: .9rem;
+  color: #cbd5f5;
+}
+
+/* CLOSE */
+.modal-close{
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #fff;
+}
+
+/* MOBILE PRO */
+@media(max-width:480px){
+  .modal-content{
+    padding:20px;
+  }
+}
