@@ -1,84 +1,81 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="dark">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>ABNECH Basket</title>
 
-  <!-- SEO -->
-  <meta name="description" content="Liga ABNECH Basket - Resultados, fixture y clubes del Nordeste Chaqueño">
-
-  <!-- PERFORMANCE -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <!-- FUENTES -->
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
-  <!-- CSS -->
   <link rel="stylesheet" href="./css/style.css">
 
-  <!-- JS (DEFER SOLO ACÁ) -->
-  <script src="./js/clubs.js" defer></script>
-  <script src="./js/main.js" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
-<header class="main-header-pro">
-  <div class="header-inner">
-
-    <div class="fake-logo"></div>
-
-    <nav class="header-nav">
-      <a href="#hero" class="active">Inicio</a>
-      <a href="#fixture">Fixture</a>
-      <a href="#clubs">Clubes</a>
-      <span class="nav-indicator"></span>
-    </nav>
-
-  </div>
+<!-- HEADER -->
+<header class="header">
+  <nav>
+    <a href="#hero">Inicio</a>
+    <a href="#fixture">Fixture</a>
+    <a href="#clubs">Clubes</a>
+  </nav>
 </header>
 
 <!-- HERO -->
 <section id="hero" class="hero">
 
-  <div class="logo-elite">
-    <img src="./img/logo-abnech.png" loading="lazy">
-  </div>
+  <div class="hero-container">
 
-  <div class="hero-slider">
-    <div class="slide active"><img src="./img/slide1.jpg"></div>
-    <div class="slide"><img src="./img/slide2.jpg"></div>
-    <div class="slide"><img src="./img/slide3.jpg"></div>
-  </div>
+    <div class="hero-logo">
+      <img src="./img/logo-abnech.png">
+    </div>
 
-  <canvas id="particles"></canvas>
-
-  <div class="hero-content">
-
-    <h1>ABNECH <span>BASKET</span></h1>
-    <p class="subtitle">Liga Regional del Nordeste Chaqueño</p>
-
-    <a href="#fixture" class="primary-btn">Ver Fixture</a>
-
-    <!-- BANNER -->
-    <div class="clubs-banner">
-      <div class="clubs-track" id="clubs-track"></div>
+    <div class="hero-text">
+      <h1>ABNECH <span>BASKET</span></h1>
+      <p>Liga Regional del Nordeste Chaqueño</p>
+      <a href="#fixture" class="primary-btn">Ver Fixture</a>
     </div>
 
   </div>
+
+  <!-- BANNER -->
+  <div class="clubs-banner">
+    <div class="clubs-track">
+
+      <!-- 8 logos -->
+      <img src="./img/clubs/union.png">
+      <img src="./img/clubs/funebrero.png">
+      <img src="./img/clubs/cfa.png">
+      <img src="./img/clubs/general-vedia.png">
+      <img src="./img/clubs/la-leonesa.png">
+      <img src="./img/clubs/palermo-cap.png">
+      <img src="./img/clubs/puerto-bermejo.png">
+      <img src="./img/clubs/zapallar.png">
+
+      <!-- duplicado -->
+      <img src="./img/clubs/union.png">
+      <img src="./img/clubs/funebrero.png">
+      <img src="./img/clubs/cfa.png">
+      <img src="./img/clubs/general-vedia.png">
+      <img src="./img/clubs/la-leonesa.png">
+      <img src="./img/clubs/palermo-cap.png">
+      <img src="./img/clubs/puerto-bermejo.png">
+      <img src="./img/clubs/zapallar.png">
+
+    </div>
+  </div>
+
 </section>
 
 <!-- CLUBES -->
-<section id="clubs" class="clubs reveal">
+<section id="clubs" class="clubs">
   <h2><span>CLUBES</span> PARTICIPANTES</h2>
   <div id="clubs-container" class="club-grid"></div>
 </section>
 
 <!-- PROXIMA FECHA -->
-<section class="next-match reveal">
+<section class="next-match">
+
   <h2>PRÓXIMA FECHA</h2>
 
   <div class="match-highlight">
@@ -100,10 +97,12 @@
   <div class="match-info">
     25 Marzo - 21:30 hs
   </div>
+
 </section>
 
 <!-- FIXTURE -->
-<section id="fixture" class="fixture reveal">
+<section id="fixture" class="fixture">
+
   <h2><span>FIXTURE</span></h2>
 
   <div class="match-card">
@@ -116,6 +115,9 @@
   </div>
 
 </section>
+
+<script src="./js/clubs.js"></script>
+<script src="./js/main.js"></script>
 
 </body>
 </html>

@@ -4,25 +4,62 @@
   box-sizing:border-box;
 }
 
-body {
-  font-family:'Poppins', sans-serif;
+body{
+  font-family:'Poppins',sans-serif;
   background: radial-gradient(circle at 50% 30%, #0f172a, #020617 70%);
   color:#e5e7eb;
-  overflow-x:hidden;
+}
+
+/* HEADER */
+.header{
+  position:fixed;
+  top:0;
+  width:100%;
+  background:rgba(2,6,23,0.8);
+  padding:10px 20px;
+  z-index:100;
+}
+
+.header nav{
+  display:flex;
+  gap:20px;
+  justify-content:flex-end;
+}
+
+.header a{
+  color:#fff;
+  text-decoration:none;
+  opacity:.7;
+}
+
+.header a:hover{
+  color:#ff6b00;
+  opacity:1;
 }
 
 /* HERO */
 .hero{
-  height:100vh;
+  padding-top:80px;
+}
+
+.hero-container{
   display:flex;
   align-items:center;
   justify-content:center;
-  text-align:center;
+  gap:80px;
+  min-height:80vh;
+  padding:20px;
 }
 
-.hero-content{
-  max-width:1000px;
-  margin:auto;
+/* LOGO */
+.hero-logo img{
+  width:350px;
+  max-width:90%;
+}
+
+/* TEXTO */
+.hero-text{
+  max-width:400px;
 }
 
 .hero h1{
@@ -52,8 +89,8 @@ body {
 
 /* BANNER */
 .clubs-banner{
-  margin-top:40px;
   overflow:hidden;
+  margin-top:20px;
 }
 
 .clubs-track{
@@ -100,8 +137,8 @@ body {
   padding:20px;
   border-radius:12px;
   text-align:center;
-  text-decoration:none;
   color:white;
+  text-decoration:none;
 }
 
 .club-card img{
@@ -109,51 +146,60 @@ body {
   margin-bottom:10px;
 }
 
+/* MATCH */
+.next-match{
+  text-align:center;
+  padding:80px 20px;
+}
+
+.match-highlight{
+  display:flex;
+  justify-content:center;
+  gap:40px;
+  margin-top:20px;
+}
+
+.team img{
+  width:70px;
+}
+
+.vs{
+  color:#ff6b00;
+  font-weight:bold;
+}
+
 /* FIXTURE */
 .fixture{
   padding:80px 20px;
-  max-width:900px;
-  margin:auto;
-}
-
-.fixture h2{
-  font-family:'Bebas Neue';
-  font-size:2.5rem;
-  margin-bottom:30px;
-}
-
-.fixture h2 span{
-  color:#ff6b00;
 }
 
 .match-card{
   background:#0b1220;
   padding:20px;
   border-radius:12px;
+  max-width:700px;
+  margin:auto;
 }
 
 .teams{
   display:flex;
   justify-content:space-between;
-  margin-top:10px;
-}
-
-.teams strong{
-  color:#ff6b00;
 }
 
 /* MOBILE */
-@media (max-width:768px){
+@media(max-width:768px){
+
+  .hero-container{
+    flex-direction:column;
+    text-align:center;
+    gap:30px;
+  }
 
   .hero h1{
     font-size:3rem;
   }
 
-  .hero h1 span{
-    display:block;
-  }
-
-  .clubs-track img{
-    height:35px;
+  .hero-logo img{
+    width:200px;
   }
 }
