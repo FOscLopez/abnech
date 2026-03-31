@@ -29,23 +29,31 @@ document.addEventListener("DOMContentLoaded", () => {
   // =========================
   const container = document.getElementById("clubs-container");
 
-  if (container && window.clubs) {
-    container.innerHTML = "";
+if (container && window.clubs) {
+  container.innerHTML = "";
 
-    window.clubs.forEach(club => {
-      const card = document.createElement("a");
+  window.clubs.forEach(club => {
+    const card = document.createElement("a");
+    card.href = club.link;
+    card.className = "club-card";
 
-      card.href = club.link;
-      card.className = "club-card";
+    const img = document.createElement("img");
+    img.src = club.img;
 
-      card.innerHTML = `
-        <img src="${club.img}" alt="${club.name}">
-        <p>${club.name}</p>
-      `;
+    // 🔥 FIX: evita romper si imagen falla
+    img.onerror = () => {
+      img.src = "./img/clubs/default.png"; // poné un placeholder
+    };
 
-      container.appendChild(card);
-    });
-  }
+    const name = document.createElement("p");
+    name.textContent = club.name;
+
+    card.appendChild(img);
+    card.appendChild(name);
+
+    container.appendChild(card);
+  });
+}
 
   // =========================
   // BANNER (IMPORTANTE)
