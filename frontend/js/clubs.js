@@ -1,4 +1,4 @@
-const clubs = [
+window.clubs = [
   {
     name: "UNIÓN",
     img: "./img/clubs/union.png",
@@ -19,48 +19,36 @@ const clubs = [
     name: "CFA",
     img: "./img/clubs/cfa.png",
     link: "#",
-    city: "Resistencia",
-    year: "2010",
-    stadium: "Club CFA"
+    city: "Resistencia"
   },
   {
     name: "GENERAL VEDIA",
     img: "./img/clubs/general-vedia.png",
     link: "#",
-    city: "Gral. Vedia",
-    year: "2001",
-    stadium: "Estadio Vedia"
+    city: "Gral. Vedia"
   },
   {
     name: "LA LEONESA",
     img: "./img/clubs/la-leonesa.png",
     link: "#",
-    city: "La Leonesa",
-    year: "2003",
-    stadium: "Club Leonesa"
+    city: "La Leonesa"
   },
   {
     name: "PALERMO CAP",
     img: "./img/clubs/palermo-cap.png",
     link: "#",
-    city: "Resistencia",
-    year: "1995",
-    stadium: "Estadio CAP"
+    city: "Resistencia"
   },
   {
     name: "PUERTO BERMEJO",
     img: "./img/clubs/puerto-bermejo.png",
     link: "#",
-    city: "Pto. Bermejo",
-    year: "2008",
-    stadium: "Club Bermejo"
+    city: "Bermejo"
   },
   {
     name: "ZAPALLAR",
     img: "./img/clubs/zapallar.png",
     link: "#",
-    city: "Zapallar",
-    year: "2012",
-    stadium: "Club Zapallar"
+    city: "Zapallar"
   }
 ];

@@ -22,16 +22,49 @@ modal.innerHTML = `
   </div>
 `;
 
-document.body.appendChild(modal);
+document.addEventListener("DOMContentLoaded", () => {
 
-const closeBtn = modal.querySelector(".modal-close");
+  // =========================
+  // CLUBES GRID
+  // =========================
+  const container = document.getElementById("clubs-container");
 
-// cerrar modal
-closeBtn.onclick = () => modal.classList.remove("active");
+  if (container && window.clubs) {
+    container.innerHTML = "";
 
-window.onclick = (e) => {
-  if (e.target === modal) modal.classList.remove("active");
-};
+    window.clubs.forEach(club => {
+      const card = document.createElement("a");
+
+      card.href = club.link;
+      card.className = "club-card";
+
+      card.innerHTML = `
+        <img src="${club.img}" alt="${club.name}">
+        <p>${club.name}</p>
+      `;
+
+      container.appendChild(card);
+    });
+  }
+
+  // =========================
+  // BANNER (IMPORTANTE)
+  // =========================
+  const track = document.querySelector(".clubs-track");
+
+  if (track && window.clubs) {
+    track.innerHTML = "";
+
+    const duplicated = [...window.clubs, ...window.clubs];
+
+    duplicated.forEach(club => {
+      const img = document.createElement("img");
+      img.src = club.img;
+      track.appendChild(img);
+    });
+  }
+
+});
 
 // =========================
 // ACTIVAR DESDE CLUBES
