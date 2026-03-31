@@ -520,3 +520,46 @@ button:active,
   transform: scale(1.2);
   filter: drop-shadow(0 0 12px rgba(255,140,0,0.9));
 }
+/* TRANSICIÓN SUAVE ENTRE SECCIONES */
+section{
+  transition: all .6s ease;
+}
+
+/* EFECTO PROFUNDIDAD */
+section:not(.active-section){
+  opacity: 0.6;
+  transform: scale(0.98);
+  filter: blur(2px);
+}
+
+section.active-section{
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0);
+}
+body{
+  scroll-behavior: smooth;
+}
+
+/* suaviza todo */
+*{
+  transition: background .3s ease, color .3s ease;
+}
+.hero{
+  perspective: 1000px;
+}
+
+.hero-logo img{
+  transition: transform .4s ease;
+}
+
+.hero:hover .hero-logo img{
+  transform: scale(1.05) rotateX(3deg);
+}
+.club-card{
+  transform-style: preserve-3d;
+}
+
+.club-card:hover{
+  transform: translateY(-10px) scale(1.05) rotateX(3deg);
+}

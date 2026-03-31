@@ -143,3 +143,26 @@ function revealOnScroll(){
 
 window.addEventListener("scroll", revealOnScroll);
 window.addEventListener("load", revealOnScroll);
+// ACTIVE SECTION (APP FEEL)
+const sections = document.querySelectorAll("section");
+
+function updateActiveSection(){
+  let current = null;
+
+  sections.forEach(section => {
+    const rect = section.getBoundingClientRect();
+
+    if(rect.top < window.innerHeight * 0.5 && rect.bottom > window.innerHeight * 0.3){
+      current = section;
+    }
+  });
+
+  sections.forEach(sec => sec.classList.remove("active-section"));
+
+  if(current){
+    current.classList.add("active-section");
+  }
+}
+
+window.addEventListener("scroll", updateActiveSection);
+window.addEventListener("load", updateActiveSection);
