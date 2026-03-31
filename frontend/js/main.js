@@ -5,34 +5,25 @@ document.addEventListener("DOMContentLoaded", () => {
   const header = document.querySelector(".header");
   const links = document.querySelectorAll(".nav a");
 
-  if (!window.clubs) {
-    console.error("clubs.js no cargó");
-    return;
-  }
-
   // =========================
-  // HERO ANIMACIÓN ENTRADA
+  // LOADER
   // =========================
 
-  const hero = document.querySelector(".hero");
-  setTimeout(() => {
-    hero.classList.add("loaded");
-  }, 200);
-
-  // =========================
-  // HEADER DINÁMICO (SCROLL)
-  // =========================
-
-  window.addEventListener("scroll", () => {
-    if (window.scrollY > 50) {
-      header.classList.add("scrolled");
-    } else {
-      header.classList.remove("scrolled");
-    }
+  window.addEventListener("load", () => {
+    const loader = document.getElementById("loader");
+    setTimeout(() => loader.classList.add("hidden"), 800);
   });
 
   // =========================
-  // INDICADOR ACTIVO (NAV)
+  // HEADER SCROLL
+  // =========================
+
+  window.addEventListener("scroll", () => {
+    header.classList.toggle("scrolled", window.scrollY > 50);
+  });
+
+  // =========================
+  // NAV INDICATOR
   // =========================
 
   const indicator = document.createElement("span");
@@ -44,46 +35,13 @@ document.addEventListener("DOMContentLoaded", () => {
     indicator.style.left = el.offsetLeft + "px";
   }
 
-  // click
+  if (links[0]) moveIndicator(links[0]);
+
   links.forEach(link => {
     link.addEventListener("click", () => {
       links.forEach(l => l.classList.remove("active"));
       link.classList.add("active");
       moveIndicator(link);
-    });
-  });
-
-  // inicial
-  if (links[0]) {
-    links[0].classList.add("active");
-    moveIndicator(links[0]);
-  }
-
-  // =========================
-  // SCROLL DETECTOR SECCIONES
-  // =========================
-
-  const sections = document.querySelectorAll("section");
-
-  window.addEventListener("scroll", () => {
-    let current = "";
-
-    sections.forEach(section => {
-      const top = section.offsetTop - 120;
-      const height = section.offsetHeight;
-
-      if (scrollY >= top && scrollY < top + height) {
-        current = section.getAttribute("id");
-      }
-    });
-
-    links.forEach(link => {
-      link.classList.remove("active");
-
-      if (link.getAttribute("href") === "#" + current) {
-        link.classList.add("active");
-        moveIndicator(link);
-      }
     });
   });
 
@@ -100,36 +58,28 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // =========================
-  // MODAL PRO
+  // SCROLL REVEAL (APP STYLE)
   // =========================
 
-  const modal = document.createElement("div");
-  modal.className = "club-modal";
+  const sections = document.querySelectorAll("section");
 
-  modal.innerHTML = `
-    <div class="modal-content">
-      <span class="modal-close">&times;</span>
+  function reveal() {
+    const trigger = window.innerHeight * 0.85;
 
-      <div class="modal-header">
-        <img id="modal-logo">
-        <h2 id="modal-name"></h2>
-      </div>
+    sections.forEach(sec => {
+      const top = sec.getBoundingClientRect().top;
+      if (top < trigger) sec.classList.add("visible");
+    });
+  }
 
-      <div class="modal-body">
-        <p><strong>Ciudad:</strong> <span id="modal-city"></span></p>
-        <p><strong>Fundación:</strong> <span id="modal-year"></span></p>
-        <p><strong>Estadio:</strong> <span id="modal-stadium"></span></p>
-      </div>
-    </div>
-  `;
-
-  document.body.appendChild(modal);
+  window.addEventListener("scroll", reveal);
+  reveal();
 
   // =========================
   // CLUBES
   // =========================
 
-  if (container) {
+  if (container && window.clubs) {
     container.innerHTML = "";
 
     window.clubs.forEach(club => {
@@ -140,7 +90,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const img = document.createElement("img");
       img.src = club.img;
-      img.onerror = () => img.remove();
 
       const name = document.createElement("p");
       name.textContent = club.name;
@@ -148,16 +97,14 @@ document.addEventListener("DOMContentLoaded", () => {
       card.appendChild(img);
       card.appendChild(name);
 
-      card.addEventListener("click", (e) => {
-        e.preventDefault();
+      // 🔥 GLOW DINÁMICO
+      card.addEventListener("mousemove", e => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
 
-        document.getElementById("modal-logo").src = club.img;
-        document.getElementById("modal-name").innerText = club.name;
-        document.getElementById("modal-city").innerText = club.city || "No disponible";
-        document.getElementById("modal-year").innerText = club.year || "-";
-        document.getElementById("modal-stadium").innerText = club.stadium || "-";
-
-        modal.classList.add("active");
+        card.style.setProperty("--x", x + "px");
+        card.style.setProperty("--y", y + "px");
       });
 
       container.appendChild(card);
@@ -168,7 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // BANNER
   // =========================
 
-  if (track) {
+  if (track && window.clubs) {
     track.innerHTML = "";
 
     const duplicated = [...window.clubs, ...window.clubs];
@@ -179,18 +126,5 @@ document.addEventListener("DOMContentLoaded", () => {
       track.appendChild(img);
     });
   }
-
-  // =========================
-  // CERRAR MODAL
-  // =========================
-
-  modal.addEventListener("click", (e) => {
-    if (
-      e.target.classList.contains("club-modal") ||
-      e.target.classList.contains("modal-close")
-    ) {
-      modal.classList.remove("active");
-    }
-  });
 
 });

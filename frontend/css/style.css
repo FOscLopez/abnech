@@ -333,3 +333,80 @@ body{
   background:linear-gradient(90deg,#ff6b00,#ff8c00);
   transition:.3s;
 }
+/* =========================
+   🔥 CARD HOVER ESPN
+========================= */
+
+.club-card{
+  position: relative;
+  overflow: hidden;
+}
+
+.club-card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: radial-gradient(circle at var(--x) var(--y), rgba(255,120,0,0.25), transparent 60%);
+  opacity:0;
+  transition:.3s;
+}
+
+.club-card:hover::before{
+  opacity:1;
+}
+
+.club-card:hover{
+  transform: translateY(-10px) scale(1.05);
+  box-shadow:
+    0 20px 50px rgba(0,0,0,.8),
+    0 0 25px rgba(255,120,0,.25);
+}
+
+/* =========================
+   🔥 LOADER PROFESIONAL
+========================= */
+
+.loader{
+  position: fixed;
+  inset: 0;
+  background: #020617;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+}
+
+.loader.hidden{
+  opacity:0;
+  pointer-events:none;
+  transition:1s;
+}
+
+.loader-logo{
+  font-family:'Bebas Neue';
+  font-size:3rem;
+  color:#ff6b00;
+  letter-spacing:3px;
+  animation: pulse 1.2s infinite;
+}
+
+@keyframes pulse{
+  0%{opacity:.4; transform:scale(.95);}
+  50%{opacity:1; transform:scale(1.05);}
+  100%{opacity:.4; transform:scale(.95);}
+}
+
+/* =========================
+   🔥 TRANSICIÓN SECCIONES
+========================= */
+
+section{
+  opacity:0;
+  transform: translateY(40px);
+  transition: all .8s ease;
+}
+
+section.visible{
+  opacity:1;
+  transform: translateY(0);
+}
