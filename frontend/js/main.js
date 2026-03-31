@@ -120,3 +120,26 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("scroll", revealOnScroll);
   revealOnScroll(); // 👈 CLAVE
 });
+// HERO LOAD ANIMATION (SAFE)
+window.addEventListener("load", () => {
+  const hero = document.getElementById("hero");
+  if(hero){
+    setTimeout(() => hero.classList.add("loaded"), 100);
+  }
+});
+// SCROLL REVEAL SAFE
+const reveals = document.querySelectorAll(".reveal");
+
+function revealOnScroll(){
+  const trigger = window.innerHeight * 0.9;
+
+  reveals.forEach(el=>{
+    const top = el.getBoundingClientRect().top;
+    if(top < trigger){
+      el.classList.add("active");
+    }
+  });
+}
+
+window.addEventListener("scroll", revealOnScroll);
+window.addEventListener("load", revealOnScroll);

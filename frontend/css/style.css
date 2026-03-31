@@ -247,13 +247,13 @@ body{
 /* SCROLL REVEAL */
 .reveal{
   opacity:0;
-  transform:translateY(40px);
-  transition:.8s;
+  transform: translateY(40px);
+  transition: all .8s ease;
 }
 
 .reveal.active{
   opacity:1;
-  transform:translateY(0);
+  transform: translateY(0);
 }
 
 /* ================= MOBILE ================= */
@@ -461,4 +461,62 @@ body{
 .clubs-track img:hover{
   transform: scale(1.25);
   filter: drop-shadow(0 0 10px rgba(255,140,0,0.8));
+}
+/* HERO ENTRADA */
+.hero-logo img,
+.hero-text{
+  opacity:0;
+  transform: translateY(30px) scale(.95);
+}
+
+/* ACTIVACIÓN */
+.hero.loaded .hero-logo img{
+  animation: heroLogoIn 1s ease forwards;
+}
+
+.hero.loaded .hero-text{
+  animation: heroTextIn 1.2s ease forwards;
+  animation-delay:.3s;
+}
+
+/* KEYFRAMES */
+@keyframes heroLogoIn{
+  to{
+    opacity:1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes heroTextIn{
+  to{
+    opacity:1;
+    transform: translateY(0);
+  }
+}
+html{
+  scroll-behavior: smooth;
+}
+/* CLICK EFECTO */
+a, button, .club-card{
+  transition: transform .15s ease;
+}
+
+a:active,
+button:active,
+.club-card:active{
+  transform: scale(0.95);
+}
+
+/* HOVER MÁS FLUIDO */
+.club-card,
+.primary-btn{
+  transition: all .25s ease;
+}
+.clubs-track img{
+  transition:.3s;
+}
+
+.clubs-track img:hover{
+  transform: scale(1.2);
+  filter: drop-shadow(0 0 12px rgba(255,140,0,0.9));
 }
