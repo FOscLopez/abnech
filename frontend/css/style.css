@@ -356,3 +356,11 @@ body{
     padding:20px;
   }
 }
+.club-card {
+  transition: all 0.25s ease;
+}
+
+.club-card:hover {
+  transform: translateY(-8px) scale(1.05);
+  box-shadow: 0 10px 25px rgba(0,0,0,.6);
+}
