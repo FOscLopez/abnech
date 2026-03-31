@@ -1,121 +1,119 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ABNECH Basket</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ABNECH Basket</title>
 
-  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/style.css">
 
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
-  <script src="./js/clubs.js" defer></script>
-  <script src="./js/main.js" defer></script>
+  <script src="./js/clubs.js" defer></script>
+  <script src="./js/main.js" defer></script>
 </head>
 
 <body>
 
 <header class="header">
-  <div class="header-inner">
+  <div class="header-inner">
 
-    <div class="logo-mini"></div>
+    <div class="logo-mini"></div>
 
-    <nav class="nav">
-      <a href="#hero" class="active">Inicio</a>
-      <a href="#fixture">Fixture</a>
-      <a href="#clubs">Clubes</a>
-      <a href="#reglamento">Reglamento</a>
+    <nav class="nav">
+      <a href="#hero" class="active">Inicio</a>
+      <a href="#fixture">Fixture</a>
+      <a href="#clubs">Clubes</a>
+      <a href="#reglamento">Reglamento</a>
 
-      <span class="nav-indicator"></span>
-    </nav>
+      <span class="nav-indicator"></span>
+    </nav>
 
-  </div>
+  </div>
 </header>
 
 <section id="hero" class="hero">
-  <div class="hero-container">
+  <div class="hero-container">
 
-    <div class="hero-logo">
-      <img src="./img/logo-abnech.png">
-    </div>
+    <div class="hero-logo">
+      <img src="./img/logo-abnech.png">
+    </div>
 
-    <div class="hero-text">
-      <h1>ABNECH <span>BASKET</span></h1>
-      <p class="subtitle">Liga Regional del Nordeste Chaqueño</p>
-      <a href="#fixture" class="primary-btn">Ver Fixture</a>
-    </div>
+    <div class="hero-text">
+      <h1>ABNECH <span>BASKET</span></h1>
+      <p class="subtitle">Liga Regional del Nordeste Chaqueño</p>
+      <a href="#fixture" class="primary-btn">Ver Fixture</a>
+    </div>
 
-  </div>
+  </div>
 
-  <div class="clubs-banner">
-    <div class="clubs-track" id="clubs-track"></div>
-  </div>
+  <div class="clubs-banner">
+    <div class="clubs-track" id="clubs-track"></div>
+  </div>
 </section>
 
 <section id="clubs" class="clubs reveal">
-  <h2><span>CLUBES</span> PARTICIPANTES</h2>
-  <div id="clubs-container" class="club-grid"></div>
+  <h2><span>CLUBES</span> PARTICIPANTES</h2>
+  <div id="clubs-container" class="club-grid"></div>
 </section>
 
 <section class="next-match reveal">
-  <h2>PRÓXIMA FECHA</h2>
+  <h2>PRÓXIMA FECHA</h2>
 
-  <div class="match-highlight">
-    <div class="team">
-      <img src="./img/clubs/funebrero.png">
-      <p>Funebrero</p>
-    </div>
+  <div class="match-highlight">
+    <div class="team">
+      <img src="./img/clubs/funebrero.png">
+      <p>Funebrero</p>
+    </div>
 
-    <div class="vs">VS</div>
+    <div class="vs">VS</div>
 
-    <div class="team">
-      <img src="./img/clubs/union.png">
-      <p>Unión</p>
-    </div>
-  </div>
+    <div class="team">
+      <img src="./img/clubs/union.png">
+      <p>Unión</p>
+    </div>
+  </div>
 
-  <div class="match-info">
-    25 Marzo - 21:30 hs
-  </div>
+  <div class="match-info">
+    25 Marzo - 21:30 hs
+  </div>
 </section>
 
 <section id="fixture" class="fixture reveal">
-  <h2><span>FIXTURE</span></h2>
+  <h2><span>FIXTURE</span></h2>
 
-  <div class="match-card">
-    <span class="date">2025-06-21</span>
-    <div class="teams">
-      <span>Funebrero</span>
-      <strong>89 - 70</strong>
-      <span>Unión</span>
-    </div>
-  </div>
+  <div class="match-card">
+    <span class="date">2025-06-21</span>
+    <div class="teams">
+      <span>Funebrero</span>
+      <strong>89 - 70</strong>
+      <span>Unión</span>
+    </div>
+  </div>
 </section>
 
-<!-- 🔥 NUEVA SECCIÓN REGLAMENTO -->
+<!-- REGLAMENTO -->
 <section id="reglamento" class="fixture reveal">
 
-  <h2><span>REGLAMENTO</span></h2>
+  <h2><span>REGLAMENTO</span></h2>
 
-  <div class="match-card" style="text-align:center">
+  <div class="match-card" style="text-align:center">
 
-    <p style="margin-bottom:15px">
-      Consultá el reglamento oficial de la liga
-    </p>
+    <p style="margin-bottom:15px">
+      Consultá el reglamento oficial de la liga
+    </p>
 
-    <!-- VER PDF -->
-    <a href="./docs/reglamento.pdf" target="_blank" class="primary-btn">
-      Ver Reglamento
-    </a>
+    <a href="./docs/reglamento.pdf" target="_blank" class="primary-btn">
+      Ver Reglamento
+    </a>
 
-    <!-- DESCARGAR -->
-    <br><br>
+    <br><br>
 
-    <a href="./docs/reglamento.pdf" download class="primary-btn" style="background:#1e293b">
-      Descargar PDF
-    </a>
+    <a href="./docs/reglamento.pdf" download class="primary-btn" style="background:#1e293b">
+      Descargar PDF
+    </a>
 
-  </div>
+  </div>
 
 </section>
 
