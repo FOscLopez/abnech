@@ -3,36 +3,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const container = document.getElementById("clubs-container");
     const track = document.getElementById("clubs-track");
   
-    // =========================
-    // MODAL
-    // =========================
-  
-    const modal = document.createElement("div");
-    modal.className = "club-modal";
-  
-    modal.innerHTML = `
-      <div class="modal-content">
-        <span class="modal-close">&times;</span>
-        <div class="modal-header">
-          <img id="modal-logo">
-          <h2 id="modal-name"></h2>
-        </div>
-        <div class="modal-body">
-          <p><strong>Ciudad:</strong> <span id="modal-city"></span></p>
-          <p><strong>Fundación:</strong> <span id="modal-year"></span></p>
-          <p><strong>Estadio:</strong> <span id="modal-stadium"></span></p>
-        </div>
-      </div>
-    `;
-  
-    document.body.appendChild(modal);
+    if (!window.clubs) {
+      console.error("clubs.js no cargó");
+      return;
+    }
   
     // =========================
     // CLUBES
     // =========================
   
-    if (container && window.clubs) {
-  
+    if (container) {
       container.innerHTML = "";
   
       window.clubs.forEach(club => {
@@ -52,18 +32,6 @@ document.addEventListener("DOMContentLoaded", () => {
         card.appendChild(img);
         card.appendChild(name);
   
-        card.addEventListener("click", (e) => {
-          e.preventDefault();
-  
-          document.getElementById("modal-logo").src = club.img;
-          document.getElementById("modal-name").innerText = club.name;
-          document.getElementById("modal-city").innerText = club.city || "N/A";
-          document.getElementById("modal-year").innerText = club.year || "N/A";
-          document.getElementById("modal-stadium").innerText = club.stadium || "N/A";
-  
-          modal.classList.add("active");
-        });
-  
         container.appendChild(card);
       });
     }
@@ -72,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // BANNER
     // =========================
   
-    if (track && window.clubs) {
+    if (track) {
       track.innerHTML = "";
   
       const duplicated = [...window.clubs, ...window.clubs];
@@ -83,12 +51,5 @@ document.addEventListener("DOMContentLoaded", () => {
         track.appendChild(img);
       });
     }
-  
-    // cerrar modal
-    modal.addEventListener("click", (e) => {
-      if (e.target.classList.contains("club-modal") || e.target.classList.contains("modal-close")) {
-        modal.classList.remove("active");
-      }
-    });
   
   });
