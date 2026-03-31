@@ -2,6 +2,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const container = document.getElementById("clubs-container");
   const track = document.getElementById("clubs-track");
+  const header = document.querySelector(".header");
+  const links = document.querySelectorAll(".nav a");
 
   if (!window.clubs) {
     console.error("clubs.js no cargó");
@@ -9,7 +11,96 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================
-  // MODAL
+  // HERO ANIMACIÓN ENTRADA
+  // =========================
+
+  const hero = document.querySelector(".hero");
+  setTimeout(() => {
+    hero.classList.add("loaded");
+  }, 200);
+
+  // =========================
+  // HEADER DINÁMICO (SCROLL)
+  // =========================
+
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > 50) {
+      header.classList.add("scrolled");
+    } else {
+      header.classList.remove("scrolled");
+    }
+  });
+
+  // =========================
+  // INDICADOR ACTIVO (NAV)
+  // =========================
+
+  const indicator = document.createElement("span");
+  indicator.classList.add("nav-indicator");
+  document.querySelector(".nav").appendChild(indicator);
+
+  function moveIndicator(el) {
+    indicator.style.width = el.offsetWidth + "px";
+    indicator.style.left = el.offsetLeft + "px";
+  }
+
+  // click
+  links.forEach(link => {
+    link.addEventListener("click", () => {
+      links.forEach(l => l.classList.remove("active"));
+      link.classList.add("active");
+      moveIndicator(link);
+    });
+  });
+
+  // inicial
+  if (links[0]) {
+    links[0].classList.add("active");
+    moveIndicator(links[0]);
+  }
+
+  // =========================
+  // SCROLL DETECTOR SECCIONES
+  // =========================
+
+  const sections = document.querySelectorAll("section");
+
+  window.addEventListener("scroll", () => {
+    let current = "";
+
+    sections.forEach(section => {
+      const top = section.offsetTop - 120;
+      const height = section.offsetHeight;
+
+      if (scrollY >= top && scrollY < top + height) {
+        current = section.getAttribute("id");
+      }
+    });
+
+    links.forEach(link => {
+      link.classList.remove("active");
+
+      if (link.getAttribute("href") === "#" + current) {
+        link.classList.add("active");
+        moveIndicator(link);
+      }
+    });
+  });
+
+  // =========================
+  // SCROLL SUAVE
+  // =========================
+
+  links.forEach(link => {
+    link.addEventListener("click", e => {
+      e.preventDefault();
+      const target = document.querySelector(link.getAttribute("href"));
+      target.scrollIntoView({ behavior: "smooth" });
+    });
+  });
+
+  // =========================
+  // MODAL PRO
   // =========================
 
   const modal = document.createElement("div");
@@ -57,7 +148,6 @@ document.addEventListener("DOMContentLoaded", () => {
       card.appendChild(img);
       card.appendChild(name);
 
-      // 👉 CLICK MODAL
       card.addEventListener("click", (e) => {
         e.preventDefault();
 

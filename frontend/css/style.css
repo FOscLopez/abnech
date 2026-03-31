@@ -291,3 +291,45 @@ body{
     width:200px;
   }
 }
+/* HEADER SCROLL */
+.header.scrolled{
+  background: rgba(2,6,23,0.95);
+  box-shadow: 0 8px 25px rgba(0,0,0,.6);
+}
+
+/* HERO ENTRADA */
+.hero-logo img,
+.hero-text{
+  opacity:0;
+  transform: translateY(30px);
+}
+
+.hero.loaded .hero-logo img{
+  animation: fadeUp 1s ease forwards;
+}
+
+.hero.loaded .hero-text{
+  animation: fadeUp 1.2s ease forwards;
+  animation-delay: .3s;
+}
+
+@keyframes fadeUp{
+  to{
+    opacity:1;
+    transform: translateY(0);
+  }
+}
+
+/* NAV INDICATOR */
+.nav{
+  position:relative;
+}
+
+.nav-indicator{
+  position:absolute;
+  bottom:-4px;
+  height:2px;
+  width:0;
+  background:linear-gradient(90deg,#ff6b00,#ff8c00);
+  transition:.3s;
+}
