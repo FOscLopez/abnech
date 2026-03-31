@@ -24,25 +24,25 @@ modal.innerHTML = `
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  // =========================
-  // CLUBES GRID
-  // =========================
   const container = document.getElementById("clubs-container");
 
-if (container && window.clubs) {
+  if (!container || !window.clubs) return;
+
   container.innerHTML = "";
 
   window.clubs.forEach(club => {
+
     const card = document.createElement("a");
-    card.href = club.link;
     card.className = "club-card";
+    card.href = club.link || "#";
 
     const img = document.createElement("img");
     img.src = club.img;
 
-    // 🔥 FIX: evita romper si imagen falla
+    // 🔥 evita que rompa todo si falta imagen
     img.onerror = () => {
-      img.src = "./img/clubs/default.png"; // poné un placeholder
+      console.warn("Imagen no encontrada:", club.img);
+      img.remove(); // elimina imagen rota
     };
 
     const name = document.createElement("p");
@@ -53,7 +53,8 @@ if (container && window.clubs) {
 
     container.appendChild(card);
   });
-}
+
+});
 
   // =========================
   // BANNER (IMPORTANTE)
