@@ -63,22 +63,58 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // =========================
-  // SCROLL REVEAL (APP STYLE)
-  // =========================
+// 🎯 SECCIÓN ACTIVA (FOCUS)
+// =========================
 
-  const sections = document.querySelectorAll("section");
+const sections = document.querySelectorAll("section");
 
-  function reveal() {
-    const trigger = window.innerHeight * 0.85;
+function updateActiveSection() {
+  let current = "";
 
-    sections.forEach(sec => {
-      const top = sec.getBoundingClientRect().top;
-      if (top < trigger) sec.classList.add("visible");
-    });
-  }
+  sections.forEach(section => {
+    const top = section.offsetTop - 150;
+    const height = section.offsetHeight;
 
-  window.addEventListener("scroll", reveal);
-  reveal();
+    if (window.scrollY >= top && window.scrollY < top + height) {
+      current = section;
+    }
+  });
+
+  sections.forEach(sec => {
+    sec.classList.remove("active-section", "inactive");
+
+    if (sec === current) {
+      sec.classList.add("active-section");
+    } else {
+      sec.classList.add("inactive");
+    }
+  });
+}
+
+window.addEventListener("scroll", updateActiveSection);
+updateActiveSection();
+
+
+// =========================
+// 🌌 PARALLAX HERO
+// =========================
+
+const hero = document.querySelector(".hero");
+const logo = document.querySelector(".hero-logo img");
+const text = document.querySelector(".hero-text");
+
+hero.addEventListener("mousemove", (e) => {
+  const x = (e.clientX / window.innerWidth - 0.5) * 20;
+  const y = (e.clientY / window.innerHeight - 0.5) * 20;
+
+  logo.style.transform = `translate(${x}px, ${y}px) scale(1.02)`;
+  text.style.transform = `translate(${x * 0.5}px, ${y * 0.5}px)`;
+});
+
+hero.addEventListener("mouseleave", () => {
+  logo.style.transform = "";
+  text.style.transform = "";
+});
 
   // =========================
   // CLUBES
