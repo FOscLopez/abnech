@@ -45,24 +45,27 @@ onAuth(user => {
 // =========================
 // RENDER ADMIN
 // =========================
-const today = new Date().toISOString().split("T")[0];
-
-const filtered = fixtures.filter(f => !f.date || f.date >= today);
-import { getClubs } from "./services/firestore.service.js";
+import { getClubs, getFixtures } from "./services/firestore.service.js";
+import { saveResult } from "./services/firestore.service.js";
 
 async function renderAdmin() {
 
-  if (!FIRESTORE_ENABLED) {
-    container.innerHTML = "⚠️ Activá FIRESTORE";
-    return;
-  }
-
-  const fixtures = await getFixturesFirestore();
+  const fixtures = await getFixtures(); // ✅ correcto
   const clubs = await getClubs();
 
-  // mapa rápido
+  // mapa de clubes
   const clubMap = {};
-  clubs.forEach(c => clubMap[c.id] = c.name);
+  clubs.forEach(c => {
+    clubMap[c.id] = c.name;
+  });
+
+  // 📅 FILTRO (después de tener fixtures)
+  const today = new Date().toISOString().split("T")[0];
+
+  const filtered = fixtures.filter(f => {
+    if (!f.date) return true;
+    return f.date >= today;
+  });
 
   container.innerHTML = "";
 
@@ -86,6 +89,7 @@ async function renderAdmin() {
     container.appendChild(card);
   });
 
+  // eventos
   container.querySelectorAll("button").forEach(btn => {
 
     btn.addEventListener("click", async () => {
@@ -101,4 +105,5 @@ async function renderAdmin() {
     });
 
   });
+
 }
