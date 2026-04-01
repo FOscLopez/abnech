@@ -591,3 +591,20 @@ section.active-section{
   border-radius: 6px;
   cursor: pointer;
 }
+.result-card input{
+  width:50px;
+  text-align:center;
+  margin:0 5px;
+  border-radius:6px;
+  border:none;
+}
+
+.save-btn{
+  margin-top:8px;
+  padding:6px 10px;
+  background:#ff6b00;
+  border:none;
+  color:white;
+  border-radius:6px;
+  cursor:pointer;
+}

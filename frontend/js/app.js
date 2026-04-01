@@ -36,31 +36,53 @@ function renderNextMatch(match) {
 }
 
 /* ========================= */
+import { saveResult } from "./services/firestore.service.js";
+
 function renderResults(results) {
   const el = document.getElementById("results");
 
-  const user = getCurrentUser(); // 🔥 clave
+  const user = getCurrentUser();
 
   el.innerHTML = results.map(r => `
     <div class="result-card">
       <span>${r.date}</span>
-      <h4>${r.home} ${r.score} ${r.away}</h4>
+      <h4>
+        ${r.home} 
+        <input type="number" value="${r.homeScore || 0}" id="h-${r.id}" ${!user ? "disabled" : ""}>
+        -
+        <input type="number" value="${r.awayScore || 0}" id="a-${r.id}" ${!user ? "disabled" : ""}>
+        ${r.away}
+      </h4>
 
       ${
         user
-          ? `<button class="edit-btn" data-id="${r.id}">Editar</button>`
+          ? `<button class="save-btn" data-id="${r.id}">Guardar</button>`
           : ""
       }
 
     </div>
   `).join("");
 
-  // 🔥 eventos solo si está logueado
+  // 🔥 GUARDAR RESULTADOS
   if (user) {
-    document.querySelectorAll(".edit-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        alert("Modo admin activo 🔐 (próximo paso: editar resultado)");
+    document.querySelectorAll(".save-btn").forEach(btn => {
+
+      btn.addEventListener("click", async () => {
+
+        const id = btn.dataset.id;
+
+        const home = document.getElementById(`h-${id}`).value;
+        const away = document.getElementById(`a-${id}`).value;
+
+        try {
+          await saveResult(id, home, away);
+          alert("Resultado actualizado ✅");
+        } catch (e) {
+          alert("Error al guardar ❌");
+        }
+
       });
+
     });
   }
 }
