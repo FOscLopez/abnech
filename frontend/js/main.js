@@ -170,3 +170,74 @@ hero.addEventListener("mouseleave", () => {
   }
 
 });
+// =========================
+// 🎬 LOADER APP
+// =========================
+
+window.addEventListener("load", () => {
+  const loader = document.getElementById("loader");
+
+  setTimeout(() => {
+    loader.classList.add("hidden");
+  }, 800);
+});
+
+
+// =========================
+// 🎯 SECCIÓN ACTIVA PRO
+// =========================
+
+const sections = document.querySelectorAll("section");
+
+function updateActiveSection() {
+  let current = null;
+  let closest = Infinity;
+
+  sections.forEach(section => {
+    const rect = section.getBoundingClientRect();
+    const offset = Math.abs(rect.top);
+
+    if (rect.top <= window.innerHeight * 0.4 && offset < closest) {
+      current = section;
+      closest = offset;
+    }
+  });
+
+  sections.forEach(sec => {
+    sec.classList.remove("active-section");
+
+    if (sec === current) {
+      sec.classList.add("active-section");
+    }
+  });
+}
+
+window.addEventListener("scroll", updateActiveSection);
+updateActiveSection();
+
+
+// =========================
+// 🔥 NAV INDICATOR REAL
+// =========================
+
+const links = document.querySelectorAll(".nav a");
+const indicator = document.querySelector(".nav-indicator");
+
+function moveIndicator(el){
+  indicator.style.width = el.offsetWidth + "px";
+  indicator.style.left = el.offsetLeft + "px";
+}
+
+// click
+links.forEach(link => {
+  link.addEventListener("click", () => {
+    links.forEach(l => l.classList.remove("active"));
+    link.classList.add("active");
+    moveIndicator(link);
+  });
+});
+
+// init
+if(links[0]){
+  moveIndicator(links[0]);
+}
