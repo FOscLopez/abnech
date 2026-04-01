@@ -627,3 +627,8 @@ section.active-section{
   width:60px;
   margin:5px;
 }
+body.admin section{
+  filter: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
