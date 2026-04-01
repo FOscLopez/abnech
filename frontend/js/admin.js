@@ -7,9 +7,8 @@ const adminPanel = document.getElementById("admin-panel");
 const container = document.getElementById("admin-container");
 
 // =========================
-// 🔐 LOGIN
+// LOGIN
 // =========================
-
 document.getElementById("login-btn").addEventListener("click", async () => {
 
   const email = document.getElementById("email").value;
@@ -17,21 +16,19 @@ document.getElementById("login-btn").addEventListener("click", async () => {
 
   try {
     await login(email, password);
-  } catch (e) {
+  } catch {
     alert("Error login ❌");
   }
 });
 
 // =========================
-// 🔐 LOGOUT
+// LOGOUT
 // =========================
-
 document.getElementById("logout-btn").addEventListener("click", logout);
 
 // =========================
-// 🔐 CONTROL SESIÓN
+// ESTADO SESIÓN
 // =========================
-
 onAuth(user => {
 
   if (user) {
@@ -42,12 +39,12 @@ onAuth(user => {
     loginBox.style.display = "block";
     adminPanel.style.display = "none";
   }
+
 });
 
 // =========================
-// 📊 ADMIN PANEL
+// RENDER ADMIN
 // =========================
-
 async function renderAdmin() {
 
   if (!FIRESTORE_ENABLED) {
@@ -67,8 +64,8 @@ async function renderAdmin() {
     card.innerHTML = `
       <p><strong>${f.homeClubId}</strong> vs <strong>${f.awayClubId}</strong></p>
 
-      <input type="number" placeholder="Local" id="l-${f.id}">
-      <input type="number" placeholder="Visitante" id="v-${f.id}">
+      <input type="number" id="l-${f.id}" placeholder="Local">
+      <input type="number" id="v-${f.id}" placeholder="Visitante">
 
       <button data-id="${f.id}">Guardar</button>
     `;
@@ -77,6 +74,7 @@ async function renderAdmin() {
   });
 
   container.querySelectorAll("button").forEach(btn => {
+
     btn.addEventListener("click", async () => {
 
       const id = btn.dataset.id;
@@ -88,5 +86,6 @@ async function renderAdmin() {
 
       alert("Resultado guardado ✅");
     });
+
   });
 }

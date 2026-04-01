@@ -608,3 +608,22 @@ section.active-section{
   border-radius:6px;
   cursor:pointer;
 }
+#login-box input{
+  display:block;
+  margin:10px auto;
+  padding:8px;
+  width:200px;
+}
+
+#login-box button{
+  padding:8px 15px;
+  background:#ff6b00;
+  border:none;
+  color:white;
+  border-radius:6px;
+}
+
+#admin-container input{
+  width:60px;
+  margin:5px;
+}
