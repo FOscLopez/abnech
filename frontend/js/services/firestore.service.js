@@ -80,11 +80,21 @@ export async function deleteFixture(id) {
 ===================================================== */
 
 export async function saveResult(fixtureId, scoreLocal, scoreAway) {
-  return await updateDoc(doc(db, "fixtures", fixtureId), {
+
+  await updateDoc(doc(db, "fixtures", fixtureId), {
     scoreLocal: Number(scoreLocal),
     scoreAway: Number(scoreAway),
     status: "finished"
   });
+
+  // 🔔 NOTIFICACIÓN AUTOMÁTICA
+  if ("Notification" in window && Notification.permission === "granted") {
+    new Notification("Resultado actualizado 🏀", {
+      body: `Nuevo resultado cargado`,
+      icon: "./img/logo-abnech.png"
+    });
+  }
+
 }
 
 /* =====================================================

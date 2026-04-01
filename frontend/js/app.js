@@ -1,3 +1,7 @@
+// 🔔 PEDIR PERMISO NOTIFICACIONES
+if ("Notification" in window) {
+  Notification.requestPermission();
+}
 import { onAuth, getCurrentUser } from "./services/auth.service.js";
 
 async function loadData() {
