@@ -252,3 +252,84 @@ if ("serviceWorker" in navigator) {
       .catch(err => console.log("Error SW:", err));
   });
 }
+// =========================
+// 📊 TABLA AUTOMÁTICA
+// =========================
+
+function generarTabla(){
+  if(!window.clubs || !window.matches) return;
+
+  const stats = {};
+
+  // inicializar
+  clubs.forEach(c => {
+    stats[c.name] = { pts:0, pg:0, pp:0 };
+  });
+
+  // procesar partidos
+  matches.forEach(m => {
+    if(m.homeScore > m.awayScore){
+      stats[m.home].pts += 2;
+      stats[m.home].pg += 1;
+      stats[m.away].pp += 1;
+    } else {
+      stats[m.away].pts += 2;
+      stats[m.away].pg += 1;
+      stats[m.home].pp += 1;
+    }
+  });
+
+  // ordenar
+  const sorted = Object.entries(stats).sort((a,b)=> b[1].pts - a[1].pts);
+
+  const tbody = document.getElementById("tabla-body");
+  if(!tbody) return;
+
+  tbody.innerHTML = "";
+
+  sorted.forEach(([name,data])=>{
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${name}</td>
+      <td>${data.pts}</td>
+      <td>${data.pg}</td>
+      <td>${data.pp}</td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+}
+
+generarTabla();
+// =========================
+// 🔔 NOTIFICACIONES
+// =========================
+
+function pedirPermisoNoti(){
+  if (!("Notification" in window)) return;
+
+  Notification.requestPermission().then(permission => {
+    if(permission === "granted"){
+      console.log("Notificaciones activadas");
+    }
+  });
+}
+
+// ejemplo de uso
+function notificar(titulo, mensaje){
+  if(Notification.permission === "granted"){
+    new Notification(titulo, {
+      body: mensaje,
+      icon: "./img/logo-abnech.png"
+    });
+  }
+}
+
+// activar al entrar
+pedirPermisoNoti();
+
+// 🔥 TEST (podés borrar después)
+setTimeout(()=>{
+  notificar("ABNECH Basket", "Nueva fecha cargada 🏀");
+}, 5000);

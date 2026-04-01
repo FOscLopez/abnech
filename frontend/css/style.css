@@ -561,3 +561,17 @@ section.active-section{
   50%{opacity:1; transform:scale(1.1);}
   100%{opacity:0.5; transform:scale(0.95);}
 }
+.table{
+  width:100%;
+  border-collapse: collapse;
+}
+
+.table th, .table td{
+  padding:10px;
+  text-align:center;
+  border-bottom:1px solid rgba(255,255,255,0.1);
+}
+
+.table th{
+  color:#ff6b00;
+}
