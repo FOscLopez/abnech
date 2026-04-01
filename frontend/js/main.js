@@ -241,3 +241,14 @@ links.forEach(link => {
 if(links[0]){
   moveIndicator(links[0]);
 }
+// =========================
+// 📲 PWA REGISTER
+// =========================
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js")
+      .then(() => console.log("PWA activa"))
+      .catch(err => console.log("Error SW:", err));
+  });
+}
