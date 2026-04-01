@@ -298,8 +298,8 @@ body{
 }
 
 /* HERO ENTRADA */
-.hero-logo img,
-.hero-text{
+.hero:not(.loaded) .hero-logo img,
+.hero:not(.loaded) .hero-text{
   opacity:0;
   transform: translateY(30px);
 }

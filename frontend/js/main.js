@@ -1,5 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
-
+  const hero = document.querySelector(".hero");
+  window.addEventListener("load", () => {
+    setTimeout(() => {
+      hero.classList.add("loaded");
+    }, 300);
+  });
   const container = document.getElementById("clubs-container");
   const track = document.getElementById("clubs-track");
   const header = document.querySelector(".header");
