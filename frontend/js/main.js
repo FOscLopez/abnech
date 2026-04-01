@@ -99,7 +99,6 @@ updateActiveSection();
 // 🌌 PARALLAX HERO
 // =========================
 
-const hero = document.querySelector(".hero");
 const logo = document.querySelector(".hero-logo img");
 const text = document.querySelector(".hero-text");
 
