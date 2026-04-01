@@ -10,14 +10,25 @@ import {
   deleteDoc,
   doc,
   query,
-  orderBy
+  orderBy,
+  where
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+/* =====================================================
+   CONFIG GLOBAL
+===================================================== */
+
+// 🔥 control central (clave)
+export const FIRESTORE_ENABLED = false;
 
 /* =====================================================
    CLUBS
 ===================================================== */
 
 export async function getClubs() {
+
+  if (!FIRESTORE_ENABLED) return [];
+
   const snap = await getDocs(
     query(collection(db, "clubs"), orderBy("name"))
   );
@@ -32,10 +43,19 @@ export async function getClubs() {
    FIXTURES
 ===================================================== */
 
-export async function getFixtures() {
-  const snap = await getDocs(
-    query(collection(db, "fixtures"), orderBy("order"))
-  );
+export async function getFixturesFirestore(categoryId) {
+
+  if (!FIRESTORE_ENABLED) return [];
+
+  let q = collection(db, "fixtures");
+
+  if (categoryId) {
+    q = query(q, where("categoryId", "==", categoryId), orderBy("order"));
+  } else {
+    q = query(q, orderBy("order"));
+  }
+
+  const snap = await getDocs(q);
 
   return snap.docs.map(d => ({
     id: d.id,
@@ -68,10 +88,11 @@ export async function saveResult(fixtureId, scoreLocal, scoreAway) {
 }
 
 /* =====================================================
-   TABLA DE POSICIONES
+   TABLA DE POSICIONES (CORE)
 ===================================================== */
 
 export function buildStandings(fixtures, clubs) {
+
   const table = {};
 
   clubs.forEach(c => {
@@ -130,4 +151,3 @@ export function buildStandings(fixtures, clubs) {
     return b.PF - a.PF;
   });
 }
-
