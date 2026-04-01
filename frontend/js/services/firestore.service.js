@@ -19,7 +19,7 @@ import {
 ===================================================== */
 
 // 🔥 control central (clave)
-export const FIRESTORE_ENABLED = false;
+export const FIRESTORE_ENABLED = true;
 
 /* =====================================================
    CLUBS
