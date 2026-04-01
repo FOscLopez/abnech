@@ -1,18 +1,59 @@
 // js/ui/renderStandings.js
 
 import { getCurrentCategory } from "../services/category.service.js";
-import { calculateStandings } from "../services/standings.service.js";
+import { getFixtures } from "../services/fixtures.service.js";
+import { getFixturesFirestore, getClubs, buildStandings, FIRESTORE_ENABLED } from "../services/firestore.service.js";
 
-export function renderStandings(containerId) {
+// fallback opcional (si querés mantener seguridad total)
+import { fixtureData } from "../data/fixture.data.js";
+
+export async function renderStandings(containerId) {
+
   const container = document.getElementById(containerId);
   if (!container) return;
 
   const category = getCurrentCategory();
-  const standings = calculateStandings(category);
+
+  let fixtures = [];
+  let clubs = [];
+
+  try {
+
+    // 🔥 FIRESTORE MODE
+    if (FIRESTORE_ENABLED) {
+      fixtures = await getFixturesFirestore(category);
+      clubs = await getClubs();
+    } 
+    // 🔥 BACKEND MODE
+    else {
+      fixtures = await getFixtures(category);
+
+      // 👉 generamos clubs desde fixtures (simple fallback)
+      const names = new Set();
+      fixtures.forEach(f => {
+        if (f.home) names.add(f.home);
+        if (f.away) names.add(f.away);
+      });
+
+      clubs = Array.from(names).map((name, i) => ({
+        id: name,
+        name
+      }));
+    }
+
+  } catch (error) {
+    console.warn("⚠️ fallback standings", error);
+
+    fixtures = fixtureData;
+    clubs = [];
+  }
+
+  // 🔥 USAMOS TU MOTOR PRO
+  const standings = buildStandings(fixtures, clubs);
 
   container.innerHTML = "";
 
-  if (standings.length === 0) {
+  if (!standings || standings.length === 0) {
     container.innerHTML = `
       <div class="empty-state">
         No hay datos suficientes para generar la tabla de ${category}
@@ -35,6 +76,7 @@ export function renderStandings(containerId) {
         <th>PF</th>
         <th>PC</th>
         <th>DIF</th>
+        <th>PTS</th>
       </tr>
     </thead>
     <tbody>
@@ -43,13 +85,14 @@ export function renderStandings(containerId) {
           (t, i) => `
         <tr>
           <td>${i + 1}</td>
-          <td>${t.equipo}</td>
-          <td>${t.pj}</td>
-          <td>${t.pg}</td>
-          <td>${t.pp}</td>
-          <td>${t.pf}</td>
-          <td>${t.pc}</td>
-          <td>${t.dif > 0 ? "+" + t.dif : t.dif}</td>
+          <td>${t.name}</td>
+          <td>${t.PJ}</td>
+          <td>${t.PG}</td>
+          <td>${t.PP}</td>
+          <td>${t.PF}</td>
+          <td>${t.PC}</td>
+          <td>${t.DG > 0 ? "+" + t.DG : t.DG}</td>
+          <td><strong>${t.PTS}</strong></td>
         </tr>
       `
         )
