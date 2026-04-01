@@ -632,3 +632,34 @@ body.admin section{
   opacity: 1 !important;
   transform: none !important;
 }
+.match-card{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+
+  background: rgba(11,18,32,0.9);
+  padding:15px 20px;
+  border-radius:12px;
+
+  margin:15px auto;
+  max-width:600px;
+}
+
+.match-card p{
+  flex:1;
+}
+
+.match-card input{
+  width:60px;
+  text-align:center;
+}
+
+.match-card button{
+  background:#ff6b00;
+  border:none;
+  padding:8px 12px;
+  border-radius:6px;
+  color:white;
+  cursor:pointer;
+}

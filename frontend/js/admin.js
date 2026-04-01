@@ -45,6 +45,11 @@ onAuth(user => {
 // =========================
 // RENDER ADMIN
 // =========================
+const today = new Date().toISOString().split("T")[0];
+
+const filtered = fixtures.filter(f => !f.date || f.date >= today);
+import { getClubs } from "./services/firestore.service.js";
+
 async function renderAdmin() {
 
   if (!FIRESTORE_ENABLED) {
@@ -53,16 +58,24 @@ async function renderAdmin() {
   }
 
   const fixtures = await getFixturesFirestore();
+  const clubs = await getClubs();
+
+  // mapa rápido
+  const clubMap = {};
+  clubs.forEach(c => clubMap[c.id] = c.name);
 
   container.innerHTML = "";
 
-  fixtures.forEach(f => {
+  filtered.forEach(f => {
+
+    const home = clubMap[f.homeClubId] || f.homeClubId;
+    const away = clubMap[f.awayClubId] || f.awayClubId;
 
     const card = document.createElement("div");
     card.className = "match-card";
 
     card.innerHTML = `
-      <p><strong>${f.homeClubId}</strong> vs <strong>${f.awayClubId}</strong></p>
+      <p><strong>${home}</strong> vs <strong>${away}</strong></p>
 
       <input type="number" id="l-${f.id}" placeholder="Local">
       <input type="number" id="v-${f.id}" placeholder="Visitante">
