@@ -69,21 +69,23 @@ document.addEventListener("DOMContentLoaded", () => {
 const sections = document.querySelectorAll("section");
 
 function updateActiveSection() {
-  let current = "";
+  let currentSection = null;
+  let closestOffset = Infinity;
 
   sections.forEach(section => {
-    const top = section.offsetTop - 150;
-    const height = section.offsetHeight;
+    const rect = section.getBoundingClientRect();
+    const offset = Math.abs(rect.top);
 
-    if (window.scrollY >= top && window.scrollY < top + height) {
-      current = section;
+    if (rect.top <= window.innerHeight * 0.4 && offset < closestOffset) {
+      currentSection = section;
+      closestOffset = offset;
     }
   });
 
   sections.forEach(sec => {
     sec.classList.remove("active-section", "inactive");
 
-    if (sec === current) {
+    if (sec === currentSection) {
       sec.classList.add("active-section");
     } else {
       sec.classList.add("inactive");

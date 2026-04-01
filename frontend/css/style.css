@@ -418,10 +418,10 @@ section{
   transition: all .6s ease;
 }
 
-section.inactive{
-  opacity: 0.5;
-  transform: scale(0.98);
-  filter: blur(2px);
+ssection.inactive{
+  opacity: 0.75;
+  transform: scale(0.99);
+  filter: blur(1px);
 }
 
 section.active-section{
@@ -468,4 +468,8 @@ section.active-section{
 
 .hero-text{
   transition: transform .2s ease;
+}
+#reglamento{
+  filter: none !important;
+  opacity: 1 !important;
 }
