@@ -14,9 +14,22 @@
 <body>
 
 <section class="fixture">
-  <h2><span>ADMIN</span> RESULTADOS</h2>
 
-  <div id="admin-container"></div>
+  <h2><span>ADMIN</span> PANEL</h2>
+
+  <!-- LOGIN -->
+  <div id="login-box">
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+    <button id="login-btn">Ingresar</button>
+  </div>
+
+  <!-- ADMIN -->
+  <div id="admin-panel" style="display:none;">
+    <button id="logout-btn">Cerrar sesión</button>
+    <div id="admin-container"></div>
+  </div>
+
 </section>
 
 </body>
