@@ -333,3 +333,54 @@ pedirPermisoNoti();
 setTimeout(()=>{
   notificar("ABNECH Basket", "Nueva fecha cargada 🏀");
 }, 5000);
+const canvas = document.getElementById("energyCanvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = 360;
+canvas.height = 360;
+
+let particles = [];
+
+// crear partículas
+for (let i = 0; i < 40; i++) {
+  particles.push({
+    angle: Math.random() * Math.PI * 2,
+    radius: 140 + Math.random() * 10,
+    speed: 0.01 + Math.random() * 0.02,
+    size: 2 + Math.random() * 2
+  });
+}
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const centerX = canvas.width / 2;
+  const centerY = canvas.height / 2;
+
+  particles.forEach(p => {
+
+    p.angle += p.speed;
+
+    const x = centerX + Math.cos(p.angle) * p.radius;
+    const y = centerY + Math.sin(p.angle) * p.radius;
+
+    // glow
+    ctx.beginPath();
+    ctx.arc(x, y, p.size, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(255,140,0,0.8)";
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = "orange";
+    ctx.fill();
+  });
+
+  requestAnimationFrame(animate);
+}
+
+animate();
+canvas.addEventListener("mousemove", () => {
+  particles.forEach(p => p.speed += 0.002);
+});
+
+canvas.addEventListener("mouseleave", () => {
+  particles.forEach(p => p.speed = 0.02);
+});
