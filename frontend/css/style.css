@@ -926,3 +926,78 @@ body.admin section{
 
   z-index:3;
 }
+/* =========================
+   INTRO ESPN
+========================= */
+
+#intro{
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle, #020617, #000);
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  z-index:9999;
+
+  animation: introFadeOut 1s ease forwards;
+  animation-delay: 2.5s;
+}
+
+/* LOGO */
+.intro-logo img{
+  width: 180px;
+
+  opacity:0;
+  transform: scale(0.5);
+
+  filter: drop-shadow(0 0 30px rgba(255,120,0,0.8));
+
+  animation: logoIntro 1.5s ease-out forwards;
+}
+
+/* ENTRADA */
+@keyframes logoIntro{
+  0%{
+    opacity:0;
+    transform: scale(0.3) rotate(-10deg);
+  }
+  50%{
+    opacity:1;
+    transform: scale(1.2) rotate(2deg);
+  }
+  100%{
+    transform: scale(1);
+  }
+}
+
+/* SALIDA */
+@keyframes introFadeOut{
+  to{
+    opacity:0;
+    visibility:hidden;
+  }
+}
+.intro-logo::after{
+  content:"";
+  position:absolute;
+  width:200px;
+  height:200px;
+  border-radius:50%;
+
+  background: radial-gradient(circle, rgba(255,140,0,0.6), transparent 70%);
+
+  animation: shockwave 1.2s ease-out;
+}
+
+@keyframes shockwave{
+  0%{
+    transform: scale(0.5);
+    opacity:1;
+  }
+  100%{
+    transform: scale(2.5);
+    opacity:0;
+  }
+}

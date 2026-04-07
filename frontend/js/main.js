@@ -422,3 +422,17 @@ canvas.addEventListener("mousemove", () => {
 canvas.addEventListener("mouseleave", () => {
   particles.forEach(p => p.speed = 0.02);
 });
+window.addEventListener("load", () => {
+
+  const intro = document.getElementById("intro");
+  const hero = document.querySelector(".hero");
+
+  setTimeout(() => {
+    intro.style.display = "none";
+
+    // activa animación del hero
+    hero.classList.add("loaded");
+
+  }, 2500);
+
+});
