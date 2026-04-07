@@ -45,8 +45,8 @@ onAuth(user => {
 // =========================
 // RENDER ADMIN
 // =========================
-import { getClubs, getFixtures } from "./services/firestore.service.js";
-import { saveResult } from "./services/firestore.service.js";
+import { getClubs, getFixtures, saveResult } 
+from "./services/firestore.service.js";
 
 async function renderAdmin() {
 
