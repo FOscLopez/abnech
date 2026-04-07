@@ -663,3 +663,95 @@ body.admin section{
   color:white;
   cursor:pointer;
 }
+/* =========================
+   LOGO EFECTO ENERGÍA PRO
+========================= */
+
+.logo-wrapper{
+  position: relative;
+  width: 360px;
+  height: 360px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* LOGO */
+.logo-wrapper img{
+  width: 280px;
+  z-index: 3;
+  position: relative;
+}
+
+/* ARO GIRANDO */
+.logo-ring{
+  position:absolute;
+  width: 320px;
+  height: 320px;
+  border-radius:50%;
+
+  border: 2px solid rgba(255,120,0,0.4);
+
+  animation: rotateRing 8s linear infinite;
+
+  box-shadow:
+    0 0 20px rgba(255,120,0,0.4),
+    inset 0 0 20px rgba(255,120,0,0.2);
+}
+
+/* GLOW PULSANTE */
+.logo-glow{
+  position:absolute;
+  width: 360px;
+  height: 360px;
+  border-radius:50%;
+
+  background: radial-gradient(circle, rgba(255,120,0,0.25), transparent 70%);
+
+  animation: pulseGlow 3s ease-in-out infinite;
+}
+
+/* ANIMACIONES */
+
+@keyframes rotateRing{
+  from{
+    transform: rotate(0deg);
+  }
+  to{
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulseGlow{
+  0%{
+    transform: scale(0.95);
+    opacity: 0.6;
+  }
+  50%{
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100%{
+    transform: scale(0.95);
+    opacity: 0.6;
+  }
+}
+.logo-ring::after{
+  content:"";
+  position:absolute;
+  inset:-6px;
+  border-radius:50%;
+
+  border:2px dashed rgba(255,140,0,0.6);
+
+  animation: rotateRingReverse 6s linear infinite;
+}
+
+@keyframes rotateRingReverse{
+  from{
+    transform: rotate(360deg);
+  }
+  to{
+    transform: rotate(0deg);
+  }
+}
