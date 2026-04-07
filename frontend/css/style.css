@@ -755,3 +755,152 @@ body.admin section{
     transform: rotate(0deg);
   }
 }
+/* =========================
+   LOGO ENERGÍA CINEMATIC
+========================= */
+
+.logo-wrapper{
+  position: relative;
+  width: 360px;
+  height: 360px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* LOGO */
+.logo-wrapper img{
+  width: 260px;
+  z-index: 5;
+  position: relative;
+  filter: drop-shadow(0 0 20px rgba(255,120,0,0.6));
+}
+
+/* NÚCLEO ENERGÍA */
+.energy-core{
+  position:absolute;
+  width: 200px;
+  height: 200px;
+  border-radius:50%;
+
+  background: radial-gradient(circle,
+    rgba(255,140,0,0.6),
+    rgba(255,120,0,0.2),
+    transparent 70%
+  );
+
+  animation: corePulse 2.5s ease-in-out infinite;
+}
+
+/* AROS */
+.energy-ring{
+  position:absolute;
+  border-radius:50%;
+  border: 2px solid rgba(255,120,0,0.5);
+}
+
+/* ANILLO 1 */
+.ring-1{
+  width: 300px;
+  height: 300px;
+
+  animation:
+    rotate1 6s linear infinite,
+    distort 4s ease-in-out infinite;
+
+  box-shadow: 0 0 20px rgba(255,120,0,0.6);
+}
+
+/* ANILLO 2 (DESFASADO) */
+.ring-2{
+  width: 330px;
+  height: 330px;
+
+  border-style: dashed;
+
+  animation:
+    rotate2 8s linear infinite,
+    distort 5s ease-in-out infinite;
+
+  opacity: .7;
+}
+
+/* PARTÍCULAS */
+.energy-particles{
+  position:absolute;
+  width:100%;
+  height:100%;
+
+  background:
+    radial-gradient(circle at 30% 40%, rgba(255,140,0,0.6) 2px, transparent 3px),
+    radial-gradient(circle at 70% 60%, rgba(255,120,0,0.6) 2px, transparent 3px),
+    radial-gradient(circle at 50% 20%, rgba(255,200,0,0.5) 2px, transparent 3px);
+
+  animation: particlesMove 6s linear infinite;
+}
+
+/* =========================
+   ANIMACIONES
+========================= */
+
+@keyframes rotate1{
+  from{ transform: rotate(0deg); }
+  to{ transform: rotate(360deg); }
+}
+
+@keyframes rotate2{
+  from{ transform: rotate(360deg); }
+  to{ transform: rotate(0deg); }
+}
+
+/* 🔥 deformación tipo energía viva */
+@keyframes distort{
+  0%{
+    border-radius:50%;
+    transform: scale(1);
+  }
+  50%{
+    border-radius:45% 55% 60% 40%;
+    transform: scale(1.05);
+  }
+  100%{
+    border-radius:50%;
+    transform: scale(1);
+  }
+}
+
+/* núcleo */
+@keyframes corePulse{
+  0%{
+    transform: scale(0.9);
+    opacity:0.6;
+  }
+  50%{
+    transform: scale(1.1);
+    opacity:1;
+  }
+  100%{
+    transform: scale(0.9);
+    opacity:0.6;
+  }
+}
+
+/* partículas */
+@keyframes particlesMove{
+  0%{
+    transform: rotate(0deg) scale(1);
+  }
+  50%{
+    transform: rotate(180deg) scale(1.1);
+  }
+  100%{
+    transform: rotate(360deg) scale(1);
+  }
+}
+.logo-wrapper:hover .energy-ring{
+  filter: drop-shadow(0 0 25px orange);
+}
+
+.logo-wrapper:hover .energy-core{
+  transform: scale(1.2);
+}
