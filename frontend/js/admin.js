@@ -1,58 +1,9 @@
-import { login, logout, onAuth } from "./services/auth.service.js";
-
-import { 
-  getClubs, 
-  getFixtures, 
-  saveResult 
-} from "./services/firestore.service.js";
-
-const loginBox = document.getElementById("login-box");
-const adminPanel = document.getElementById("admin-panel");
-const container = document.getElementById("admin-container");
-
-// =========================
-// LOGIN
-// =========================
-document.getElementById("login-btn").addEventListener("click", async () => {
-
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  try {
-    await login(email, password);
-  } catch {
-    alert("Error login ❌");
-  }
-});
-
-// =========================
-// LOGOUT
-// =========================
-document.getElementById("logout-btn").addEventListener("click", logout);
-
-// =========================
-// ESTADO SESIÓN
-// =========================
-onAuth(user => {
-
-  if (user) {
-    loginBox.style.display = "none";
-    adminPanel.style.display = "block";
-    renderAdmin();
-  } else {
-    loginBox.style.display = "block";
-    adminPanel.style.display = "none";
-  }
-
-});
-
-// =========================
-// RENDER ADMIN
-// =========================
 async function renderAdmin() {
 
   const fixtures = await getFixtures();
   const clubs = await getClubs();
+
+  console.log("fixtures:", fixtures); // debug
 
   // mapa clubes
   const clubMap = {};
@@ -60,14 +11,21 @@ async function renderAdmin() {
     clubMap[c.id] = c.name;
   });
 
-  const today = new Date().toISOString().split("T")[0];
-
+  // ❗ FILTRO CORREGIDO
   const filtered = fixtures.filter(f => {
-    if (!f.date) return true;
-    return f.date >= today;
+
+    // ignorar eliminados
+    if (f.deleted === true) return false;
+
+    return true;
   });
 
   container.innerHTML = "";
+
+  if (filtered.length === 0) {
+    container.innerHTML = "No hay partidos disponibles";
+    return;
+  }
 
   filtered.forEach(f => {
 
@@ -80,8 +38,10 @@ async function renderAdmin() {
     card.innerHTML = `
       <p><strong>${home}</strong> vs <strong>${away}</strong></p>
 
-      <input type="number" id="l-${f.id}" placeholder="Local">
-      <input type="number" id="v-${f.id}" placeholder="Visitante">
+      <small>${f.date || ""} ${f.time || ""}</small>
+
+      <input type="number" id="l-${f.id}" value="${f.scoreLocal || ""}" placeholder="Local">
+      <input type="number" id="v-${f.id}" value="${f.scoreAway || ""}" placeholder="Visitante">
 
       <button data-id="${f.id}">Guardar</button>
     `;
