@@ -1,6 +1,10 @@
 import { login, logout, onAuth } from "./services/auth.service.js";
-import { getFixturesFirestore, saveResult, FIRESTORE_ENABLED } 
-from "./services/firestore.service.js";
+
+import { 
+  getClubs, 
+  getFixtures, 
+  saveResult 
+} from "./services/firestore.service.js";
 
 const loginBox = document.getElementById("login-box");
 const adminPanel = document.getElementById("admin-panel");
@@ -45,21 +49,17 @@ onAuth(user => {
 // =========================
 // RENDER ADMIN
 // =========================
-import { getClubs, getFixtures, saveResult } 
-from "./services/firestore.service.js";
-
 async function renderAdmin() {
 
-  const fixtures = await getFixtures(); // ✅ correcto
+  const fixtures = await getFixtures();
   const clubs = await getClubs();
 
-  // mapa de clubes
+  // mapa clubes
   const clubMap = {};
   clubs.forEach(c => {
     clubMap[c.id] = c.name;
   });
 
-  // 📅 FILTRO (después de tener fixtures)
   const today = new Date().toISOString().split("T")[0];
 
   const filtered = fixtures.filter(f => {
