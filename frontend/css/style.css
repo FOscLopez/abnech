@@ -954,7 +954,7 @@ body.admin section{
 
   filter: drop-shadow(0 0 30px rgba(255,120,0,0.8));
 
-  animation: logoIntro 1.5s ease-out forwards;
+  animation: logoIntro 1.2s ease-out forwards;
 }
 
 /* ENTRADA */

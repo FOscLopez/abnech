@@ -15,10 +15,29 @@ document.addEventListener("DOMContentLoaded", () => {
   // =========================
 
   window.addEventListener("load", () => {
-    const loader = document.getElementById("loader");
-    setTimeout(() => loader.classList.add("hidden"), 800);
-  });
 
+    const intro = document.getElementById("intro");
+    const hero = document.querySelector(".hero");
+    const sound = document.getElementById("intro-sound");
+  
+    // 🔥 forzar reproducción (hack suave)
+    const playSound = () => {
+      sound.currentTime = 0;
+      sound.play().catch(() => {});
+    };
+  
+    // intenta reproducir
+    playSound();
+  
+    // fallback: primer click
+    document.addEventListener("click", playSound, { once: true });
+  
+    setTimeout(() => {
+      intro.style.display = "none";
+      hero.classList.add("loaded");
+    }, 2500);
+  
+  });
   // =========================
   // HEADER SCROLL
   // =========================
