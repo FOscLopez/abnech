@@ -43,36 +43,15 @@ export async function getClubs() {
    FIXTURES
 ===================================================== */
 
-export async function getFixturesFirestore(categoryId) {
-
-  if (!FIRESTORE_ENABLED) return [];
-
-  let q = collection(db, "fixtures");
-
-  if (categoryId) {
-    q = query(q, where("categoryId", "==", categoryId), orderBy("order"));
-  } else {
-    q = query(q, orderBy("order"));
-  }
-
-  const snap = await getDocs(q);
+export async function getFixtures() {
+  const snap = await getDocs(
+    query(collection(db, "fixtures"), orderBy("order"))
+  );
 
   return snap.docs.map(d => ({
     id: d.id,
     ...d.data()
   }));
-}
-
-export async function createFixture(data) {
-  return await addDoc(collection(db, "fixtures"), data);
-}
-
-export async function updateFixture(id, data) {
-  return await updateDoc(doc(db, "fixtures", id), data);
-}
-
-export async function deleteFixture(id) {
-  return await deleteDoc(doc(db, "fixtures", id));
 }
 
 /* =====================================================
