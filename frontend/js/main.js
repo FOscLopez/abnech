@@ -20,16 +20,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const hero = document.querySelector(".hero");
     const sound = document.getElementById("intro-sound");
   
-    // 🔥 forzar reproducción (hack suave)
+    // 🔥 reproducir SOLO si usuario interactúa
     const playSound = () => {
-      sound.currentTime = 0;
-      sound.play().catch(() => {});
+      if (sound) {
+        sound.currentTime = 0;
+        sound.play().catch(() => {});
+      }
     };
   
-    // intenta reproducir
-    playSound();
-  
-    // fallback: primer click
     document.addEventListener("click", playSound, { once: true });
   
     setTimeout(() => {
@@ -328,12 +326,13 @@ generarTabla();
 function pedirPermisoNoti(){
   if (!("Notification" in window)) return;
 
-  Notification.requestPermission().then(permission => {
-    if(permission === "granted"){
-      console.log("Notificaciones activadas");
+  document.addEventListener("click", () => {
+    if ("Notification" in window) {
+      Notification.requestPermission();
     }
-  });
-}
+  }, { once: true });
+};
+
 
 // ejemplo de uso
 function notificar(titulo, mensaje){
@@ -360,49 +359,61 @@ canvas.height = 360;
 
 let particles = [];
 
-// crear partículas
-for (let i = 0; i < 70; i++) {
+// 🔥 MENOS partículas (ANTES 50+)
+const PARTICLE_COUNT = 28;
+
+for (let i = 0; i < PARTICLE_COUNT; i++) {
   particles.push({
     angle: Math.random() * Math.PI * 2,
-    radius: 140 + Math.random() * 15,
-    speed: 0.01 + Math.random() * 0.02,
-    size: 2 + Math.random() * 2
+    radius: 135 + Math.random() * 10,
+    speed: 0.008 + Math.random() * 0.01,
+    size: 1.5 + Math.random() * 1.5
   });
 }
 
 function drawLightning(p1, p2) {
+
+  const dx = p1.x - p2.x;
+  const dy = p1.y - p2.y;
+  const dist = dx * dx + dy * dy;
+
+  // 🔥 OPTIMIZADO (ANTES sqrt)
+  if (dist > 1600) return;
+
   ctx.beginPath();
   ctx.moveTo(p1.x, p1.y);
 
-  // línea con “ruido” (electricidad)
-  const midX = (p1.x + p2.x) / 2 + (Math.random() - 0.5) * 10;
-  const midY = (p1.y + p2.y) / 2 + (Math.random() - 0.5) * 10;
+  const midX = (p1.x + p2.x) / 2 + (Math.random() - 0.5) * 6;
+  const midY = (p1.y + p2.y) / 2 + (Math.random() - 0.5) * 6;
 
   ctx.quadraticCurveTo(midX, midY, p2.x, p2.y);
 
-  ctx.strokeStyle = "rgba(255,140,0,0.6)";
-  ctx.lineWidth = 1;
+  ctx.strokeStyle = "rgba(255,140,0,0.5)";
+  ctx.lineWidth = 0.8;
 
-  ctx.shadowBlur = 25;
+  ctx.shadowBlur = 10;
   ctx.shadowColor = "orange";
 
   ctx.stroke();
 }
 
 function animate() {
+
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  const centerX = canvas.width / 2;
-  const centerY = canvas.height / 2;
+  const cx = 180;
+  const cy = 180;
 
   let positions = [];
 
-  particles.forEach(p => {
+  for (let i = 0; i < particles.length; i++) {
+
+    let p = particles[i];
 
     p.angle += p.speed;
 
-    const x = centerX + Math.cos(p.angle) * p.radius;
-    const y = centerY + Math.sin(p.angle) * p.radius;
+    const x = cx + Math.cos(p.angle) * p.radius;
+    const y = cy + Math.sin(p.angle) * p.radius;
 
     positions.push({ x, y });
 
@@ -410,23 +421,17 @@ function animate() {
     ctx.beginPath();
     ctx.arc(x, y, p.size, 0, Math.PI * 2);
     ctx.fillStyle = "rgba(255,140,0,0.9)";
-    ctx.shadowBlur = 20;
-    ctx.shadowColor = "orange";
     ctx.fill();
-  });
+  }
 
-  // 🔥 RAYOS ENTRE PARTÍCULAS
+  // 🔥 MENOS CONEXIONES (rendimiento)
   for (let i = 0; i < positions.length; i++) {
     for (let j = i + 1; j < positions.length; j++) {
 
-      const dx = positions[i].x - positions[j].x;
-      const dy = positions[i].y - positions[j].y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
+      // 🔥 SOLO algunos pares (optimización fuerte)
+      if (j % 3 !== 0) continue;
 
-      // solo conectar cercanos
-      if (dist < 60) {
-        drawLightning(positions[i], positions[j]);
-      }
+      drawLightning(positions[i], positions[j]);
     }
   }
 
@@ -434,24 +439,3 @@ function animate() {
 }
 
 animate();
-canvas.addEventListener("mousemove", () => {
-  particles.forEach(p => p.speed += 0.003);
-});
-
-canvas.addEventListener("mouseleave", () => {
-  particles.forEach(p => p.speed = 0.02);
-});
-window.addEventListener("load", () => {
-
-  const intro = document.getElementById("intro");
-  const hero = document.querySelector(".hero");
-
-  setTimeout(() => {
-    intro.style.display = "none";
-
-    // activa animación del hero
-    hero.classList.add("loaded");
-
-  }, 2500);
-
-});
