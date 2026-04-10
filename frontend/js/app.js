@@ -1,102 +1,74 @@
-// 🔔 PEDIR PERMISO NOTIFICACIONES
-if ("Notification" in window) {
-  Notification.requestPermission();
-}
-import { onAuth, getCurrentUser } from "./services/auth.service.js";
+import { getFixtures, getClubs } from "./services/firestore.service.js";
 
 async function loadData() {
-  const res = await fetch("http://localhost:3000/api/fixture");
-  const data = await res.json();
 
-  renderNextMatch(data.nextMatch);
-  renderResults(data.results);
+  const fixtures = await getFixtures();
+  const clubs = await getClubs();
+
+  const clubMap = {};
+  clubs.forEach(c => {
+    clubMap[c.id] = c.name;
+  });
+
+  // 👉 próximo partido
+  const nextMatch = fixtures.find(f => !f.deleted);
+
+  if (nextMatch) {
+    renderNextMatch(nextMatch, clubMap);
+  }
+
+  // 👉 resultados (finalizados)
+  const results = fixtures.filter(f => f.status === "finished");
+
+  renderResults(results, clubMap);
 }
 
 /* ========================= */
-function renderNextMatch(match) {
+function renderNextMatch(match, clubMap) {
+
   const el = document.getElementById("nextMatch");
+
+  const home = clubMap[match.homeClubId] || match.homeClubId;
+  const away = clubMap[match.awayClubId] || match.awayClubId;
 
   el.innerHTML = `
     <div class="match-highlight">
 
       <div class="team">
-        <img src="${match.homeLogo}">
-        <p>${match.home}</p>
+        <p>${home}</p>
       </div>
 
       <div class="vs">VS</div>
 
       <div class="team">
-        <img src="${match.awayLogo}">
-        <p>${match.away}</p>
+        <p>${away}</p>
       </div>
 
     </div>
 
     <div class="match-info">
-      ${match.date} - ${match.time}
+      ${match.date || ""} - ${match.time || ""}
     </div>
   `;
 }
 
 /* ========================= */
-import { saveResult } from "./services/firestore.service.js";
+function renderResults(results, clubMap) {
 
-function renderResults(results) {
   const el = document.getElementById("results");
 
-  const user = getCurrentUser();
+  el.innerHTML = results.map(r => {
 
-  el.innerHTML = results.map(r => `
-    <div class="result-card">
-      <span>${r.date}</span>
-      <h4>
-        ${r.home} 
-        <input type="number" value="${r.homeScore || 0}" id="h-${r.id}" ${!user ? "disabled" : ""}>
-        -
-        <input type="number" value="${r.awayScore || 0}" id="a-${r.id}" ${!user ? "disabled" : ""}>
-        ${r.away}
-      </h4>
+    const home = clubMap[r.homeClubId] || r.homeClubId;
+    const away = clubMap[r.awayClubId] || r.awayClubId;
 
-      ${
-        user
-          ? `<button class="save-btn" data-id="${r.id}">Guardar</button>`
-          : ""
-      }
-
-    </div>
-  `).join("");
-
-  // 🔥 GUARDAR RESULTADOS
-  if (user) {
-    document.querySelectorAll(".save-btn").forEach(btn => {
-
-      btn.addEventListener("click", async () => {
-
-        const id = btn.dataset.id;
-
-        const home = document.getElementById(`h-${id}`).value;
-        const away = document.getElementById(`a-${id}`).value;
-
-        try {
-          await saveResult(id, home, away);
-          alert("Resultado actualizado ✅");
-        } catch (e) {
-          alert("Error al guardar ❌");
-        }
-
-      });
-
-    });
-  }
+    return `
+      <div class="result-card">
+        <span>${r.date || ""}</span>
+        <h4>${home} ${r.scoreLocal} - ${r.scoreAway} ${away}</h4>
+      </div>
+    `;
+  }).join("");
 }
 
-/* ========================= */
-// 🔐 DETECTAR LOGIN GLOBAL
-onAuth(user => {
-  console.log("Estado auth:", user ? "logueado" : "no logueado");
-
-  loadData();
-});
-
-/* ========================= */
+loadData();
